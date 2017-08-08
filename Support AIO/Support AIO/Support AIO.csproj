@@ -1,0 +1,170 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7BC604C7-93DC-4361-9A76-7874CC432CAD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Support_AIO</RootNamespace>
+    <AssemblyName>Support AIO</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aimtec">
+      <HintPath>C:\Users\Meow\AppData\Local\AimtecLoader\Data\System\Aimtec.dll</HintPath>
+    </Reference>
+    <Reference Include="Aimtec.SDK">
+      <HintPath>C:\Users\Meow\AppData\Local\AimtecLoader\Data\System\Aimtec.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bases\Champion.cs" />
+    <Compile Include="Bases\Extensions.cs" />
+    <Compile Include="Bases\GameObjects.cs" />
+    <Compile Include="Bases\Geometry.cs" />
+    <Compile Include="Base\Champion.cs" />
+    <Compile Include="Base\Gametroy.cs" />
+    <Compile Include="Base\Helpers.cs" />
+    <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\Nautilus.cs" />
+    <Compile Include="Champions\Morgana.cs" />
+    <Compile Include="Champions\Janna.cs" />
+    <Compile Include="Champions\Rakan.cs" />
+    <Compile Include="Champions\Karma.cs" />
+    <Compile Include="Champions\Alistar.cs" />
+    <Compile Include="Champions\Zyra.cs" />
+    <Compile Include="Champions\Zilean.cs" />
+    <Compile Include="Champions\Soraka.cs" />
+    <Compile Include="Champions\Sona.cs" />
+    <Compile Include="Champions\Blitzcrank.cs" />
+    <Compile Include="Champions\Leona.cs" />
+    <Compile Include="Data\Auradata.cs" />
+    <Compile Include="Data\Gamedata.cs" />
+    <Compile Include="Data\Troydata.cs" />
+    <Compile Include="Handlers\Buffs.cs" />
+    <Compile Include="Handlers\Drawings.cs" />
+    <Compile Include="Handlers\Gametroys.cs" />
+    <Compile Include="Handlers\Projections.cs" />
+    <Compile Include="MorganaSpellBlocking\BlockSpellData.cs" />
+    <Compile Include="MorganaSpellBlocking\BlockSpellDataBase.cs" />
+    <Compile Include="MorganaSpellBlocking\Collision.cs" />
+    <Compile Include="MorganaSpellBlocking\CollisionObjectTypes.cs" />
+    <Compile Include="MorganaSpellBlocking\DetectedCollision.cs" />
+    <Compile Include="MorganaSpellBlocking\DetectionType.cs" />
+    <Compile Include="MorganaSpellBlocking\EvadeManager.cs" />
+    <Compile Include="MorganaSpellBlocking\EvadeOthers.cs" />
+    <Compile Include="MorganaSpellBlocking\EvadeSpellData.cs" />
+    <Compile Include="MorganaSpellBlocking\EvadeSpellDatabase.cs" />
+    <Compile Include="MorganaSpellBlocking\EvadeTargetManager.cs" />
+    <Compile Include="MorganaSpellBlocking\FastPredResult.cs" />
+    <Compile Include="MorganaSpellBlocking\FoundIntersection.cs" />
+    <Compile Include="MorganaSpellBlocking\Geometry.cs" />
+    <Compile Include="MorganaSpellBlocking\IsSafeResult.cs" />
+    <Compile Include="MorganaSpellBlocking\SafePathResult.cs" />
+    <Compile Include="MorganaSpellBlocking\Skillshot.cs" />
+    <Compile Include="MorganaSpellBlocking\SkillshotDetector.cs" />
+    <Compile Include="MorganaSpellBlocking\SkillShotType.cs" />
+    <Compile Include="MorganaSpellBlocking\SpellData.cs" />
+    <Compile Include="MorganaSpellBlocking\SpellDatabase.cs" />
+    <Compile Include="MorganaSpellBlocking\Utils.cs" />
+    <Compile Include="NautilusSelfShield\BlockSpellData.cs" />
+    <Compile Include="NautilusSelfShield\BlockSpellDataBase.cs" />
+    <Compile Include="NautilusSelfShield\Collision.cs" />
+    <Compile Include="NautilusSelfShield\CollisionObjectTypes.cs" />
+    <Compile Include="NautilusSelfShield\DetectedCollision.cs" />
+    <Compile Include="NautilusSelfShield\DetectionType.cs" />
+    <Compile Include="NautilusSelfShield\EvadeManager.cs" />
+    <Compile Include="NautilusSelfShield\EvadeOthers.cs" />
+    <Compile Include="NautilusSelfShield\EvadeSpellData.cs" />
+    <Compile Include="NautilusSelfShield\EvadeSpellDatabase.cs" />
+    <Compile Include="NautilusSelfShield\EvadeTargetManager.cs" />
+    <Compile Include="NautilusSelfShield\FastPredResult.cs" />
+    <Compile Include="NautilusSelfShield\FoundIntersection.cs" />
+    <Compile Include="NautilusSelfShield\Geometry.cs" />
+    <Compile Include="NautilusSelfShield\IsSafeResult.cs" />
+    <Compile Include="NautilusSelfShield\SafePathResult.cs" />
+    <Compile Include="NautilusSelfShield\Skillshot.cs" />
+    <Compile Include="NautilusSelfShield\SkillshotDetector.cs" />
+    <Compile Include="NautilusSelfShield\SkillShotType.cs" />
+    <Compile Include="NautilusSelfShield\SpellData.cs" />
+    <Compile Include="NautilusSelfShield\SpellDatabase.cs" />
+    <Compile Include="NautilusSelfShield\Utils.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpellBlocking\BlockSpellData.cs" />
+    <Compile Include="SpellBlocking\BlockSpellDataBase.cs" />
+    <Compile Include="SpellBlocking\Collision.cs" />
+    <Compile Include="SpellBlocking\CollisionObjectTypes.cs" />
+    <Compile Include="SpellBlocking\DamageBoostDatabase.cs" />
+    <Compile Include="SpellBlocking\DetectedCollision.cs" />
+    <Compile Include="SpellBlocking\DetectionType.cs" />
+    <Compile Include="SpellBlocking\EvadeManager.cs" />
+    <Compile Include="SpellBlocking\EvadeOthers.cs" />
+    <Compile Include="SpellBlocking\EvadeSpellData.cs" />
+    <Compile Include="SpellBlocking\EvadeSpellDatabase.cs" />
+    <Compile Include="SpellBlocking\EvadeTargetManager.cs" />
+    <Compile Include="SpellBlocking\FastPredResult.cs" />
+    <Compile Include="SpellBlocking\FoundIntersection.cs" />
+    <Compile Include="SpellBlocking\Geometry.cs" />
+    <Compile Include="SpellBlocking\IsSafeResult.cs" />
+    <Compile Include="SpellBlocking\SafePathResult.cs" />
+    <Compile Include="SpellBlocking\Skillshot.cs" />
+    <Compile Include="SpellBlocking\SkillshotDetector.cs" />
+    <Compile Include="SpellBlocking\SkillShotType.cs" />
+    <Compile Include="SpellBlocking\SpellData.cs" />
+    <Compile Include="SpellBlocking\SpellDatabase.cs" />
+    <Compile Include="SpellBlocking\Utils.cs" />
+    <Compile Include="ZLib.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
