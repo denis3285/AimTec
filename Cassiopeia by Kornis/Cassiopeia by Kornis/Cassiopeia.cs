@@ -635,6 +635,15 @@ namespace Cassiopeia_By_Kornis
                 bool useE = Menu["farming"]["push"]["usee"].Enabled;
                 bool poisonE = Menu["farming"]["push"]["epoison"].Enabled;
                 float manapercent = Menu["farming"]["push"]["mana"].As<MenuSlider>().Value;
+                foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
+                {
+                    if (HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) <= GetE(minion))
+                    {
+
+                        E.CastOnUnit(minion);
+
+                    }
+                }
                 if (manapercent < Player.ManaPercent())
                 {
                     if (useQ)
@@ -673,15 +682,7 @@ namespace Cassiopeia_By_Kornis
                         }
                     }
                 }
-                foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
-                {
-                    if (HealthPrediction.Implementation.GetPrediction(minion, (int) (0.2 * 1000f)) <= GetE(minion))
-                    {
-
-                        E.CastOnUnit(minion);
-
-                    }
-                }
+ 
             }
 
             if (!Menu["farming"]["mode"].Enabled)
