@@ -87,7 +87,7 @@ namespace Cassiopeia_By_Kornis
                 RSet.Add(new MenuSlider("hitr", "Min. Enemies to Hit", 1, 1, 5));
                 //RSet.Add(new MenuSlider("stunr", "Min. Enemies to Stun", 1, 1, 5));
                 RSet.Add(new MenuSlider("ranger", "R Range", 750, 125, 825));
-                RSet.Add(new MenuBool("facer", "Only R if Facing", false));
+                RSet.Add(new MenuBool("facer", "Only R if Facing(Broken in Core)", false));
                 RSet.Add(new MenuKeyBind("key", "R Flash:", KeyCode.T, KeybindType.Press));
                 RSet.Add(new MenuKeyBind("semi", "Semi-Manual R:", KeyCode.G, KeybindType.Press));
 
@@ -835,16 +835,13 @@ namespace Cassiopeia_By_Kornis
         {
             if (R.Ready)
             {
-                Geometry.Sector cone;
+              
                 foreach (var enemy in GetBestEnemyHeroesTargetsInRange(Menu["combo"]["rset"]["ranger"].As<MenuSlider>()
                     .Value))
                 {
 
-                    cone = UltimateCone((Vector2) enemy.ServerPosition);
-                    if (GameObjects.EnemyHeroes.Count(
-                            t2 => t2.IsValidTarget() && cone.IsInside((Vector2) t2.ServerPosition)) >=
-                        Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value &&
-                        Menu["whitelist"][enemy.ChampionName.ToLower()].As<MenuBool>().Enabled)
+                    
+                    if (Menu["whitelist"][enemy.ChampionName.ToLower()].As<MenuBool>().Enabled)
                     {
                         R.Cast(enemy);
                     }
