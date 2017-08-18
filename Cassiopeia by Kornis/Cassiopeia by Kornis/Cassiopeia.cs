@@ -3,6 +3,7 @@ using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security.Authentication.ExtendedProtection;
 using Aimtec.SDK.Events;
+using Cassiopeia_By_Kornis.RGap;
 
 namespace Cassiopeia_By_Kornis
 {
@@ -33,6 +34,8 @@ namespace Cassiopeia_By_Kornis
         public static Orbwalker Orbwalker = new Orbwalker();
 
         public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
+
+ 
 
         public static Spell Q, W, E, R, Flash;
 
@@ -154,14 +157,7 @@ namespace Cassiopeia_By_Kornis
             var miscmenu = new Menu("misc", "Misc.");
             {
                 miscmenu.Add(new MenuList("qpred", "Q Pred.", new[] { "Old Version", "New Version" }, 1));
-
-                miscmenu.Add(new MenuBool("gapclose", "Anti-Gap R"));
-                var gapclosers = new Menu("gapclosers", "GapClosers");
-                foreach (var target in GameObjects.EnemyHeroes)
-                {
-                    gapclosers.Add(new MenuBool(target.ChampionName.ToLower(), "R GapClose: " + target.ChampionName));
-                }
-                miscmenu.Add(gapclosers);
+                
                 miscmenu.Add(new MenuSlider("hp", "^- if my HP lower than", 50, 1, 100));
                 Menu.Add(WhiteList);
                 miscmenu.Add(new MenuBool("stacks", "Stack Q"));
@@ -184,23 +180,35 @@ namespace Cassiopeia_By_Kornis
                 DrawMenu.Add(new MenuBool("drawkill", "Draw Killable with Minions with E"));
                 DrawMenu.Add(new MenuBool("drawtoggle", "Draw Farm Toggle"));
             }
-           Gapcloser.Attach(Menu, "Auto Q on Dashes");
+           AutoQ.Attach(Menu, "Auto Q on Dashes");
+            Cassiopeia_By_Kornis.RGap.Gapcloser.Attach(Menu, "R Anti-GapClose");
             Menu.Add(DrawMenu);
             Menu.Attach();
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+            AutoQ.DashQ += OnDash;
             Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.PreAttack += OnPreAttack;
             LoadSpells();
             Console.WriteLine("Cassiopeia by Kornis - Loaded");
         }
 
-        private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        private void OnGapcloser(Obj_AI_Hero target, Cassiopeia_By_Kornis.RGap.GapcloserArgs Args)
+        {
+            if (target != null && Args.EndPosition.Distance(Player) < R.Range - 100 && R.Ready && !target.IsDashing() && target.IsValidTarget(R.Range))
+            {
+
+                R.Cast(Args.EndPosition);
+
+            }
+        }
+
+        private void OnDash(Obj_AI_Hero target, GapcloserArgs Args)
         {
             if (Menu["combo"]["autoq"].Enabled)
             {
-                if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range && Q.Ready)
                 {
 
                     Q.Cast(Args.EndPosition);

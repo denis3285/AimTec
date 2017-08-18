@@ -45,16 +45,16 @@
         public bool HaveShield { get; set; }
     }
 
-    public static class Gapcloser
+    public static class AutoQ
     {
-        public static event OnGapcloserEvent OnGapcloser;
+        public static event OnGapcloserEvent DashQ;
 
         public static Dictionary<int, GapcloserArgs> Gapclosers = new Dictionary<int, GapcloserArgs>();
         internal static List<SpellData> Spells = new List<SpellData>();
 
         public static Menu Menu;
 
-        static Gapcloser()
+        static AutoQ()
         {
             Initialize();
         }
@@ -955,7 +955,7 @@
                     {
                         new MenuBool("Gapcloser." + enemy.ChampionName.ToLower() + ".Enabled", "Enabled"),
                         new MenuSlider("Gapcloser." + enemy.ChampionName.ToLower() + ".Distance",
-                                "If Target Distance To Player <= x", 550, 1, 700),
+                                "If Target Distance To Player <= x", 550, 1, 850),
                     };
                 Menu.Add(heroMenu);
 
@@ -1024,7 +1024,7 @@
                 Gapclosers.Clear();
             }
 
-            if (OnGapcloser == null || Menu["Gapcloser.Enabled"].As<MenuBool>() == null || !Menu["Gapcloser.Enabled"].As<MenuBool>().Enabled)
+            if (DashQ == null || Menu["Gapcloser.Enabled"].As<MenuBool>() == null || !Menu["Gapcloser.Enabled"].As<MenuBool>().Enabled)
             {
                 return;
             }
@@ -1045,8 +1045,8 @@
                         Menu["Gapcloser." + Args.Value.Unit.ChampionName.ToLower()].As<Menu>()[
                             "Gapcloser." + Args.Value.Unit.ChampionName.ToLower() + ".Distance"].As<MenuSlider>().Value)
                     {
-                  
-                            OnGapcloser(Args.Value.Unit, Args.Value);
+
+                        DashQ(Args.Value.Unit, Args.Value);
                         
                     }
                 }
@@ -1059,21 +1059,21 @@
                         Menu["Gapcloser." + Args.Value.Unit.ChampionName.ToLower()].As<Menu>()[
                             "Gapcloser." + Args.Value.Unit.ChampionName.ToLower() + ".Distance"].As<MenuSlider>().Value)
                     {
-                        
-                            OnGapcloser(Args.Value.Unit, Args.Value);
+
+                        DashQ(Args.Value.Unit, Args.Value);
                         
                     }
                 }
                 else if (Args.Value.Type == SpellType.Targeted)
                 {
-    
-                        OnGapcloser(Args.Value.Unit, Args.Value);
+
+                    DashQ(Args.Value.Unit, Args.Value);
                     
                 }
                 else if (Args.Value.Type == SpellType.Melee)
                 {
-                   
-                        OnGapcloser(Args.Value.Unit, Args.Value);
+
+                    DashQ(Args.Value.Unit, Args.Value);
                     
                 }
             }
