@@ -290,7 +290,7 @@ namespace Viktor_By_Kornis
                     .ForEach(
                         unit =>
                         {
-                            Console.WriteLine(GetR(unit));
+                           
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
                             int height = 8;
