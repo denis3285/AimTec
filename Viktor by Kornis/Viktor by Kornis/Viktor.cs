@@ -787,7 +787,7 @@ namespace Viktor_By_Kornis
                     }
                     break;
                 case 1:
-                    if (Q.Ready && useQ && target.IsValidTarget(W.Range) && !E.Ready)
+                    if (W.Ready && useW && target.IsValidTarget(W.Range) && !E.Ready)
                     {
                         if (target != null)
                         {
