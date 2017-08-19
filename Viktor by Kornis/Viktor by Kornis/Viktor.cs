@@ -58,7 +58,7 @@ namespace Viktor_By_Kornis
             var WSet = new Menu("wset", "W Settings");
             {
                 WSet.Add(new MenuBool("usew", "Use W in Combo"));
-                WSet.Add(new MenuList("wmode", "W Mode", new[] { "Always", "Only on Slowed/CC/Immobile" }, 1));
+                WSet.Add(new MenuList("wmode", "W Mode", new[] { "Always", "Only on Slowed/CC/Immobile", "Together with R" }, 1));
 
             }
             var ESet = new Menu("eset", "E Settings");
@@ -69,6 +69,7 @@ namespace Viktor_By_Kornis
             {
                 RSet.Add(new MenuBool("user", "Use R in Combo"));
                 RSet.Add(new MenuList("rmode", "R Mode", new[] { "Always", "If Killable" }, 0));
+                RSet.Add(new MenuBool("wait", "Wait for Spells (Killable Mode)"));
                 RSet.Add(new MenuSlider("rtick", "Include X R Ticks", 1, 1, 4));
                 RSet.Add(new MenuSlider("hitr", "Use R only if Hits X", 1, 1, 5));
                 RSet.Add(new MenuSlider("waster", "Don't waste R if Enemy HP lower than", 100, 0, 500));
@@ -289,6 +290,7 @@ namespace Viktor_By_Kornis
                     .ForEach(
                         unit =>
                         {
+                            
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
                             int height = 8;
@@ -676,6 +678,18 @@ namespace Viktor_By_Kornis
                     {
 
 
+                        switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                        {
+                            case 2:
+                                if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                {
+                                    if (target != null)
+                                    {
+                                        W.Cast(target);
+                                    }
+                                }
+                                break;
+                        }
                         R.Cast(target);
 
 
@@ -688,14 +702,39 @@ namespace Viktor_By_Kornis
                         {
                             if (hits == 1)
                             {
-
+                                switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                {
+                                    case 2:
+                                        if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                        {
+                                            if (target != null)
+                                            {
+                                                W.Cast(target);
+                                            }
+                                        }
+                                        break;
+                                }
                                 R.Cast(target);
+
+
 
                             }
                             if (hits > 1)
                             {
                                 if (hits <= target.CountEnemyHeroesInRange(300))
                                 {
+                                    switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                    {
+                                        case 2:
+                                            if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                            {
+                                                if (target != null)
+                                                {
+                                                    W.Cast(target);
+                                                }
+                                            }
+                                            break;
+                                    }
                                     R.Cast(target);
                                 }
                             }
@@ -703,20 +742,91 @@ namespace Viktor_By_Kornis
                         break;
                     case 1:
                         if (target.Health > meow && target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
-                                                     Player.GetSpellDamage(target, SpellSlot.E) +
-                                                     Player.GetSpellDamage(target, SpellSlot.R) * Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value)
+                            Player.GetSpellDamage(target, SpellSlot.E) +
+                            Player.GetSpellDamage(target, SpellSlot.R) *
+                            Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value)
                         {
-                            if (hits == 1)
+                            if (Menu["combo"]["rset"]["wait"].Enabled)
                             {
-
-                                R.Cast(target);
-
-                            }
-                            if (hits > 1)
-                            {
-                                if (hits <= target.CountEnemyHeroesInRange(300))
+                                if (Q.Ready || E.Ready)
                                 {
+                                    if (hits == 1)
+                                    {
+
+                                        switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                        {
+                                            case 2:
+                                                if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                                {
+                                                    if (target != null)
+                                                    {
+                                                        W.Cast(target);
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                        R.Cast(target);
+
+                                    }
+                                    if (hits > 1)
+                                    {
+                                        if (hits <= target.CountEnemyHeroesInRange(300))
+                                        {
+                                            switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                            {
+                                                case 2:
+                                                    if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                                    {
+                                                        if (target != null)
+                                                        {
+                                                            W.Cast(target);
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                            R.Cast(target);
+                                        }
+                                    }
+                                }
+                            }
+                            if (!Menu["combo"]["rset"]["wait"].Enabled)
+                            {
+                                if (hits == 1)
+                                {
+
+                                    switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                    {
+                                        case 2:
+                                            if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                            {
+                                                if (target != null)
+                                                {
+                                                    W.Cast(target);
+                                                }
+                                            }
+                                            break;
+                                    }
                                     R.Cast(target);
+
+                                }
+                                if (hits > 1)
+                                {
+                                    if (hits <= target.CountEnemyHeroesInRange(300))
+                                    {
+                                        switch (Menu["combo"]["wset"]["wmode"].As<MenuList>().Value)
+                                        {
+                                            case 2:
+                                                if (W.Ready && useW && target.IsValidTarget(W.Range))
+                                                {
+                                                    if (target != null)
+                                                    {
+                                                        W.Cast(target);
+                                                    }
+                                                }
+                                                break;
+                                        }
+                                        R.Cast(target);
+                                    }
                                 }
                             }
                         }
