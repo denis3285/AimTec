@@ -295,13 +295,7 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
             }
             RootMenu.Add(ComboMenu);
-            KillstealMenu = new Menu("misc", "Misc.");
-            {
-                KillstealMenu.Add(new MenuBool("antigapq", "Anti-Gap Q"));
-                KillstealMenu.Add(new MenuBool("antigapw", "Anti-Gap W Ally"));
-
-            }
-            RootMenu.Add(KillstealMenu);
+     
             DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
