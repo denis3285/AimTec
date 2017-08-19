@@ -158,7 +158,7 @@ namespace Cassiopeia_By_Kornis
             {
                 miscmenu.Add(new MenuList("qpred", "Q Pred.", new[] { "Old Version", "New Version" }, 1));
                 
-                miscmenu.Add(new MenuSlider("hp", "^- if my HP lower than", 50, 1, 100));
+
                 Menu.Add(WhiteList);
                 miscmenu.Add(new MenuBool("stacks", "Stack Q"));
                 miscmenu.Add(new MenuSlider("mana", "^- if mana >=", 90, 1, 100));
@@ -601,7 +601,7 @@ namespace Cassiopeia_By_Kornis
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargets()
         {
             return GetEnemyLaneMinionsTargetsInRange(float.MaxValue);
-        }
+        } 
 
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargetsInRange(float range)
         {
