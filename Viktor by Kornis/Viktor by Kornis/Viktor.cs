@@ -70,7 +70,7 @@ namespace Viktor_By_Kornis
                 RSet.Add(new MenuBool("user", "Use R in Combo"));
                 RSet.Add(new MenuList("rmode", "R Mode", new[] { "Always", "If Killable" }, 0));
                 RSet.Add(new MenuBool("wait", "Wait for Spells (Killable Mode)"));
-                RSet.Add(new MenuSlider("rtick", "Include X R Ticks", 1, 1, 4));
+                RSet.Add(new MenuSlider("rtick", "Include X R Ticks", 1, 1, 3));
                 RSet.Add(new MenuSlider("hitr", "Use R only if Hits X", 1, 1, 5));
                 RSet.Add(new MenuSlider("waster", "Don't waste R if Enemy HP lower than", 100, 0, 500));
                 RSet.Add(new MenuBool("follow", "Auto R Follow", true));
@@ -290,7 +290,7 @@ namespace Viktor_By_Kornis
                     .ForEach(
                         unit =>
                         {
-                            
+                            Console.WriteLine(GetR(unit));
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
                             int height = 8;
@@ -304,18 +304,18 @@ namespace Viktor_By_Kornis
                                 (float)(barPos.X + (unit.Health >
                                                      Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                      Player.GetSpellDamage(unit, SpellSlot.E) +
-                                                     Player.GetSpellDamage(unit, SpellSlot.R) * Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value
+                                                     GetR(unit)
                                              ? width * ((unit.Health - (Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                          Player.GetSpellDamage(unit, SpellSlot.E) +
 
-                                                         Player.GetSpellDamage(unit, SpellSlot.R) * Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value)) /
+                                                                        GetR(unit))) /
                                                         unit.MaxHealth * 100 / 100)
                                              : 0));
 
                             Render.Line(drawStartXPos, barPos.Y, drawEndXPos, barPos.Y, 8, true,
                                 unit.Health < Player.GetSpellDamage(unit, SpellSlot.Q) +
                                 Player.GetSpellDamage(unit, SpellSlot.E) +
-                                Player.GetSpellDamage(unit, SpellSlot.R) * Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value
+                                GetR(unit)
                                     ? Color.GreenYellow
                                     : Color.Orange);
 
@@ -653,6 +653,33 @@ namespace Viktor_By_Kornis
 
             return false;
         }
+        static double GetR(Obj_AI_Base target)
+        {
+            double meow = 0;
+            double meowticks = 0;
+            if (Player.SpellBook.GetSpell(SpellSlot.R).Level == 1)
+            {
+                meow = 100;
+                meowticks = 150;
+            }
+            if (Player.SpellBook.GetSpell(SpellSlot.R).Level == 2)
+            {
+                meow = 175;
+                meowticks = 250;
+            }
+            if (Player.SpellBook.GetSpell(SpellSlot.R).Level == 3)
+            {
+                meow = 250;
+                meowticks = 350;
+            }
+            double baser = Player.TotalAbilityDamage * 0.5 + meow;
+            double ticks = Player.TotalAbilityDamage * 0.6 + meowticks;
+
+            double full = (ticks * Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value) + baser;
+            double damage = Player.CalculateDamage(target, DamageType.Magical, full);
+            return damage;
+
+        }
 
         private void OnCombo()
         {
@@ -743,8 +770,7 @@ namespace Viktor_By_Kornis
                     case 1:
                         if (target.Health > meow && target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
                             Player.GetSpellDamage(target, SpellSlot.E) +
-                            Player.GetSpellDamage(target, SpellSlot.R) *
-                            Menu["combo"]["rset"]["rtick"].As<MenuSlider>().Value)
+                            GetR(target))
                         {
                             if (Menu["combo"]["rset"]["wait"].Enabled)
                             {
