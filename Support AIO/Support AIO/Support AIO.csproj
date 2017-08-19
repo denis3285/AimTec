@@ -67,11 +67,13 @@
     <Compile Include="Bases\Champion.cs" />
     <Compile Include="Bases\Extensions.cs" />
     <Compile Include="Bases\GameObjects.cs" />
+    <Compile Include="Bases\Gapcloser.cs" />
     <Compile Include="Bases\Geometry.cs" />
     <Compile Include="Base\Champion.cs" />
     <Compile Include="Base\Gametroy.cs" />
     <Compile Include="Base\Helpers.cs" />
     <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\TahmKench.cs" />
     <Compile Include="Champions\Nautilus.cs" />
     <Compile Include="Champions\Morgana.cs" />
     <Compile Include="Champions\Janna.cs" />
@@ -160,6 +162,28 @@
     <Compile Include="SpellBlocking\SpellData.cs" />
     <Compile Include="SpellBlocking\SpellDatabase.cs" />
     <Compile Include="SpellBlocking\Utils.cs" />
+    <Compile Include="TahmShielding\BlockSpellData.cs" />
+    <Compile Include="TahmShielding\BlockSpellDataBase.cs" />
+    <Compile Include="TahmShielding\Collision.cs" />
+    <Compile Include="TahmShielding\CollisionObjectTypes.cs" />
+    <Compile Include="TahmShielding\DetectedCollision.cs" />
+    <Compile Include="TahmShielding\DetectionType.cs" />
+    <Compile Include="TahmShielding\EvadeManager.cs" />
+    <Compile Include="TahmShielding\EvadeOthers.cs" />
+    <Compile Include="TahmShielding\EvadeSpellData.cs" />
+    <Compile Include="TahmShielding\EvadeSpellDatabase.cs" />
+    <Compile Include="TahmShielding\EvadeTargetManager.cs" />
+    <Compile Include="TahmShielding\FastPredResult.cs" />
+    <Compile Include="TahmShielding\FoundIntersection.cs" />
+    <Compile Include="TahmShielding\Geometry.cs" />
+    <Compile Include="TahmShielding\IsSafeResult.cs" />
+    <Compile Include="TahmShielding\SafePathResult.cs" />
+    <Compile Include="TahmShielding\Skillshot.cs" />
+    <Compile Include="TahmShielding\SkillshotDetector.cs" />
+    <Compile Include="TahmShielding\SkillShotType.cs" />
+    <Compile Include="TahmShielding\SpellData.cs" />
+    <Compile Include="TahmShielding\SpellDatabase.cs" />
+    <Compile Include="TahmShielding\Utils.cs" />
     <Compile Include="ZLib.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -422,10 +422,12 @@ namespace Support_AIO.Champions
             HarassMenu = new Menu("misc", "Misc.");
             {
                 HarassMenu.Add(new MenuBool("autoe", "Auto E if Slowed"));
+              
             }
+
             RootMenu.Add(HarassMenu);
 
-                EvadeMenu = new Menu("wset", "Healing");
+            EvadeMenu = new Menu("wset", "Healing");
             {
                 EvadeMenu.Add(new MenuList("modes", "Healing Mode", new[] {"Spells Detector", "ZLib", "Healing Mode"},
                     1));
@@ -457,11 +459,21 @@ namespace Support_AIO.Champions
 
             }
             RootMenu.Add(DrawMenu);
-         
+            Gapcloser.Attach(RootMenu, "R Anti-Gap");
+
 
             RootMenu.Attach();
         }
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+       
 
+                if (target != null && Args.EndPosition.Distance(Player) < R.Range)
+                {
+                    R.Cast(Args.EndPosition);
+                }
+            
+        }
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 850);

@@ -430,9 +430,20 @@ namespace Support_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawseed", "Draw Seeds"));
             }
             RootMenu.Add(DrawMenu);
+
+
+            Gapcloser.Attach(RootMenu, "E Anti-Gap");
             RootMenu.Attach();
         }
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
 
+                if (target != null && Args.EndPosition.Distance(Player) < E.Range)
+                {
+                    E.Cast(Args.EndPosition);
+                }
+            
+        }
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 800);

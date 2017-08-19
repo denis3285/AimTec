@@ -104,7 +104,7 @@ namespace Support_AIO.Bases
 
                         if (t != null && EvadeTargetManager.Menu["Brian.EvadeTargetMenu.CC"]
                                 .Enabled &&
-                                EvadeTargetManager.Menu["whitelist"][t.ChampionName.ToLower()]
+                            EvadeTargetManager.Menu["whitelist"][t.ChampionName.ToLower()]
                                 .As<MenuBool>().Enabled)
                         {
 
@@ -120,7 +120,8 @@ namespace Support_AIO.Bases
                     }
                     if (ObjectManager.GetLocalPlayer().ChampionName == "Lux" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Sona" ||
-                        ObjectManager.GetLocalPlayer().ChampionName == "Taric")
+                        ObjectManager.GetLocalPlayer().ChampionName == "Taric" ||
+                        ObjectManager.GetLocalPlayer().ChampionName == "TahmKench")
 
                     {
                         if (t != null && EvadeTargetManager.Menu["Brian.EvadeTargetMenu.CC"]
@@ -186,6 +187,12 @@ namespace Support_AIO.Bases
             SpellBook.OnCastSpell += OnCastSpell;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             ZLib.OnPredictDamage += ZLib_OnPredictDamage;
+            Gapcloser.OnGapcloser += OnGapcloser;
+        }
+
+        internal virtual void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+           
         }
 
         private static void ZLib_OnPredictDamage(Base.Champion hero, PredictDamageEventArgs args)
@@ -357,6 +364,84 @@ namespace Support_AIO.Bases
                     {
 
                         W2.CastOnUnit(hero.Player);
+                    }
+
+                }
+            }
+            if (Player.ChampionName == "TahmKench")
+            {
+
+                if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
+                {
+
+                    if (hero.IncomeDamage < 0)
+                    {
+
+                        Helpers.ResetIncomeDamage(hero);
+                    }
+
+
+                    if (!hero.Player.IsValidTarget(float.MaxValue, true))
+                    {
+                        Helpers.ResetIncomeDamage(hero);
+                    }
+
+                    if (hero.Player.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Player.HasBuffOfType(BuffType.PhysicalImmunity)
+                        && args.HpInstance.EventType == EventType.AutoAttack)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Player.HasBuffOfType(BuffType.SpellImmunity)
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Player.HasBuff("sivire")
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Player.HasBuff("bansheesviel")
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    var objShop = ObjectManager.Get<GameObject>()
+                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Player.Team);
+
+                    if (objShop != null
+                        && objShop.Distance(hero.Player.ServerPosition) <= 1250)
+                    {
+                        args.NoProcess = true;
+                    }
+
+
+                    if (args.HpInstance.EventType == EventType.AutoAttack)
+                    {
+                        return;
+                    }
+                    if (args.HpInstance.EventType == EventType.MinionAttack)
+                    {
+                        return;
+                    }
+                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled && hero.Player.Distance(Player) < 400)
+                    {
+          
+                        W.CastOnUnit(hero.Player);
+                    }
+                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled && hero.Player.Distance(Player) < 400)
+                    {
+
+                       E.Cast();
                     }
 
                 }

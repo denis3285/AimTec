@@ -185,6 +185,7 @@ namespace Support_AIO.Champions
 
             }
             RootMenu.Add(DrawMenu);
+            Gapcloser.Attach(RootMenu, "Q Anti-Gap");
 
             EvadeMenu = new Menu("wset", "Shielding");
             {
@@ -214,10 +215,20 @@ namespace Support_AIO.Champions
             RootMenu.Attach();
         }
 
-        
-    
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+         
 
-    internal override void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
+                {
+                    Q.Cast(Args.EndPosition);
+                }
+            
+        }
+
+
+
+        internal override void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
         {
             if (!E.Ready)
             {

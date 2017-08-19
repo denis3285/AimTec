@@ -344,6 +344,8 @@ namespace Support_AIO.Champions
                 FarmMenu.Add(new MenuBool("usew", "Use W in Jungle"));
             }
             RootMenu.Add(FarmMenu);
+            Gapcloser.Attach(RootMenu, "W Anti-Gap");
+
             EvadeMenu = new Menu("wset", "Shielding");
             {
                 EvadeMenu.Add(new MenuList("modes", "Shielding Mode", new[] {"Spells Detector", "ZLib"}, 1));
@@ -364,7 +366,16 @@ namespace Support_AIO.Champions
 
             RootMenu.Attach();
         }
-       
+
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+      
+                if (target != null && Args.EndPosition.Distance(Player) < W.Range)
+                {
+                    W.CastOnUnit(target);
+                }
+            
+        }
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 950);

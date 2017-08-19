@@ -218,9 +218,22 @@ namespace Support_AIO.Champions
 
             }
             RootMenu.Add(DrawMenu);
+            Gapcloser.Attach(RootMenu, "Q Anti-Gap");
+
             RootMenu.Add(new MenuKeyBind("flashq", "Q - Flash", KeyCode.T, KeybindType.Press));
             RootMenu.Add(new MenuKeyBind("flashe", "W - Q - Flash", KeyCode.G, KeybindType.Press));
             RootMenu.Attach();
+        }
+
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+           
+
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
+                {
+                    Q.Cast();
+                }
+            
         }
 
         protected override void SetSpells()

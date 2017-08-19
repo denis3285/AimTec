@@ -23,10 +23,18 @@ namespace Support_AIO.Champions
 {
     class Soraka : Champion
     {
-      
-        
 
 
+
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+       
+                if (target != null && Args.EndPosition.Distance(Player) < E.Range)
+                {
+                    E.Cast(Args.EndPosition);
+                }
+            
+        }
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
         {
             if (RootMenu["combo"]["support"].Enabled)
@@ -332,7 +340,14 @@ namespace Support_AIO.Champions
             }
             
             RootMenu.Add(ComboMenu);
-            RootMenu.Add(HarassMenu);
+            RootMenu.Add(HarassMenu); KillstealMenu = new Menu("misc", "Misc.");
+            {
+                KillstealMenu.Add(new MenuBool("antigapq", "Anti-Gap E"));
+
+
+            }
+            
+            RootMenu.Add(KillstealMenu);
             WhiteList = new Menu("heal", "Healing");
             {
                 WhiteList.Add(new MenuBool("autow", "Enable W Healing"));
@@ -373,6 +388,7 @@ namespace Support_AIO.Champions
                 }
             }
             RootMenu.Add(WhiteList);
+            Gapcloser.Attach(RootMenu, "E Anti-Gap");
 
             RootMenu.Attach();
         }
