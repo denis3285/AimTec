@@ -64,6 +64,7 @@ namespace Akali_By_Kornis
             {
              
                 HarassMenu.Add(new MenuBool("useq", "Use Q to Harass"));
+                HarassMenu.Add(new MenuBool("usew", "Use W in Harass"));
                 HarassMenu.Add(new MenuBool("usee", "Use E to Harass"));
                 HarassMenu.Add(new MenuBool("autoe", "Use AUTO E if Enemy in Range"));
             }
@@ -704,14 +705,14 @@ namespace Akali_By_Kornis
                     E.Cast();
                 }
             }
-            if (W.Ready && useW && target.IsValidTarget(W.Range))
+            if (W.Ready && useW && target.IsValidTarget(W.Range + 120))
             {
 
                 if (target != null)
                 {
                     if (target.Distance(Player) >= 200)
                     {
-                        W.CastOnUnit(target);
+                        W.Cast(target.ServerPosition);
                     }
                 }
             }
@@ -792,6 +793,7 @@ namespace Akali_By_Kornis
         private void OnHarass()
         {
             bool useQ = Menu["harass"]["useq"].Enabled;
+            bool useW = Menu["harass"]["usew"].Enabled;
             bool useE = Menu["harass"]["usee"].Enabled;
             var target = GetBestEnemyHeroTargetInRange(Q.Range);
 
@@ -816,8 +818,19 @@ namespace Akali_By_Kornis
                         Q.Cast(target);
                     }
                 }
+            if (W.Ready && useW && target.IsValidTarget(W.Range + 120))
+            {
 
+                if (target != null)
+                {
+                    if (target.Distance(Player) >= 200)
+                    {
+                        W.Cast(target.ServerPosition);
+                    }
+                }
             }
+
+        }
         
     }
 }
