@@ -73,6 +73,7 @@
     <Compile Include="Base\Gametroy.cs" />
     <Compile Include="Base\Helpers.cs" />
     <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\Nami.cs" />
     <Compile Include="Champions\TahmKench.cs" />
     <Compile Include="Champions\Nautilus.cs" />
     <Compile Include="Champions\Morgana.cs" />
