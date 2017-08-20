@@ -60,6 +60,7 @@ namespace Darius_By_Kornis
                 ComboMenu.Add(new MenuBool("eaa", "^- Only if out of AA Range", false));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
                 ComboMenu.Add(new MenuSlider("waster", "Don't waste R if Enemy HP lower than", 0, 0, 500));
+                ComboMenu.Add(new MenuKeyBind("toggle", "R Toggle", KeyCode.T, KeybindType.Toggle));
             }
             Menu.Add(ComboMenu);
 
@@ -99,7 +100,7 @@ namespace Darius_By_Kornis
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
                 DrawMenu.Add(new MenuBool("rdamage", "Draw R Damage"));
                 DrawMenu.Add(new MenuBool("stacks", "Draw Stack Count"));
-
+                       DrawMenu.Add(new MenuBool("toggle", "Draw Toggle"));
             }
             Menu.Add(DrawMenu);
 
@@ -279,6 +280,25 @@ namespace Darius_By_Kornis
                                     RenderTextFlags.VerticalCenter);
                             }
                         });
+            }
+            if (Menu["drawings"]["toggle"].Enabled)
+            {
+                Vector2 maybeworks;
+                var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
+                var xaOffset = (int) maybeworks.X;
+                var yaOffset = (int) maybeworks.Y;
+
+                if (Menu["combo"]["toggle"].Enabled)
+                {
+                    Render.Text(xaOffset - 60, yaOffset + 30, Color.GreenYellow, "R: ON",
+                        RenderTextFlags.VerticalCenter);
+                }
+                if (!Menu["combo"]["toggle"].Enabled)
+                {
+                    Render.Text(xaOffset - 60, yaOffset + 30, Color.Red, "R: OFF",
+                        RenderTextFlags.VerticalCenter);
+                }
+
             }
         }
 
@@ -636,7 +656,10 @@ namespace Darius_By_Kornis
                     bestTarget.IsValidTarget(R.Range) && bestTarget.Health >=
                     Menu["combo"]["waster"].As<MenuSlider>().Value)
                 {
-                    R.CastOnUnit(bestTarget);
+                    if (Menu["combo"]["toggle"].Enabled)
+                    {
+                        R.CastOnUnit(bestTarget);
+                    }
                 }
             }
 
@@ -818,8 +841,10 @@ namespace Darius_By_Kornis
                 if (target != null && target.Health <= GetR(target) &&
                     target.Health >= Menu["combo"]["waster"].As<MenuSlider>().Value)
                 {
-
-                    R.CastOnUnit(target);
+                    if (Menu["combo"]["toggle"].Enabled)
+                    {
+                        R.CastOnUnit(target);
+                    }
                 }
             }
 
