@@ -303,7 +303,7 @@ namespace Support_AIO.Champions
                         x => x.Distance(Player) <= W.Range && x.IsAlly && !x.IsRecalling() &&
                              RootMenu["white"][x.ChampionName.ToLower() + "priority"].As<MenuSlider>().Value != 0 &&
                              x.HealthPercent() <= RootMenu["white"][x.ChampionName.ToLower() + "hp"].As<MenuSlider>().Value)
-                    .OrderBy(x => RootMenu["white"][x.ChampionName.ToLower() + "priority"].As<MenuSlider>().Value)
+                    .OrderByDescending(x => RootMenu["white"][x.ChampionName.ToLower() + "priority"].As<MenuSlider>().Value)
                     .Where(x => x.Distance(Player) < W.Range).OrderBy(x => x.Health))
                 {
 

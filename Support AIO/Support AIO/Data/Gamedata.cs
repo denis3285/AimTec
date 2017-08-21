@@ -14,13 +14,16 @@ namespace Support_AIO.Data
 {
     #region
 
-    using System.Collections.Generic;
+    using System;
     using System.Linq;
     using Aimtec;
     using Base;
 
     #endregion
 
+    /// <summary>
+    ///     Class Gamedata.
+    /// </summary>
     public class Gamedata
     {
         #region Public Properties
@@ -31,7 +34,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The name of the spell.
         /// </value>
-        public string SpellName { get; internal set; }
+        public string SpellName { get; internal set; } = "";
 
         /// <summary>
         ///     Gets or sets the name of the champion.
@@ -39,7 +42,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The name of the champion.
         /// </value>
-        public string ChampionName { get; internal set; }
+        public string ChampionName { get; internal set; } = "";
 
         /// <summary>
         ///     Gets or sets the slot.
@@ -47,7 +50,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The slot.
         /// </value>
-        public SpellSlot Slot { get; internal set; }
+        public SpellSlot Slot { get; internal set; } = SpellSlot.Q;
 
         /// <summary>
         ///     Gets or sets the cast range.
@@ -55,7 +58,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The cast range.
         /// </value>
-        public float CastRange { get; internal set; }
+        public float CastRange { get; internal set; } = 0f;
 
         /// <summary>
         ///     Gets or sets the radius.
@@ -63,7 +66,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The radius.
         /// </value>
-        public float Radius { get; internal set; }
+        public float Radius { get; internal set; } = 0f;
 
         /// <summary>
         ///     Gets or sets a value indicating whether spell is global.
@@ -71,7 +74,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     <c>true</c> if spell is global; otherwise, <c>false</c>.
         /// </value>
-        public bool Global { get; internal set; }
+        public bool Global { get; internal set; } = false;
 
         /// <summary>
         ///     Gets or sets the delay.
@@ -87,7 +90,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     <c>true</c> if is fixed range; otherwise, <c>false</c>.
         /// </value>
-        public bool FixedRange { get; internal set; }
+        public bool FixedRange { get; internal set; } = false;
 
         /// <summary>
         ///     Gets or sets the name of the missile.
@@ -95,7 +98,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The name of the missile.
         /// </value>
-        public string MissileName { get; internal set; }
+        public string MissileName { get; internal set; } = "";
 
         /// <summary>
         ///     Gets or sets the extra missile names.
@@ -111,7 +114,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     The missile speed.
         /// </value>
-        public int MissileSpeed { get; internal set; } = int.MaxValue;
+        public int MissileSpeed { get; internal set; } = 4800;
 
         /// <summary>
         ///     Gets or sets from object.
@@ -119,7 +122,7 @@ namespace Support_AIO.Data
         /// <value>
         ///     From object.
         /// </value>
-        public string[] FromObject { get; internal set; }
+        public string[] FromObject { get; internal set; } = { "" };
 
         /// <summary>
         ///     Gets or sets the event types.
@@ -127,7 +130,37 @@ namespace Support_AIO.Data
         /// <value>
         ///     The event types.
         /// </value>
-        public EventType[] EventTypes { get; internal set; }
+        public EventType[] EventTypes { get; internal set; } = {};
+
+        /// <summary>
+        ///     Gets the type of the cast.
+        /// </summary>
+        /// <value>
+        ///     The type of the cast.
+        /// </value>
+        public CastType CastType { get; internal set; } = CastType.None;
+
+        /// <summary>
+        ///     Gets the collisional values
+        /// </summary>
+        /// <value>
+        ///     What it collides with.
+        /// </value>
+        public CollisionObjectType[] CollidesWith { get; internal set; } = { };
+
+        /// <summary>
+        ///     Gets a value indicating whether this instance is perpindicular.
+        /// </summary>
+        /// <value>
+        ///     <c>true</c> if this instance is perpindicular; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsPerpindicular { get; internal set; } = false;
+
+        /// <summary>
+        ///     Gets a value indicating whether the spell is a basic attack amplifier.
+        /// </summary>
+        /// <value><c>true</c> if it is a basic attack amplifier; otherwise, <c>false</c>.</value>
+        public bool BasicAttackAmplifier { get; internal set; } = false;
 
         #endregion
 
@@ -138,11 +171,14 @@ namespace Support_AIO.Data
         /// </summary>
         static Gamedata()
         {
+            Console.WriteLine("ZLib: Gamedata Loaded!");
+
             ZLib.Spells.Add(new Gamedata
             {
                 SpellName = "aatroxq",
                 ChampionName = "aatrox",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 875f,
                 Radius = 200f,
                 Delay = 250f,
@@ -156,10 +192,12 @@ namespace Support_AIO.Data
                 SpellName = "aatroxw",
                 ChampionName = "aatrox",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                BasicAttackAmplifier = true,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -167,10 +205,12 @@ namespace Support_AIO.Data
                 SpellName = "aatroxw2",
                 ChampionName = "aatrox",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                BasicAttackAmplifier = true,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -178,6 +218,7 @@ namespace Support_AIO.Data
                 SpellName = "aatroxe",
                 ChampionName = "aatrox",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1025f,
                 Radius = 150f,
@@ -192,10 +233,11 @@ namespace Support_AIO.Data
                 SpellName = "aatroxr",
                 ChampionName = "aatrox",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -203,6 +245,7 @@ namespace Support_AIO.Data
                 SpellName = "ahriorbofdeception",
                 ChampionName = "ahri",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 900f,
                 Radius = 80f,
@@ -219,6 +262,7 @@ namespace Support_AIO.Data
                 ChampionName = "ahri",
                 Slot = SpellSlot.W,
                 FixedRange = true,
+                CastType = CastType.Proximity,
                 CastRange = 600f,
                 Radius = 600f,
                 Delay = 250f,
@@ -231,6 +275,8 @@ namespace Support_AIO.Data
                 SpellName = "ahriseduce",
                 ChampionName = "ahri",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 975f,
                 Radius = 60f,
@@ -245,6 +291,7 @@ namespace Support_AIO.Data
                 SpellName = "ahritumble",
                 ChampionName = "ahri",
                 Slot = SpellSlot.R,
+                CastType = CastType.LinearAoE,
                 CastRange = 450f,
                 Radius = 600f,
                 Delay = 250f,
@@ -257,6 +304,7 @@ namespace Support_AIO.Data
                 SpellName = "akalimota",
                 ChampionName = "akali",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 Radius = 171.9f,
                 CastRange = 600f,
                 Delay = 650f,
@@ -269,10 +317,11 @@ namespace Support_AIO.Data
                 SpellName = "akalismokebomb",
                 ChampionName = "akali",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 1000f, // Range: 700 + additional for stealth detection
                 Delay = 500f,
                 EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -280,11 +329,12 @@ namespace Support_AIO.Data
                 SpellName = "akalishadowswipe",
                 ChampionName = "akali",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 Radius = 325f,
                 CastRange = 325f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -292,10 +342,11 @@ namespace Support_AIO.Data
                 SpellName = "akalishadowdance",
                 ChampionName = "akali",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 Radius = 300f,
                 CastRange = 800f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 2200
             });
 
@@ -304,12 +355,12 @@ namespace Support_AIO.Data
                 SpellName = "pulverize",
                 ChampionName = "alistar",
                 Slot = SpellSlot.Q,
-                FixedRange = true,
-                CastRange = 365f,
+                CastType = CastType.Proximity,
+                CastRange = 330f,
                 Radius = 365f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -317,9 +368,10 @@ namespace Support_AIO.Data
                 SpellName = "headbutt",
                 ChampionName = "alistar",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 660f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 2200
             });
 
@@ -328,11 +380,12 @@ namespace Support_AIO.Data
                 SpellName = "alistare",
                 ChampionName = "alistar",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Radius = 300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -340,10 +393,11 @@ namespace Support_AIO.Data
                 SpellName = "feroucioushowl",
                 ChampionName = "alistar",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -351,6 +405,8 @@ namespace Support_AIO.Data
                 SpellName = "bandagetoss",
                 ChampionName = "amumu",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1100f,
                 Radius = 80f,
@@ -365,10 +421,11 @@ namespace Support_AIO.Data
                 SpellName = "auraofdespair",
                 ChampionName = "amumu",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -376,10 +433,11 @@ namespace Support_AIO.Data
                 SpellName = "tantrum",
                 ChampionName = "amumu",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 150f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -387,6 +445,7 @@ namespace Support_AIO.Data
                 SpellName = "curseofthesadmummy",
                 ChampionName = "amumu",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 560f,
                 Radius = 560f,
                 Delay = 250f,
@@ -394,10 +453,10 @@ namespace Support_AIO.Data
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -405,6 +464,7 @@ namespace Support_AIO.Data
                 SpellName = "flashfrost",
                 ChampionName = "anivia",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinearAoE,
                 CastRange = 1150f, // 1075 + Shatter Radius
                 Radius = 110f,
                 Delay = 250f,
@@ -418,6 +478,8 @@ namespace Support_AIO.Data
                 SpellName = "crystalize",
                 ChampionName = "anivia",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
+                IsPerpindicular = true,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -429,6 +491,7 @@ namespace Support_AIO.Data
                 SpellName = "frostbite",
                 ChampionName = "anivia",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
@@ -440,10 +503,11 @@ namespace Support_AIO.Data
                 SpellName = "glacialstorm",
                 ChampionName = "anivia",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -451,6 +515,7 @@ namespace Support_AIO.Data
                 SpellName = "disintegrate",
                 ChampionName = "annie",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Radius = 710f,
                 Delay = 250f,
@@ -463,11 +528,12 @@ namespace Support_AIO.Data
                 SpellName = "incinerate",
                 ChampionName = "annie",
                 Slot = SpellSlot.W,
+                CastType = CastType.Sector,
                 CastRange = 625f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -475,10 +541,11 @@ namespace Support_AIO.Data
                 SpellName = "moltenshield",
                 ChampionName = "annie",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -486,6 +553,7 @@ namespace Support_AIO.Data
                 SpellName = "infernalguardian",
                 ChampionName = "annie",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 900f, // 600 + Cast Radius
                 Delay = 0f,
                 EventTypes =
@@ -494,7 +562,7 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -502,10 +570,12 @@ namespace Support_AIO.Data
                 SpellName = "frostshot",
                 ChampionName = "ashe",
                 Slot = SpellSlot.Q,
+                BasicAttackAmplifier = true,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -513,10 +583,11 @@ namespace Support_AIO.Data
                 SpellName = "frostarrow",
                 ChampionName = "ashe",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -524,6 +595,8 @@ namespace Support_AIO.Data
                 SpellName = "volley",
                 ChampionName = "ashe",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1200f,
                 Radius = 250f,
@@ -538,6 +611,7 @@ namespace Support_AIO.Data
                 SpellName = "ashespiritofthehawk",
                 ChampionName = "ashe",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -549,6 +623,8 @@ namespace Support_AIO.Data
                 SpellName = "enchantedcrystalarrow",
                 ChampionName = "ashe",
                 Slot = SpellSlot.R,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 20000f,
                 Global = true,
@@ -568,6 +644,8 @@ namespace Support_AIO.Data
                 SpellName = "aurelionsolq",
                 ChampionName = "aurelionsol",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 CastRange = 1500f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -580,6 +658,7 @@ namespace Support_AIO.Data
                 SpellName = "aurelionsolw",
                 ChampionName = "aurelionsol",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.None },
@@ -592,6 +671,7 @@ namespace Support_AIO.Data
                 SpellName = "aurelionsole",
                 ChampionName = "aurelionsol",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.None },
@@ -604,6 +684,7 @@ namespace Support_AIO.Data
                 SpellName = "aurelionsolr",
                 ChampionName = "aurelionsol",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 CastRange = 1420f,
                 Delay = 300f,
                 EventTypes = new[]
@@ -620,6 +701,7 @@ namespace Support_AIO.Data
                 SpellName = "azirq",
                 ChampionName = "azir",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 875f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -633,6 +715,7 @@ namespace Support_AIO.Data
                 SpellName = "azirqwrapper",
                 ChampionName = "azir",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 875f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -646,6 +729,7 @@ namespace Support_AIO.Data
                 SpellName = "azirr",
                 ChampionName = "azir",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 475f,
                 Delay = 250f,
@@ -655,7 +739,7 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -663,6 +747,8 @@ namespace Support_AIO.Data
                 SpellName = "bardq",
                 ChampionName = "bard",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 250f,
@@ -676,6 +762,7 @@ namespace Support_AIO.Data
                 SpellName = "bardw",
                 ChampionName = "bard",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -687,6 +774,7 @@ namespace Support_AIO.Data
                 SpellName = "barde",
                 ChampionName = "bard",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 350f,
                 EventTypes = new EventType[] { },
@@ -698,9 +786,10 @@ namespace Support_AIO.Data
                 SpellName = "bardr",
                 ChampionName = "bard",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 3400f,
                 Delay = 450f,
-                EventTypes = new[] { EventType.CrowdControl },
+                EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
                 MissileName = "bardr",
                 MissileSpeed = 2100
             });
@@ -710,6 +799,8 @@ namespace Support_AIO.Data
                 SpellName = "rocketgrab",
                 ChampionName = "blitzcrank",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1050f,
                 Radius = 70f,
@@ -724,11 +815,12 @@ namespace Support_AIO.Data
                 SpellName = "overdrive",
                 ChampionName = "blitzcrank",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Radius = 100f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -736,11 +828,13 @@ namespace Support_AIO.Data
                 SpellName = "powerfist",
                 ChampionName = "blitzcrank",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -748,12 +842,13 @@ namespace Support_AIO.Data
                 SpellName = "staticfield",
                 ChampionName = "blitzcrank",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 FixedRange = true,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
                 MissileName = "",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -761,6 +856,8 @@ namespace Support_AIO.Data
                 SpellName = "brandq",
                 ChampionName = "brand",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1150f,
                 Delay = 250f,
@@ -774,6 +871,7 @@ namespace Support_AIO.Data
                 SpellName = "brandw",
                 ChampionName = "brand",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 240f,
                 Delay = 550f,
                 EventTypes = new[] { EventType.Danger },
@@ -786,10 +884,11 @@ namespace Support_AIO.Data
                 SpellName = "brande",
                 ChampionName = "brand",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -797,6 +896,7 @@ namespace Support_AIO.Data
                 SpellName = "brandr",
                 ChampionName = "brand",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 750f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
@@ -808,6 +908,8 @@ namespace Support_AIO.Data
                 SpellName = "braumq",
                 ChampionName = "braum",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1100f,
                 Delay = 250f,
@@ -821,6 +923,8 @@ namespace Support_AIO.Data
                 SpellName = "braumqmissle",
                 ChampionName = "braum",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1100f,
                 Delay = 250f,
@@ -833,6 +937,7 @@ namespace Support_AIO.Data
                 SpellName = "braumw",
                 ChampionName = "braum",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -844,10 +949,11 @@ namespace Support_AIO.Data
                 SpellName = "braume",
                 ChampionName = "braum",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -855,6 +961,7 @@ namespace Support_AIO.Data
                 SpellName = "braumrwrapper",
                 ChampionName = "braum",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1250f,
                 Delay = 250f,
@@ -862,7 +969,7 @@ namespace Support_AIO.Data
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "braumrmissile",
                 MissileSpeed = 1200
@@ -870,9 +977,76 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
+                SpellName = "camilleq",
+                ChampionName = "camille",
+                Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
+                CastRange = 325f,
+                Radius = 325f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "camillew",
+                ChampionName = "camille",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 325f,
+                Radius = 325f,
+                Delay = 500f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 2696
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "camillee",
+                ChampionName = "camille",
+                Slot = SpellSlot.E,
+                CastType = CastType.MissileLinearAoE,
+                CastRange = 1100f,
+                Radius = 35f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Initiator },
+                MissileName = "camilleemissile",
+                MissileSpeed = 1350
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "camilleedash2",
+                ChampionName = "camille",
+                Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
+                CastRange = 800f,
+                Radius = 165f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 1350
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "camiller",
+                ChampionName = "camille",
+                Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
+                CastRange = 475f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 11200
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
                 SpellName = "caitlynpiltoverpeacemaker",
                 ChampionName = "caitlyn",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 Radius = 60f,
                 CastRange = 1300f,
@@ -887,6 +1061,7 @@ namespace Support_AIO.Data
                 SpellName = "caitlynyordletrap",
                 ChampionName = "caitlyn",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 Radius = 75f,
                 CastRange = 800f,
                 Delay = 250f,
@@ -899,6 +1074,8 @@ namespace Support_AIO.Data
                 SpellName = "caitlynentrapment",
                 ChampionName = "caitlyn",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 Radius = 70f,
                 CastRange = 1050f,
@@ -910,21 +1087,10 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "cassiopeiaq",
-                ChampionName = "cassiopeia",
-                Slot = SpellSlot.Q,
-                CastRange = 925f,
-                Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileName = "cassiopeianoxiousblast",
-                MissileSpeed = int.MaxValue
-            });
-
-            ZLib.Spells.Add(new Gamedata
-            {
                 SpellName = "caitlynaceinthehole",
                 ChampionName = "caitlyn",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 2000f,
                 Radius = 100f,
                 Delay = 900f,
@@ -936,9 +1102,24 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
+                SpellName = "cassiopeiaq",
+                ChampionName = "cassiopeia",
+                Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
+                CastRange = 925f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileName = "cassiopeianoxiousblast",
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
                 SpellName = "cassiopeiw",
                 ChampionName = "cassiopeia",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
+                IsPerpindicular = true,
                 CastRange = 925f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -950,6 +1131,7 @@ namespace Support_AIO.Data
                 SpellName = "cassiopeiae",
                 ChampionName = "cassiopeia",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -961,6 +1143,7 @@ namespace Support_AIO.Data
                 SpellName = "cassiopeiar",
                 ChampionName = "cassiopeia",
                 Slot = SpellSlot.R,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 875f,
                 Delay = 350f,
@@ -971,7 +1154,7 @@ namespace Support_AIO.Data
                         EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "cassiopeiar",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -979,6 +1162,7 @@ namespace Support_AIO.Data
                 SpellName = "cassiopeiarstun",
                 ChampionName = "cassiopeia",
                 Slot = SpellSlot.R,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 875f,
                 Delay = 350f,
@@ -989,7 +1173,7 @@ namespace Support_AIO.Data
                         EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "cassiopeiarstun",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -997,12 +1181,13 @@ namespace Support_AIO.Data
                 SpellName = "rupture",
                 ChampionName = "chogath",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 950f,
                 Radius = 250f,
                 Delay = 900f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
                 MissileName = "",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1010,12 +1195,13 @@ namespace Support_AIO.Data
                 SpellName = "feralscream",
                 ChampionName = "chogath",
                 Slot = SpellSlot.W,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 300f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1023,6 +1209,7 @@ namespace Support_AIO.Data
                 SpellName = "vorpalspikes",
                 ChampionName = "chogath",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -1034,10 +1221,11 @@ namespace Support_AIO.Data
                 SpellName = "feast",
                 ChampionName = "chogath",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1045,6 +1233,7 @@ namespace Support_AIO.Data
                 SpellName = "phosphorusbomb",
                 ChampionName = "corki",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 875f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -1057,6 +1246,7 @@ namespace Support_AIO.Data
                 SpellName = "carpetbomb",
                 ChampionName = "corki",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -1068,10 +1258,11 @@ namespace Support_AIO.Data
                 SpellName = "ggun",
                 ChampionName = "corki",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 CastRange = 750f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1079,6 +1270,8 @@ namespace Support_AIO.Data
                 SpellName = "missilebarrage",
                 ChampionName = "corki",
                 Slot = SpellSlot.R,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinearAoE,
                 FixedRange = true,
                 CastRange = 1225f,
                 Delay = 150f,
@@ -1093,12 +1286,13 @@ namespace Support_AIO.Data
                 SpellName = "dariuscleave",
                 ChampionName = "darius",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 FixedRange = true,
                 Radius = 425f,
                 CastRange = 425f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1106,10 +1300,12 @@ namespace Support_AIO.Data
                 SpellName = "dariusnoxiantacticsonh",
                 ChampionName = "darius",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 205f,
                 Delay = 150f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1117,12 +1313,13 @@ namespace Support_AIO.Data
                 SpellName = "dariusaxegrabcone",
                 ChampionName = "darius",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 555f,
                 Delay = 150f,
-                EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
+                EventTypes = new[] { EventType.CrowdControl, EventType.Danger, EventType.Initiator },
                 MissileName = "dariusaxegrabcone",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1130,11 +1327,12 @@ namespace Support_AIO.Data
                 SpellName = "dariusexecute",
                 ChampionName = "darius",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 Radius = 475f,
                 CastRange = 475f,
                 Delay = 450f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1142,6 +1340,7 @@ namespace Support_AIO.Data
                 SpellName = "dianaarc",
                 ChampionName = "diana",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 830f,
                 Radius = 195f,
                 Delay = 300f,
@@ -1155,10 +1354,11 @@ namespace Support_AIO.Data
                 SpellName = "dianaorbs",
                 ChampionName = "diana",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 200f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1166,11 +1366,12 @@ namespace Support_AIO.Data
                 SpellName = "dianavortex",
                 ChampionName = "diana",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 450f,
                 Radius = 450f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1178,6 +1379,7 @@ namespace Support_AIO.Data
                 SpellName = "dianateleport",
                 ChampionName = "diana",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 825f,
                 Radius = 250f,
                 Delay = 250f,
@@ -1190,10 +1392,12 @@ namespace Support_AIO.Data
                 SpellName = "dravenspinning",
                 ChampionName = "draven",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1201,10 +1405,11 @@ namespace Support_AIO.Data
                 SpellName = "dravenfury",
                 ChampionName = "draven",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1212,6 +1417,8 @@ namespace Support_AIO.Data
                 SpellName = "dravendoubleshot",
                 ChampionName = "draven",
                 Slot = SpellSlot.E,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -1225,6 +1432,7 @@ namespace Support_AIO.Data
                 SpellName = "dravenrcast",
                 ChampionName = "draven",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 CastRange = 20000f,
                 Global = true,
                 Delay = 500f,
@@ -1238,6 +1446,8 @@ namespace Support_AIO.Data
                 SpellName = "infectedcleavermissilecast",
                 ChampionName = "drmundo",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -1251,10 +1461,11 @@ namespace Support_AIO.Data
                 SpellName = "burningagony",
                 ChampionName = "drmundo",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1262,10 +1473,12 @@ namespace Support_AIO.Data
                 SpellName = "masochism",
                 ChampionName = "drmundo",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1273,10 +1486,11 @@ namespace Support_AIO.Data
                 SpellName = "sadism",
                 ChampionName = "drmundo",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1284,6 +1498,7 @@ namespace Support_AIO.Data
                 SpellName = "ekkoq",
                 ChampionName = "ekko",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1075f,
                 Radius = 60f,
@@ -1299,10 +1514,12 @@ namespace Support_AIO.Data
                 SpellName = "ekkoeattack",
                 ChampionName = "ekko",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1310,11 +1527,12 @@ namespace Support_AIO.Data
                 SpellName = "ekkor",
                 ChampionName = "ekko",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 425f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
                 FromObject = new[] { "Ekko_Base_R_TrailEnd" },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1322,6 +1540,7 @@ namespace Support_AIO.Data
                 SpellName = "elisehumanq",
                 ChampionName = "elise",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 550f,
                 EventTypes = new EventType[] { },
@@ -1333,10 +1552,11 @@ namespace Support_AIO.Data
                 SpellName = "elisespiderqcast",
                 ChampionName = "elise",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 475f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1344,6 +1564,7 @@ namespace Support_AIO.Data
                 SpellName = "elisehumanw",
                 ChampionName = "elise",
                 Slot = SpellSlot.W,
+                CastType = CastType.LinearAoE,
                 CastRange = 0f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
@@ -1355,10 +1576,11 @@ namespace Support_AIO.Data
                 SpellName = "elisespiderw",
                 ChampionName = "elise",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1366,6 +1588,8 @@ namespace Support_AIO.Data
                 SpellName = "elisehumane",
                 ChampionName = "elise",
                 Slot = SpellSlot.E,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1075f,
                 Delay = 250f,
@@ -1379,10 +1603,11 @@ namespace Support_AIO.Data
                 SpellName = "elisespidereinitial",
                 ChampionName = "elise",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1390,10 +1615,11 @@ namespace Support_AIO.Data
                 SpellName = "elisespideredescent",
                 ChampionName = "elise",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1401,10 +1627,11 @@ namespace Support_AIO.Data
                 SpellName = "eliser",
                 ChampionName = "elise",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1412,10 +1639,11 @@ namespace Support_AIO.Data
                 SpellName = "elisespiderr",
                 ChampionName = "elise",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1423,11 +1651,12 @@ namespace Support_AIO.Data
                 SpellName = "evelynnq",
                 ChampionName = "evelynn",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 FixedRange = true,
                 CastRange = 500f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1435,10 +1664,11 @@ namespace Support_AIO.Data
                 SpellName = "evelynnw",
                 ChampionName = "evelynn",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1446,10 +1676,12 @@ namespace Support_AIO.Data
                 SpellName = "evelynne",
                 ChampionName = "evelynn",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 225f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1457,16 +1689,17 @@ namespace Support_AIO.Data
                 SpellName = "evelynnr",
                 ChampionName = "evelynn",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 900f, // 650f + Radius
                 Delay = 250f,
                 EventTypes =
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "evelynnr",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1474,6 +1707,8 @@ namespace Support_AIO.Data
                 SpellName = "ezrealmysticshot",
                 ChampionName = "ezreal",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1150f,
                 Delay = 250f,
@@ -1488,6 +1723,7 @@ namespace Support_AIO.Data
                 SpellName = "ezrealessenceflux",
                 ChampionName = "ezreal",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -1501,6 +1737,7 @@ namespace Support_AIO.Data
                 SpellName = "ezrealessencemissle",
                 ChampionName = "ezreal",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -1513,10 +1750,11 @@ namespace Support_AIO.Data
                 SpellName = "ezrealarcaneshift",
                 ChampionName = "ezreal",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 750f, // 475f + Bolt Range
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1524,6 +1762,7 @@ namespace Support_AIO.Data
                 SpellName = "ezrealtrueshotbarrage",
                 ChampionName = "ezreal",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 20000f,
                 Global = true,
@@ -1538,10 +1777,11 @@ namespace Support_AIO.Data
                 SpellName = "terrify",
                 ChampionName = "fiddlesticks",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 575f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1549,10 +1789,11 @@ namespace Support_AIO.Data
                 SpellName = "drain",
                 ChampionName = "fiddlesticks",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 575f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1560,6 +1801,7 @@ namespace Support_AIO.Data
                 SpellName = "fiddlesticksdarkwind",
                 ChampionName = "fiddlesticks",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 750f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -1571,10 +1813,11 @@ namespace Support_AIO.Data
                 SpellName = "crowstorm",
                 ChampionName = "fiddlesticks",
                 Slot = SpellSlot.R,
+                CastType = CastType.LinearAoE,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.ForceExhaust, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1582,6 +1825,7 @@ namespace Support_AIO.Data
                 SpellName = "fioraq",
                 ChampionName = "fiora",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -1593,11 +1837,12 @@ namespace Support_AIO.Data
                 SpellName = "fioraw",
                 ChampionName = "fiora",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 750f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1605,10 +1850,11 @@ namespace Support_AIO.Data
                 SpellName = "fiorae",
                 ChampionName = "fiora",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1616,10 +1862,11 @@ namespace Support_AIO.Data
                 SpellName = "fiorar",
                 ChampionName = "fiora",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 500f,
                 Delay = 150f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1627,6 +1874,7 @@ namespace Support_AIO.Data
                 SpellName = "fizzq",
                 ChampionName = "fizz",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 FixedRange = true,
                 CastRange = 550f,
                 Delay = 250f,
@@ -1639,10 +1887,12 @@ namespace Support_AIO.Data
                 SpellName = "fizzw",
                 ChampionName = "fizz",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 175f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1650,10 +1900,11 @@ namespace Support_AIO.Data
                 SpellName = "fizze",
                 ChampionName = "fizz",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 450f,
                 Delay = 700f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1661,10 +1912,11 @@ namespace Support_AIO.Data
                 SpellName = "fizzebuffer",
                 ChampionName = "fizz",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 330f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1672,10 +1924,11 @@ namespace Support_AIO.Data
                 SpellName = "fizzejumptwo",
                 ChampionName = "fizz",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 270f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1683,6 +1936,7 @@ namespace Support_AIO.Data
                 SpellName = "fizzr",
                 ChampionName = "fizz",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinearAoE,
                 CastRange = 1275f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -1692,55 +1946,79 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "galioresolutesmite",
+                SpellName = "galioq",
                 ChampionName = "galio",
                 Slot = SpellSlot.Q,
-                CastRange = 1040f,
-                Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl },
-                MissileName = "galioresolutesmite",
-                MissileSpeed = 1200
-            });
-
-            ZLib.Spells.Add(new Gamedata
-            {
-                SpellName = "galiobulwark",
-                ChampionName = "galio",
-                Slot = SpellSlot.W,
-                CastRange = 0f,
+                CastType = CastType.MissileLinearAoE,
+                CastRange = 1200f,
+                Radius = 60,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
-            });
-
-            ZLib.Spells.Add(new Gamedata
-            {
-                SpellName = "galiorighteousgust",
-                ChampionName = "galio",
-                Slot = SpellSlot.E,
-                FixedRange = true,
-                CastRange = 1280f,
-                Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileName = "galiorighteousgust",
+                MissileName = "galioqmissile",
                 MissileSpeed = 1300
             });
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "galioidolofdurand",
+                SpellName = "galioqsuper",
+                ChampionName = "galio",
+                Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
+                CastRange = 200f,
+                Radius = 200,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "galiow",
+                ChampionName = "galio",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 275f,
+                Radius = 275f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.CrowdControl },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "galiow2",
+                ChampionName = "galio",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 275f,
+                Radius = 275f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.CrowdControl },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "galioe",
+                ChampionName = "galio",
+                Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
+                CastRange = 950f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 750
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "galior",
                 ChampionName = "galio",
                 Slot = SpellSlot.R,
-                CastRange = 600f,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
                 Delay = 0f,
-                EventTypes =
-                    new[]
-                    {
-                        EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
-                    },
-                MissileName = "",
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1748,6 +2026,7 @@ namespace Support_AIO.Data
                 SpellName = "gangplankqwrapper",
                 ChampionName = "gangplank",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -1759,6 +2038,7 @@ namespace Support_AIO.Data
                 SpellName = "gangplankqproceed",
                 ChampionName = "gangplank",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -1770,10 +2050,11 @@ namespace Support_AIO.Data
                 SpellName = "gangplankw",
                 ChampionName = "gangplank",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1781,10 +2062,11 @@ namespace Support_AIO.Data
                 SpellName = "gangplanke",
                 ChampionName = "gangplank",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Danger },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1792,6 +2074,7 @@ namespace Support_AIO.Data
                 SpellName = "gangplankr",
                 ChampionName = "gangplank",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 20000f,
                 Global = true,
                 Delay = 250f,
@@ -1804,10 +2087,11 @@ namespace Support_AIO.Data
                 SpellName = "garenq",
                 ChampionName = "garen",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 300f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1815,10 +2099,11 @@ namespace Support_AIO.Data
                 SpellName = "garenqattack",
                 ChampionName = "garen",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 350f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1826,6 +2111,7 @@ namespace Support_AIO.Data
                 SpellName = "gnarq",
                 ChampionName = "gnar",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1185f,
                 Delay = 250f,
@@ -1840,6 +2126,8 @@ namespace Support_AIO.Data
                 SpellName = "gnarbigq",
                 ChampionName = "gnar",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1150f,
                 Delay = 250f,
@@ -1850,31 +2138,46 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
+                SpellName = "gnarw",
+                ChampionName = "gnar",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
+                Delay = 0f,
+                EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
                 SpellName = "gnarbigw",
                 ChampionName = "gnar",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 600f,
                 Delay = 600f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
             {
                 SpellName = "gnarult",
                 ChampionName = "gnar",
-                CastRange = 600f, // 590f + 10 Better safe than sorry. :)
+                CastRange = 600f,
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 Delay = 250f,
                 EventTypes =
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
 
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1882,10 +2185,11 @@ namespace Support_AIO.Data
                 SpellName = "garenw",
                 ChampionName = "garen",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1893,10 +2197,11 @@ namespace Support_AIO.Data
                 SpellName = "garene",
                 ChampionName = "garen",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 660f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1904,18 +2209,21 @@ namespace Support_AIO.Data
                 SpellName = "garenr",
                 ChampionName = "garen",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 400f,
                 Radius = 100f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
+            // todo: improve gragas
             ZLib.Spells.Add(new Gamedata
             {
                 SpellName = "gragasq",
                 ChampionName = "gragas",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 1000, // 850f + Radius
                 Delay = 500f,
                 EventTypes = new EventType[] { },
@@ -1928,6 +2236,7 @@ namespace Support_AIO.Data
                 SpellName = "gragasqtoggle",
                 ChampionName = "gragas",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 1000, // 850f + Radius
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -1939,10 +2248,11 @@ namespace Support_AIO.Data
                 SpellName = "gragasqtoggle",
                 ChampionName = "gragas",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 1100f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1950,10 +2260,12 @@ namespace Support_AIO.Data
                 SpellName = "gragasw",
                 ChampionName = "gragas",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1961,12 +2273,14 @@ namespace Support_AIO.Data
                 SpellName = "gragase",
                 ChampionName = "gragas",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 600f,
-                Delay = 200f,
+                Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
                 MissileName = "gragase",
-                MissileSpeed = 1200
+                MissileSpeed = 550
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -1974,9 +2288,11 @@ namespace Support_AIO.Data
                 SpellName = "gragasr",
                 ChampionName = "gragas",
                 Slot = SpellSlot.R,
-                CastRange = 1150f,
+                CastType = CastType.Circlular,
+                CastRange = 1300f,
+                Radius = 120f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
                 MissileName = "gragasrboom",
                 MissileSpeed = 1750
             });
@@ -1986,6 +2302,7 @@ namespace Support_AIO.Data
                 SpellName = "gravesq",
                 ChampionName = "graves",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinearAoE,
                 CastRange = 1025,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -1998,6 +2315,7 @@ namespace Support_AIO.Data
                 SpellName = "gravesw",
                 ChampionName = "graves",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 1100f, // 950 + Radius
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -2009,7 +2327,8 @@ namespace Support_AIO.Data
                 SpellName = "gravese",
                 ChampionName = "graves",
                 Slot = SpellSlot.E,
-                CastRange = 0f,
+                CastType = CastType.LinearAoE,
+                CastRange = 278f,
                 Delay = 300f,
                 EventTypes = new EventType[] { },
                 MissileSpeed = 1000
@@ -2020,6 +2339,7 @@ namespace Support_AIO.Data
                 SpellName = "gravesr",
                 ChampionName = "graves",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinearAoE,
                 CastRange = 1000f,
                 FixedRange = true,
                 Delay = 250f,
@@ -2033,6 +2353,7 @@ namespace Support_AIO.Data
                 SpellName = "hecarimrapidslash",
                 ChampionName = "hecarim",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2044,10 +2365,11 @@ namespace Support_AIO.Data
                 SpellName = "hecarimw",
                 ChampionName = "hecarim",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2055,10 +2377,12 @@ namespace Support_AIO.Data
                 SpellName = "hecarimramp",
                 ChampionName = "hecarim",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2066,6 +2390,7 @@ namespace Support_AIO.Data
                 SpellName = "hecarimult",
                 ChampionName = "hecarim",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1525f,
                 Delay = 250f,
@@ -2091,6 +2416,7 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingerturretenergyblast",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 435f,
@@ -2104,6 +2430,7 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingerturretbigenergyblast",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 350f,
@@ -2117,6 +2444,8 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingerw",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1100,
                 Delay = 250f,
@@ -2129,6 +2458,7 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingere",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 1025f, // 925 + Radius
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -2141,10 +2471,11 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingerr",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 230f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2152,6 +2483,7 @@ namespace Support_AIO.Data
                 SpellName = "heimerdingereult",
                 ChampionName = "heimerdinger",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 FixedRange = true,
                 CastRange = 1450f,
                 Delay = 250f,
@@ -2164,6 +2496,7 @@ namespace Support_AIO.Data
                 SpellName = "ireliagatotsu",
                 ChampionName = "irelia",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 150f,
                 EventTypes = new[] { EventType.Initiator },
@@ -2175,10 +2508,12 @@ namespace Support_AIO.Data
                 SpellName = "ireliahitenstyle",
                 ChampionName = "irelia",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 230f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2186,10 +2521,11 @@ namespace Support_AIO.Data
                 SpellName = "ireliaequilibriumstrike",
                 ChampionName = "irelia",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 450f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2197,6 +2533,7 @@ namespace Support_AIO.Data
                 SpellName = "ireliatranscendentblades",
                 ChampionName = "irelia",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 FixedRange = true,
                 CastRange = 1200f,
                 Delay = 0f,
@@ -2210,12 +2547,13 @@ namespace Support_AIO.Data
                 SpellName = "illaoiq",
                 ChampionName = "illaoi",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
                 MissileName = "illaoiemis",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2223,10 +2561,11 @@ namespace Support_AIO.Data
                 SpellName = "illaoiw",
                 ChampionName = "illaoi",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 365f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2234,6 +2573,8 @@ namespace Support_AIO.Data
                 SpellName = "illaoie",
                 ChampionName = "illaoi",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 250f,
@@ -2247,10 +2588,11 @@ namespace Support_AIO.Data
                 SpellName = "illaoir",
                 ChampionName = "illaoi",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 450f,
                 Delay = 500f,
-                EventTypes = new[] { EventType.Ultimate, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Ultimate, EventType.Danger, EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2258,6 +2600,8 @@ namespace Support_AIO.Data
                 SpellName = "ivernq",
                 ChampionName = "ivern",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 Radius = 65f,
                 CastRange = 1100f,
                 Delay = 250f,
@@ -2271,11 +2615,12 @@ namespace Support_AIO.Data
                 SpellName = "ivernq",
                 ChampionName = "ivern",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
                 MissileName = "ivernw",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2283,11 +2628,12 @@ namespace Support_AIO.Data
                 SpellName = "iverne",
                 ChampionName = "ivern",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
                 MissileName = "iverne",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2295,6 +2641,7 @@ namespace Support_AIO.Data
                 SpellName = "howlinggalespell",
                 ChampionName = "janna",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1550f,
                 Delay = 0f,
@@ -2308,6 +2655,7 @@ namespace Support_AIO.Data
                 SpellName = "sowthewind",
                 ChampionName = "janna",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -2319,10 +2667,11 @@ namespace Support_AIO.Data
                 SpellName = "eyeofthestorm",
                 ChampionName = "janna",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2330,10 +2679,11 @@ namespace Support_AIO.Data
                 SpellName = "reapthewhirlwind",
                 ChampionName = "janna",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 725f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2341,6 +2691,7 @@ namespace Support_AIO.Data
                 SpellName = "jarvanivdragonstrike",
                 ChampionName = "jarvaniv",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 700f,
                 Delay = 250f,
@@ -2354,10 +2705,11 @@ namespace Support_AIO.Data
                 SpellName = "jarvanivgoldenaegis",
                 ChampionName = "jarvaniv",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2365,11 +2717,12 @@ namespace Support_AIO.Data
                 SpellName = "jarvanivdemacianstandard",
                 ChampionName = "jarvaniv",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 830f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
                 MissileName = "jarvanivdemacianstandard",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2377,10 +2730,11 @@ namespace Support_AIO.Data
                 SpellName = "jarvanivcataclysm",
                 ChampionName = "jarvaniv",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 825f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2388,9 +2742,10 @@ namespace Support_AIO.Data
                 SpellName = "jaxleapstrike",
                 ChampionName = "jax",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger },
+                EventTypes = new[] { EventType.Danger, EventType.Initiator },
                 MissileSpeed = 2200
             });
 
@@ -2399,10 +2754,12 @@ namespace Support_AIO.Data
                 SpellName = "jaxempowertwo",
                 ChampionName = "jax",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2410,10 +2767,12 @@ namespace Support_AIO.Data
                 SpellName = "jaxrelentlessasssault",
                 ChampionName = "jax",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2421,10 +2780,11 @@ namespace Support_AIO.Data
                 SpellName = "jaycetotheskies",
                 ChampionName = "jayce",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
-                Delay = 450f,
+                Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2432,6 +2792,8 @@ namespace Support_AIO.Data
                 SpellName = "jayceshockblast",
                 ChampionName = "jayce",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1570f,
                 Delay = 250f,
@@ -2445,6 +2807,7 @@ namespace Support_AIO.Data
                 SpellName = "jaycestaticfield",
                 ChampionName = "jayce",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 285f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2456,10 +2819,11 @@ namespace Support_AIO.Data
                 SpellName = "jaycehypercharge",
                 ChampionName = "jayce",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2467,10 +2831,11 @@ namespace Support_AIO.Data
                 SpellName = "jaycethunderingblow",
                 ChampionName = "jayce",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 325f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2478,6 +2843,8 @@ namespace Support_AIO.Data
                 SpellName = "jayceaccelerationgate",
                 ChampionName = "jayce",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
+                IsPerpindicular = true,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2489,10 +2856,12 @@ namespace Support_AIO.Data
                 SpellName = "jaycestancehtg",
                 ChampionName = "jayce",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2500,10 +2869,11 @@ namespace Support_AIO.Data
                 SpellName = "jaycestancegth",
                 ChampionName = "jayce",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2511,6 +2881,7 @@ namespace Support_AIO.Data
                 SpellName = "jhinq",
                 ChampionName = "jhin",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 575f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2522,6 +2893,8 @@ namespace Support_AIO.Data
                 SpellName = "jhinw",
                 ChampionName = "jhin",
                 Slot = SpellSlot.W,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
+                CastType = CastType.Linear,
                 CastRange = 2250f,
                 Delay = 750f,
                 FixedRange = true,
@@ -2535,6 +2908,7 @@ namespace Support_AIO.Data
                 SpellName = "jhine",
                 ChampionName = "jhin",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 2250f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2546,11 +2920,13 @@ namespace Support_AIO.Data
                 SpellName = "jhinrshot",
                 ChampionName = "jhin",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 CastRange = 3500f,
                 Delay = 250f,
                 FixedRange = true,
                 MissileName = "jhinrshotmis",
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 ExtraMissileNames = new[] { "jhinrmmissile", "jhinrshotmis4" },
                 MissileSpeed = 5000
             });
@@ -2560,10 +2936,12 @@ namespace Support_AIO.Data
                 SpellName = "jinxq",
                 ChampionName = "jinx",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2571,6 +2949,8 @@ namespace Support_AIO.Data
                 SpellName = "jinxw",
                 ChampionName = "jinx",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 Radius = 60f,
                 FixedRange = true,
                 CastRange = 1500f,
@@ -2585,6 +2965,7 @@ namespace Support_AIO.Data
                 SpellName = "jinxe",
                 ChampionName = "jinx",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Radius = 315f,
                 Delay = 250f,
@@ -2597,6 +2978,8 @@ namespace Support_AIO.Data
                 SpellName = "jinxr",
                 ChampionName = "jinx",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 25000f,
                 Radius = 140f,
@@ -2612,6 +2995,8 @@ namespace Support_AIO.Data
                 SpellName = "karmaq",
                 ChampionName = "karma",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinearAoE,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -2625,10 +3010,11 @@ namespace Support_AIO.Data
                 SpellName = "karmaspiritbind",
                 ChampionName = "karma",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2636,10 +3022,11 @@ namespace Support_AIO.Data
                 SpellName = "karmasolkimshield",
                 ChampionName = "karma",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2647,6 +3034,7 @@ namespace Support_AIO.Data
                 SpellName = "karmamantra",
                 ChampionName = "karma",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2658,6 +3046,7 @@ namespace Support_AIO.Data
                 SpellName = "laywaste",
                 ChampionName = "karthus",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 875f,
                 Delay = 900f,
                 EventTypes = new EventType[] { },
@@ -2666,7 +3055,7 @@ namespace Support_AIO.Data
                     "karthuslaywastea3", "karthuslaywastea1", "karthuslaywastedeada1", "karthuslaywastedeada2",
                     "karthuslaywastedeada3"
                 },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2674,6 +3063,7 @@ namespace Support_AIO.Data
                 SpellName = "wallofpain",
                 ChampionName = "karthus",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2685,6 +3075,7 @@ namespace Support_AIO.Data
                 SpellName = "defile",
                 ChampionName = "karthus",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 550f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2696,11 +3087,12 @@ namespace Support_AIO.Data
                 SpellName = "fallenone",
                 ChampionName = "karthus",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 22000f,
                 Global = true,
                 Delay = 2800f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2708,6 +3100,7 @@ namespace Support_AIO.Data
                 SpellName = "nulllance",
                 ChampionName = "kassadin",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
@@ -2719,10 +3112,12 @@ namespace Support_AIO.Data
                 SpellName = "netherblade",
                 ChampionName = "kassadin",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2730,10 +3125,11 @@ namespace Support_AIO.Data
                 SpellName = "forcepulse",
                 ChampionName = "kassadin",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2741,11 +3137,12 @@ namespace Support_AIO.Data
                 SpellName = "riftwalk",
                 ChampionName = "kassadin",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 675f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
                 MissileName = "riftwalk",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2753,6 +3150,7 @@ namespace Support_AIO.Data
                 SpellName = "katarinaq",
                 ChampionName = "katarina",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 675f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2764,6 +3162,7 @@ namespace Support_AIO.Data
                 SpellName = "katarinaw",
                 ChampionName = "katarina",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -2775,10 +3174,11 @@ namespace Support_AIO.Data
                 SpellName = "katarinae",
                 ChampionName = "katarina",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2786,9 +3186,10 @@ namespace Support_AIO.Data
                 SpellName = "katarinar",
                 ChampionName = "katarina",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 550f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.ForceExhaust },
+                EventTypes = new[] { EventType.ForceExhaust, EventType.Initiator },
                 MissileSpeed = 1450
             });
 
@@ -2797,6 +3198,7 @@ namespace Support_AIO.Data
                 SpellName = "judicatorreckoning",
                 ChampionName = "kayle",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -2808,10 +3210,11 @@ namespace Support_AIO.Data
                 SpellName = "judicatordevineblessing",
                 ChampionName = "kayle",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 900f,
                 Delay = 220f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2819,10 +3222,12 @@ namespace Support_AIO.Data
                 SpellName = "judicatorrighteousfury",
                 ChampionName = "kayle",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2830,17 +3235,74 @@ namespace Support_AIO.Data
                 SpellName = "judicatorintervention",
                 ChampionName = "kayle",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
+
+            #region Kayn
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "kaynq",
+                ChampionName = "kayn",
+                Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
+                FixedRange = true,
+                CastRange = 345f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 1000
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "kaynw",
+                ChampionName = "kayn",
+                Slot = SpellSlot.W,
+                CastType = CastType.Linear,
+                FixedRange = true,
+                CastRange = 700f,
+                Delay = 500f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "kaynr",
+                ChampionName = "kayn",
+                Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
+                CastRange = 550f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Danger, EventType.Initiator },
+                MissileSpeed = 1450
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "kaynrjumpout",
+                ChampionName = "kayn",
+                Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
+                CastRange = 450f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Danger, EventType.Initiator },
+                MissileSpeed = 4800
+            });
+
+            #endregion
 
             ZLib.Spells.Add(new Gamedata
             {
                 SpellName = "kennenshurikenhurlmissile1",
                 ChampionName = "kennen",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1175f,
                 Delay = 250f,
@@ -2854,10 +3316,11 @@ namespace Support_AIO.Data
                 SpellName = "kennenbringthelight",
                 ChampionName = "kennen",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2865,10 +3328,11 @@ namespace Support_AIO.Data
                 SpellName = "kennenlightningrush",
                 ChampionName = "kennen",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2876,10 +3340,11 @@ namespace Support_AIO.Data
                 SpellName = "kennenshurikenstorm",
                 ChampionName = "kennen",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 550f,
                 Delay = 500f,
-                EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Danger, EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2887,10 +3352,11 @@ namespace Support_AIO.Data
                 SpellName = "khazixq",
                 ChampionName = "khazix",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 325f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2898,10 +3364,11 @@ namespace Support_AIO.Data
                 SpellName = "khazixqlong",
                 ChampionName = "khazix",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 375f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2909,6 +3376,8 @@ namespace Support_AIO.Data
                 SpellName = "khazixw",
                 ChampionName = "khazix",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -2922,6 +3391,8 @@ namespace Support_AIO.Data
                 SpellName = "khazixwlong",
                 ChampionName = "khazix",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -2934,11 +3405,12 @@ namespace Support_AIO.Data
                 SpellName = "khazixe",
                 ChampionName = "khazix",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
                 MissileName = "khazixe",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2946,10 +3418,11 @@ namespace Support_AIO.Data
                 SpellName = "khazixelong",
                 ChampionName = "khazix",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2957,10 +3430,11 @@ namespace Support_AIO.Data
                 SpellName = "khazixr",
                 ChampionName = "khazix",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 0f,
-                EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Stealth, EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2968,10 +3442,11 @@ namespace Support_AIO.Data
                 SpellName = "khazixrlong",
                 ChampionName = "khazix",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2979,10 +3454,11 @@ namespace Support_AIO.Data
                 SpellName = "kindredq",
                 ChampionName = "kindred",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -2990,6 +3466,7 @@ namespace Support_AIO.Data
                 SpellName = "kindrede",
                 ChampionName = "kindred",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 510f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -3001,6 +3478,7 @@ namespace Support_AIO.Data
                 SpellName = "kledq",
                 ChampionName = "kled",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 800f,
                 Radius = 45f,
@@ -3015,6 +3493,7 @@ namespace Support_AIO.Data
                 SpellName = "kledriderq",
                 ChampionName = "kled",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 700f,
                 Radius = 40f,
@@ -3029,9 +3508,11 @@ namespace Support_AIO.Data
                 SpellName = "kledw",
                 ChampionName = "kled",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 2000
             });
 
@@ -3040,6 +3521,8 @@ namespace Support_AIO.Data
                 SpellName = "klede",
                 ChampionName = "kled",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 800f,
                 Radius = 124f,
@@ -3054,10 +3537,11 @@ namespace Support_AIO.Data
                 SpellName = "kledr",
                 ChampionName = "kled",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3065,11 +3549,13 @@ namespace Support_AIO.Data
                 SpellName = "kogmawq",
                 ChampionName = "kogmaw",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileName = "kogmawq",
+                MissileName = "kogmawqmissile",
                 MissileSpeed = 1200
             });
 
@@ -3078,9 +3564,11 @@ namespace Support_AIO.Data
                 SpellName = "kogmawbioarcanebarrage",
                 ChampionName = "kogmaw",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 2000
             });
 
@@ -3089,6 +3577,7 @@ namespace Support_AIO.Data
                 SpellName = "kogmawvoidooze",
                 ChampionName = "kogmaw",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1150f,
                 Delay = 250f,
@@ -3102,11 +3591,11 @@ namespace Support_AIO.Data
                 SpellName = "kogmawlivingartillery",
                 ChampionName = "kogmaw",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 2200f,
                 Delay = 1200f,
                 EventTypes = new[] { EventType.Danger },
-                MissileName = "kogmawlivingartillery",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3114,6 +3603,7 @@ namespace Support_AIO.Data
                 SpellName = "leblancq",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -3125,6 +3615,7 @@ namespace Support_AIO.Data
                 SpellName = "leblancw",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Initiator },
@@ -3137,10 +3628,11 @@ namespace Support_AIO.Data
                 SpellName = "leblacwreturn",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3148,6 +3640,8 @@ namespace Support_AIO.Data
                 SpellName = "leblance",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 925f,
                 Delay = 250f,
@@ -3161,6 +3655,7 @@ namespace Support_AIO.Data
                 SpellName = "leblancrq",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
@@ -3172,6 +3667,7 @@ namespace Support_AIO.Data
                 SpellName = "leblancrw",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate, EventType.Initiator },
@@ -3184,10 +3680,11 @@ namespace Support_AIO.Data
                 SpellName = "leblancrwreturn",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3195,6 +3692,8 @@ namespace Support_AIO.Data
                 SpellName = "leblancre",
                 ChampionName = "leblanc",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 925f,
                 Delay = 250f,
@@ -3208,6 +3707,8 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkqone",
                 ChampionName = "leesin",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -3221,10 +3722,11 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkqtwo",
                 ChampionName = "leesin",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3232,6 +3734,7 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkwone",
                 ChampionName = "leesin",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -3243,10 +3746,11 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkwtwo",
                 ChampionName = "leesin",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 700f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3254,10 +3758,11 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkeone",
                 ChampionName = "leesin",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 425f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3265,10 +3770,11 @@ namespace Support_AIO.Data
                 SpellName = "blindmonketwo",
                 ChampionName = "leesin",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3276,15 +3782,16 @@ namespace Support_AIO.Data
                 SpellName = "blindmonkrkick",
                 ChampionName = "leesin",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 375f,
                 Delay = 500f,
                 EventTypes =
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3292,10 +3799,12 @@ namespace Support_AIO.Data
                 SpellName = "leonashieldofdaybreak",
                 ChampionName = "leona",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 215f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3303,10 +3812,11 @@ namespace Support_AIO.Data
                 SpellName = "leonasolarbarrier",
                 ChampionName = "leona",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 250f,
                 Delay = 3000f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3314,10 +3824,11 @@ namespace Support_AIO.Data
                 SpellName = "leonazenithblade",
                 ChampionName = "leona",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 900f,
                 Delay = 0f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileName = "leonazenithblademissile",
                 MissileSpeed = 2000
             });
@@ -3327,11 +3838,12 @@ namespace Support_AIO.Data
                 SpellName = "leonasolarflare",
                 ChampionName = "leona",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 1200f,
                 Delay = 1200f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
                 MissileName = "leonasolarflare",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3339,6 +3851,7 @@ namespace Support_AIO.Data
                 SpellName = "lissandraq",
                 ChampionName = "lissandra",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 725f,
                 Delay = 250f,
@@ -3352,10 +3865,11 @@ namespace Support_AIO.Data
                 SpellName = "lissandraw",
                 ChampionName = "lissandra",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 450f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3363,6 +3877,7 @@ namespace Support_AIO.Data
                 SpellName = "lissandrae",
                 ChampionName = "lissandra",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -3376,6 +3891,7 @@ namespace Support_AIO.Data
                 SpellName = "lissandrar",
                 ChampionName = "lissandra",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 550f,
                 Delay = 250f,
                 EventTypes = new[]
@@ -3383,7 +3899,7 @@ namespace Support_AIO.Data
                     EventType.CrowdControl, EventType.Initiator,
                     EventType.Danger, EventType.Ultimate
                 },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3391,12 +3907,13 @@ namespace Support_AIO.Data
                 SpellName = "lucianq",
                 ChampionName = "lucian",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 FixedRange = true,
                 CastRange = 1150f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
                 MissileName = "lucianq",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3404,6 +3921,8 @@ namespace Support_AIO.Data
                 SpellName = "lucianw",
                 ChampionName = "lucian",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinearAoE,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -3417,10 +3936,11 @@ namespace Support_AIO.Data
                 SpellName = "luciane",
                 ChampionName = "lucian",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3428,6 +3948,8 @@ namespace Support_AIO.Data
                 SpellName = "lucianr",
                 ChampionName = "lucian",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1400f,
                 Radius = 110,
@@ -3443,6 +3965,7 @@ namespace Support_AIO.Data
                 SpellName = "luluq",
                 ChampionName = "lulu",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 925f,
                 Radius = 60,
@@ -3457,6 +3980,7 @@ namespace Support_AIO.Data
                 SpellName = "luluw",
                 ChampionName = "lulu",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 640f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -3468,10 +3992,11 @@ namespace Support_AIO.Data
                 SpellName = "lulue",
                 ChampionName = "lulu",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 640f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3479,10 +4004,11 @@ namespace Support_AIO.Data
                 SpellName = "lulur",
                 ChampionName = "lulu",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3490,6 +4016,7 @@ namespace Support_AIO.Data
                 SpellName = "luxlightbinding",
                 ChampionName = "lux",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1300f,
                 Delay = 250f,
@@ -3503,6 +4030,7 @@ namespace Support_AIO.Data
                 SpellName = "luxprismaticwave",
                 ChampionName = "lux",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -3514,6 +4042,7 @@ namespace Support_AIO.Data
                 SpellName = "luxlightstrikekugel",
                 ChampionName = "lux",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 1100f,
                 Radius = 330f,
                 Delay = 250f,
@@ -3527,6 +4056,7 @@ namespace Support_AIO.Data
                 SpellName = "luxlightstriketoggle",
                 ChampionName = "lux",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -3538,6 +4068,7 @@ namespace Support_AIO.Data
                 SpellName = "luxmalicecannon",
                 ChampionName = "lux",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 3500f,
                 Radius = 299.3f,
@@ -3552,7 +4083,9 @@ namespace Support_AIO.Data
                 SpellName = "kalistamysticshot",
                 ChampionName = "kalista",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
+                CastType = CastType.MissileLinear,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -3566,6 +4099,7 @@ namespace Support_AIO.Data
                 SpellName = "kalistaw",
                 ChampionName = "kalista",
                 Slot = SpellSlot.W,
+                CastType = CastType.Linear,
                 CastRange = 5000f,
                 Delay = 800f,
                 EventTypes = new EventType[] { },
@@ -3577,10 +4111,11 @@ namespace Support_AIO.Data
                 SpellName = "kalistaexpungewrapper",
                 ChampionName = "kalista",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3588,6 +4123,7 @@ namespace Support_AIO.Data
                 SpellName = "seismicshard",
                 ChampionName = "malphite",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -3599,10 +4135,11 @@ namespace Support_AIO.Data
                 SpellName = "obduracy",
                 ChampionName = "malphite",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3610,10 +4147,11 @@ namespace Support_AIO.Data
                 SpellName = "landslide",
                 ChampionName = "malphite",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 400f,
                 Delay = 500f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3621,6 +4159,7 @@ namespace Support_AIO.Data
                 SpellName = "ufslash",
                 ChampionName = "malphite",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes =
@@ -3638,11 +4177,13 @@ namespace Support_AIO.Data
                 SpellName = "malzaharq",
                 ChampionName = "malzahar",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
+                IsPerpindicular = true,
                 CastRange = 900f,
                 Delay = 600f,
                 EventTypes = new[] { EventType.CrowdControl },
                 MissileName = "alzaharcallofthevoid",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3650,10 +4191,11 @@ namespace Support_AIO.Data
                 SpellName = "malzaharw",
                 ChampionName = "malzahar",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3661,10 +4203,11 @@ namespace Support_AIO.Data
                 SpellName = "malzahare",
                 ChampionName = "malzahar",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3672,6 +4215,7 @@ namespace Support_AIO.Data
                 SpellName = "malzaharr",
                 ChampionName = "malzahar",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes =
@@ -3680,52 +4224,62 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "maokaitrunkline",
+                SpellName = "maokaiq",
                 ChampionName = "maokai",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
-                CastRange = 600f,
+                CastRange = 650f,
+                Radius = 110f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = 1200
+                MissileName = "maokaiqmissile",
+                MissileSpeed = 1600
             });
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "maokaiunstablegrowth",
+                SpellName = "maokaiw",
                 ChampionName = "maokai",
                 Slot = SpellSlot.W,
-                CastRange = 650f,
+                CastType = CastType.Targeted,
+                CastRange = 525f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
+                MissileSpeed = 1500
             });
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "maokaisapling2",
+                SpellName = "maokaie",
                 ChampionName = "maokai",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 1100f,
+                Radius = 120f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
+                MissileName = "maokaiemissile",
                 MissileSpeed = 1750
             });
 
             ZLib.Spells.Add(new Gamedata
             {
-                SpellName = "maokaidrain3",
+                SpellName = "maokair",
                 ChampionName = "maokai",
                 Slot = SpellSlot.R,
-                CastRange = 625f,
+                CastType = CastType.MissileLinearAoE,
+                Radius = 120f,
+                CastRange = 3000f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileName = "maokairmis",
+                MissileSpeed = 400
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3733,10 +4287,11 @@ namespace Support_AIO.Data
                 SpellName = "alphastrike",
                 ChampionName = "masteryi",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 600f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3744,10 +4299,11 @@ namespace Support_AIO.Data
                 SpellName = "meditate",
                 ChampionName = "masteryi",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3755,10 +4311,12 @@ namespace Support_AIO.Data
                 SpellName = "wujustyle",
                 ChampionName = "masteryi",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 230f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3766,10 +4324,11 @@ namespace Support_AIO.Data
                 SpellName = "highlander",
                 ChampionName = "masteryi",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 370f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3777,6 +4336,7 @@ namespace Support_AIO.Data
                 SpellName = "missfortunericochetshot",
                 ChampionName = "missfortune",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -3788,10 +4348,12 @@ namespace Support_AIO.Data
                 SpellName = "missfortuneviciousstrikes",
                 ChampionName = "missfortune",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3799,10 +4361,11 @@ namespace Support_AIO.Data
                 SpellName = "missfortunescattershot",
                 ChampionName = "missfortune",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3810,11 +4373,12 @@ namespace Support_AIO.Data
                 SpellName = "missfortunebullettime",
                 ChampionName = "missfortune",
                 Slot = SpellSlot.R,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 1400f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3822,9 +4386,11 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingdoubleattack",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 20
             });
 
@@ -3833,10 +4399,11 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingdecoy",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3844,11 +4411,12 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingdecoyswipe",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
                 FromObject = new[] { "Base_W_Copy" },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3856,6 +4424,7 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingnimbus",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
@@ -3867,6 +4436,7 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingspintowin",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 450f,
                 Delay = 250f,
                 EventTypes =
@@ -3875,7 +4445,7 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3883,6 +4453,7 @@ namespace Support_AIO.Data
                 SpellName = "monkeykingspintowinleave",
                 ChampionName = "monkeyking",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -3894,9 +4465,11 @@ namespace Support_AIO.Data
                 SpellName = "mordekaisermaceofspades",
                 ChampionName = "mordekaiser",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 1500
             });
 
@@ -3905,10 +4478,11 @@ namespace Support_AIO.Data
                 SpellName = "mordekaisercreepindeathcast",
                 ChampionName = "mordekaiser",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 750f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3916,6 +4490,7 @@ namespace Support_AIO.Data
                 SpellName = "mordekaisersyphoneofdestruction",
                 ChampionName = "mordekaiser",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 700f,
                 Delay = 250f,
@@ -3928,10 +4503,11 @@ namespace Support_AIO.Data
                 SpellName = "mordekaiserchildrenofthegrave",
                 ChampionName = "mordekaiser",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3939,6 +4515,8 @@ namespace Support_AIO.Data
                 SpellName = "darkbindingmissile",
                 ChampionName = "morgana",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1175f,
                 Delay = 250f,
@@ -3952,10 +4530,11 @@ namespace Support_AIO.Data
                 SpellName = "tormentedsoil",
                 ChampionName = "morgana",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3963,10 +4542,11 @@ namespace Support_AIO.Data
                 SpellName = "blackshield",
                 ChampionName = "morgana",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3974,10 +4554,11 @@ namespace Support_AIO.Data
                 SpellName = "soulshackles",
                 ChampionName = "morgana",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -3985,6 +4566,7 @@ namespace Support_AIO.Data
                 SpellName = "namiq",
                 ChampionName = "nami",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 875f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
@@ -3997,6 +4579,7 @@ namespace Support_AIO.Data
                 SpellName = "namiw",
                 ChampionName = "nami",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 725f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4008,10 +4591,11 @@ namespace Support_AIO.Data
                 SpellName = "namie",
                 ChampionName = "nami",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4019,10 +4603,11 @@ namespace Support_AIO.Data
                 SpellName = "namir",
                 ChampionName = "nami",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 2550f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
                 MissileName = "namirmissile",
                 MissileSpeed = 1200
             });
@@ -4032,10 +4617,12 @@ namespace Support_AIO.Data
                 SpellName = "nasusq",
                 ChampionName = "nasus",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 450f,
                 Delay = 500f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4043,10 +4630,11 @@ namespace Support_AIO.Data
                 SpellName = "nasusw",
                 ChampionName = "nasus",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4054,10 +4642,11 @@ namespace Support_AIO.Data
                 SpellName = "nasuse",
                 ChampionName = "nasus",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4065,10 +4654,11 @@ namespace Support_AIO.Data
                 SpellName = "nasusr",
                 ChampionName = "nasus",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4076,10 +4666,12 @@ namespace Support_AIO.Data
                 SpellName = "nautilusanchordrag",
                 ChampionName = "nautilus",
                 Slot = SpellSlot.Q,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1080f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
+                EventTypes = new[] { EventType.CrowdControl, EventType.Danger, EventType.Initiator },
                 MissileName = "nautilusanchordragmissile",
                 MissileSpeed = 2000
             });
@@ -4089,10 +4681,11 @@ namespace Support_AIO.Data
                 SpellName = "nautiluspiercinggaze",
                 ChampionName = "nautilus",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4100,6 +4693,7 @@ namespace Support_AIO.Data
                 SpellName = "nautilussplashzone",
                 ChampionName = "nautilus",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -4111,6 +4705,7 @@ namespace Support_AIO.Data
                 SpellName = "nautilusgrandline",
                 ChampionName = "nautilus",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 1250f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
@@ -4121,6 +4716,8 @@ namespace Support_AIO.Data
             {
                 SpellName = "javelintoss",
                 ChampionName = "nidalee",
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 Slot = SpellSlot.Q,
                 FixedRange = true,
                 CastRange = 1500f,
@@ -4136,10 +4733,11 @@ namespace Support_AIO.Data
                 SpellName = "takedown",
                 ChampionName = "nidalee",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 500f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4147,6 +4745,7 @@ namespace Support_AIO.Data
                 SpellName = "bushwhack",
                 ChampionName = "nidalee",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4158,6 +4757,7 @@ namespace Support_AIO.Data
                 SpellName = "pounce",
                 ChampionName = "nidalee",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 375f,
                 Radius = 210f,
                 Delay = 250f,
@@ -4170,10 +4770,11 @@ namespace Support_AIO.Data
                 SpellName = "primalsurge",
                 ChampionName = "nidalee",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4182,10 +4783,11 @@ namespace Support_AIO.Data
                 ChampionName = "nidalee",
                 FixedRange = true,
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4193,10 +4795,11 @@ namespace Support_AIO.Data
                 SpellName = "aspectofthecougar",
                 ChampionName = "nidalee",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4204,6 +4807,8 @@ namespace Support_AIO.Data
                 SpellName = "nocturneduskbringer",
                 ChampionName = "nocturne",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1125f,
                 Delay = 250f,
@@ -4216,6 +4821,7 @@ namespace Support_AIO.Data
                 SpellName = "nocturneshroudofdarkness",
                 ChampionName = "nocturne",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4227,10 +4833,11 @@ namespace Support_AIO.Data
                 SpellName = "nocturneunspeakablehorror",
                 ChampionName = "nocturne",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4238,6 +4845,7 @@ namespace Support_AIO.Data
                 SpellName = "nocturneparanoia",
                 ChampionName = "nocturne",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 20000f,
                 Global = true,
                 Delay = 250f,
@@ -4250,6 +4858,7 @@ namespace Support_AIO.Data
                 SpellName = "consume",
                 ChampionName = "nunu",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4261,10 +4870,11 @@ namespace Support_AIO.Data
                 SpellName = "bloodboil",
                 ChampionName = "nunu",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4272,6 +4882,7 @@ namespace Support_AIO.Data
                 SpellName = "iceblast",
                 ChampionName = "nunu",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 550f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -4283,10 +4894,11 @@ namespace Support_AIO.Data
                 SpellName = "absolutezero",
                 ChampionName = "nunu",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 650f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4294,6 +4906,7 @@ namespace Support_AIO.Data
                 SpellName = "olafaxethrowcast",
                 ChampionName = "olaf",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -4306,10 +4919,11 @@ namespace Support_AIO.Data
                 SpellName = "olaffrenziedstrikes",
                 ChampionName = "olaf",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4317,10 +4931,11 @@ namespace Support_AIO.Data
                 SpellName = "olafrecklessstrike",
                 ChampionName = "olaf",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 325f,
                 Delay = 500f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4328,10 +4943,11 @@ namespace Support_AIO.Data
                 SpellName = "olafragnarok",
                 ChampionName = "olaf",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4339,6 +4955,7 @@ namespace Support_AIO.Data
                 SpellName = "orianaizunacommand",
                 ChampionName = "orianna",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4352,12 +4969,13 @@ namespace Support_AIO.Data
                 SpellName = "orianadissonancecommand",
                 ChampionName = "orianna",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
                 MissileName = "orianadissonancecommand",
                 FromObject = new[] { "yomu_ring" },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4365,6 +4983,7 @@ namespace Support_AIO.Data
                 SpellName = "orianaredactcommand",
                 ChampionName = "orianna",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 1095f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4378,17 +4997,18 @@ namespace Support_AIO.Data
                 SpellName = "orianadetonatecommand",
                 ChampionName = "orianna",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 425f,
                 Delay = 500f,
                 EventTypes =
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "orianadetonatecommand",
                 FromObject = new[] { "yomu_ring" },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4396,6 +5016,7 @@ namespace Support_AIO.Data
                 SpellName = "pantheonq",
                 ChampionName = "pantheon",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4407,10 +5028,11 @@ namespace Support_AIO.Data
                 SpellName = "pantheonw",
                 ChampionName = "pantheon",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4418,10 +5040,11 @@ namespace Support_AIO.Data
                 SpellName = "pantheone",
                 ChampionName = "pantheon",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4429,9 +5052,10 @@ namespace Support_AIO.Data
                 SpellName = "pantheonrjump",
                 ChampionName = "pantheon",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 1000f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 3000
             });
 
@@ -4440,9 +5064,10 @@ namespace Support_AIO.Data
                 SpellName = "pantheonrfall",
                 ChampionName = "pantheon",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 1000f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 3000
             });
 
@@ -4451,11 +5076,12 @@ namespace Support_AIO.Data
                 SpellName = "poppyq",
                 ChampionName = "poppy",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 450f,
                 Delay = 500f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4463,10 +5089,11 @@ namespace Support_AIO.Data
                 SpellName = "poppyw",
                 ChampionName = "poppy",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4474,6 +5101,7 @@ namespace Support_AIO.Data
                 SpellName = "poppye",
                 ChampionName = "poppy",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 525f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -4486,6 +5114,7 @@ namespace Support_AIO.Data
                 ChampionName = "poppy",
                 FixedRange = true,
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 CastRange = 1150f,
                 Delay = 300f,
                 EventTypes = new EventType[] { },
@@ -4498,11 +5127,12 @@ namespace Support_AIO.Data
                 SpellName = "poppyrspellinstant",
                 ChampionName = "poppy",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 FixedRange = true,
                 CastRange = 450f,
                 Delay = 300f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4510,6 +5140,8 @@ namespace Support_AIO.Data
                 SpellName = "quinnq",
                 ChampionName = "quinn",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinearAoE,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -4524,10 +5156,11 @@ namespace Support_AIO.Data
                 SpellName = "quinnw",
                 ChampionName = "quinn",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4535,9 +5168,10 @@ namespace Support_AIO.Data
                 SpellName = "quinne",
                 ChampionName = "quinn",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl },
+                EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
                 MissileSpeed = 775
             });
 
@@ -4546,10 +5180,11 @@ namespace Support_AIO.Data
                 SpellName = "quinnr",
                 ChampionName = "quinn",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4557,10 +5192,90 @@ namespace Support_AIO.Data
                 SpellName = "quinnrfinale",
                 ChampionName = "quinn",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 700f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakanq",
+                ChampionName = "rakan",
+                Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinearAoE,
+                CastRange = 900f,
+                Radius = 65f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileName = "rakanqmis",
+                MissileSpeed = 1800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakanw",
+                ChampionName = "rakan",
+                Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
+                CastRange = 650f,
+                Radius = 285f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.CrowdControl },
+                MissileSpeed = 1425
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakanwcast",
+                ChampionName = "rakan",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 285f,
+                Radius = 285f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.CrowdControl },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakane",
+                ChampionName = "rakan",
+                Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
+                CastRange = 210f,
+                Radius = 210f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 3430
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakanecast",
+                ChampionName = "rakan",
+                Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
+                CastRange = 210f,
+                Radius = 210f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 3430
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "rakanr",
+                ChampionName = "rakan",
+                Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
+                CastRange = 210f,
+                Radius = 210f,
+                Delay = 250f,
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4568,6 +5283,7 @@ namespace Support_AIO.Data
                 SpellName = "powerball",
                 ChampionName = "rammus",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
@@ -4579,10 +5295,11 @@ namespace Support_AIO.Data
                 SpellName = "defensiveballcurl",
                 ChampionName = "rammus",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4590,10 +5307,11 @@ namespace Support_AIO.Data
                 SpellName = "puncturingtaunt",
                 ChampionName = "rammus",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 325f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4601,10 +5319,11 @@ namespace Support_AIO.Data
                 SpellName = "tremors2",
                 ChampionName = "rammus",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4612,10 +5331,11 @@ namespace Support_AIO.Data
                 SpellName = "renektoncleave",
                 ChampionName = "renekton",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 225f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4623,10 +5343,12 @@ namespace Support_AIO.Data
                 SpellName = "renektonpreexecute",
                 ChampionName = "renekton",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                BasicAttackAmplifier = true,
                 CastRange = 275f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4634,6 +5356,7 @@ namespace Support_AIO.Data
                 SpellName = "renektonsliceanddice",
                 ChampionName = "renekton",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 450f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4645,10 +5368,11 @@ namespace Support_AIO.Data
                 SpellName = "renektonreignofthetyrant",
                 ChampionName = "renekton",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4656,11 +5380,12 @@ namespace Support_AIO.Data
                 SpellName = "rengarq2",
                 ChampionName = "rengar",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 CastRange = 275f,
                 Radius = 150f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4668,11 +5393,12 @@ namespace Support_AIO.Data
                 SpellName = "rengarq2emp",
                 ChampionName = "rengar",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 CastRange = 275f,
                 Radius = 150f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4680,10 +5406,11 @@ namespace Support_AIO.Data
                 SpellName = "rengarw",
                 ChampionName = "rengar",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 500f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4691,6 +5418,8 @@ namespace Support_AIO.Data
                 SpellName = "rengare",
                 ChampionName = "rengar",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -4705,10 +5434,11 @@ namespace Support_AIO.Data
                 SpellName = "rengarr",
                 ChampionName = "rengar",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4716,18 +5446,22 @@ namespace Support_AIO.Data
                 SpellName = "reksaiq",
                 ChampionName = "reksai",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 FixedRange = true,
                 CastRange = 275f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
             {
                 SpellName = "reksaiqburrowed",
                 ChampionName = "reksai",
-                Slot = SpellSlot.W,
+                Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 CastRange = 1650f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4740,10 +5474,11 @@ namespace Support_AIO.Data
                 SpellName = "reksaiw",
                 ChampionName = "reksai",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 350f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4751,10 +5486,11 @@ namespace Support_AIO.Data
                 SpellName = "reksaiwburrowed",
                 ChampionName = "reksai",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4762,10 +5498,11 @@ namespace Support_AIO.Data
                 SpellName = "reksaie",
                 ChampionName = "reksai",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 250f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4773,6 +5510,7 @@ namespace Support_AIO.Data
                 SpellName = "reksaieburrowed",
                 ChampionName = "reksai",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 350f,
                 Delay = 900f,
                 EventTypes = new EventType[] { },
@@ -4784,10 +5522,12 @@ namespace Support_AIO.Data
                 SpellName = "reksair",
                 ChampionName = "reksai",
                 Slot = SpellSlot.R,
-                CastRange = 2.147484E+09f,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
+                CastRange = 850,
                 Delay = 1000f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator, EventType.Ultimate },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4795,11 +5535,12 @@ namespace Support_AIO.Data
                 SpellName = "riventricleave",
                 ChampionName = "riven",
                 Slot = SpellSlot.Q,
+                CastType = CastType.LinearAoE,
                 FixedRange = true,
                 CastRange = 270f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4807,10 +5548,11 @@ namespace Support_AIO.Data
                 SpellName = "rivenmartyr",
                 ChampionName = "riven",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 260f,
                 Delay = 100f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4818,6 +5560,7 @@ namespace Support_AIO.Data
                 SpellName = "rivenfeint",
                 ChampionName = "riven",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4829,10 +5572,11 @@ namespace Support_AIO.Data
                 SpellName = "rivenfengshuiengine",
                 ChampionName = "riven",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4840,6 +5584,7 @@ namespace Support_AIO.Data
                 SpellName = "rivenizunablade",
                 ChampionName = "riven",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1075f,
                 Delay = 250f,
@@ -4854,10 +5599,11 @@ namespace Support_AIO.Data
                 SpellName = "rumbleflamethrower",
                 ChampionName = "rumble",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Sector,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4865,10 +5611,11 @@ namespace Support_AIO.Data
                 SpellName = "rumbleshield",
                 ChampionName = "rumble",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4876,6 +5623,8 @@ namespace Support_AIO.Data
                 SpellName = "rumbegrenade",
                 ChampionName = "rumble",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 850f,
                 Delay = 250f,
@@ -4888,9 +5637,10 @@ namespace Support_AIO.Data
                 SpellName = "rumblecarpetbomb",
                 ChampionName = "rumble",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 CastRange = 1700f,
                 Delay = 400f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileName = "rumblecarpetbombmissile",
                 MissileSpeed = 1600
             });
@@ -4900,6 +5650,8 @@ namespace Support_AIO.Data
                 SpellName = "ryzeq",
                 ChampionName = "ryze",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 925f,
                 Delay = 250f,
@@ -4914,10 +5666,11 @@ namespace Support_AIO.Data
                 SpellName = "ryzew",
                 ChampionName = "ryze",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -4925,6 +5678,7 @@ namespace Support_AIO.Data
                 SpellName = "ryzee",
                 ChampionName = "ryze",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -4936,9 +5690,10 @@ namespace Support_AIO.Data
                 SpellName = "ryzer",
                 ChampionName = "ryze",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 1400
             });
 
@@ -4947,6 +5702,8 @@ namespace Support_AIO.Data
                 SpellName = "sejuaniarcticassault",
                 ChampionName = "sejuani",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 650f,
                 Delay = 250f,
@@ -4960,6 +5717,7 @@ namespace Support_AIO.Data
                 SpellName = "sejuaninorthernwinds",
                 ChampionName = "sejuani",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 1000f,
                 EventTypes = new EventType[] { },
@@ -4971,6 +5729,7 @@ namespace Support_AIO.Data
                 SpellName = "sejuaniwintersclaw",
                 ChampionName = "sejuani",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 550f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -4982,6 +5741,8 @@ namespace Support_AIO.Data
                 SpellName = "sejuaniglacialprisoncast",
                 ChampionName = "sejuani",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes =
@@ -4999,10 +5760,11 @@ namespace Support_AIO.Data
                 SpellName = "deceive",
                 ChampionName = "shaco",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5010,6 +5772,7 @@ namespace Support_AIO.Data
                 SpellName = "jackinthebox",
                 ChampionName = "shaco",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5021,6 +5784,7 @@ namespace Support_AIO.Data
                 SpellName = "twoshivpoison",
                 ChampionName = "shaco",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5032,6 +5796,7 @@ namespace Support_AIO.Data
                 SpellName = "hallucinatefull",
                 ChampionName = "shaco",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 1125f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5043,6 +5808,7 @@ namespace Support_AIO.Data
                 SpellName = "shenq",
                 ChampionName = "shen",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 1650f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -5055,10 +5821,11 @@ namespace Support_AIO.Data
                 SpellName = "shenw",
                 ChampionName = "shen",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5066,9 +5833,10 @@ namespace Support_AIO.Data
                 SpellName = "shene",
                 ChampionName = "shen",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 675f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl },
+                EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
                 MissileName = "shene",
                 MissileSpeed = 1600
             });
@@ -5078,10 +5846,11 @@ namespace Support_AIO.Data
                 SpellName = "shenr",
                 ChampionName = "shen",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5089,10 +5858,12 @@ namespace Support_AIO.Data
                 SpellName = "shyvanadoubleattack",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
+                BasicAttackAmplifier = true,
                 CastRange = 275f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5100,10 +5871,12 @@ namespace Support_AIO.Data
                 SpellName = "shyvanadoubleattackdragon",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 325f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5111,10 +5884,11 @@ namespace Support_AIO.Data
                 SpellName = "shyvanaimmolationauraqw",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 275f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5122,10 +5896,11 @@ namespace Support_AIO.Data
                 SpellName = "shyvanaimmolateddragon",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 250f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5133,6 +5908,7 @@ namespace Support_AIO.Data
                 SpellName = "shyvanafireball",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 925f,
                 Delay = 250f,
@@ -5146,6 +5922,7 @@ namespace Support_AIO.Data
                 SpellName = "shyvanafireballdragon2",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 CastRange = 925f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5157,6 +5934,7 @@ namespace Support_AIO.Data
                 SpellName = "shyvanatransformcast",
                 ChampionName = "shyvana",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 100f,
@@ -5175,10 +5953,11 @@ namespace Support_AIO.Data
                 SpellName = "poisentrail",
                 ChampionName = "singed",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 250f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5186,6 +5965,7 @@ namespace Support_AIO.Data
                 SpellName = "megaadhesive",
                 ChampionName = "singed",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 1175f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5197,10 +5977,11 @@ namespace Support_AIO.Data
                 SpellName = "fling",
                 ChampionName = "singed",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 125f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.CrowdControl, EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5208,10 +5989,11 @@ namespace Support_AIO.Data
                 SpellName = "insanitypotion",
                 ChampionName = "singed",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5219,11 +6001,12 @@ namespace Support_AIO.Data
                 SpellName = "sionq",
                 ChampionName = "sion",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5231,10 +6014,11 @@ namespace Support_AIO.Data
                 SpellName = "sionwdetonate",
                 ChampionName = "sion",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5242,6 +6026,8 @@ namespace Support_AIO.Data
                 SpellName = "sione",
                 ChampionName = "sion",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 CastRange = 725f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5254,9 +6040,10 @@ namespace Support_AIO.Data
                 SpellName = "sionr",
                 ChampionName = "sion",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileName = "",
                 MissileSpeed = 500
             });
@@ -5266,6 +6053,7 @@ namespace Support_AIO.Data
                 SpellName = "sivirq",
                 ChampionName = "sivir",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1165f,
                 Delay = 250f,
@@ -5280,10 +6068,12 @@ namespace Support_AIO.Data
                 SpellName = "sivirw",
                 ChampionName = "sivir",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5291,10 +6081,11 @@ namespace Support_AIO.Data
                 SpellName = "sivire",
                 ChampionName = "sivir",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5302,10 +6093,11 @@ namespace Support_AIO.Data
                 SpellName = "sivirr",
                 ChampionName = "sivir",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5313,10 +6105,11 @@ namespace Support_AIO.Data
                 SpellName = "skarnervirulentslash",
                 ChampionName = "skarner",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5324,10 +6117,11 @@ namespace Support_AIO.Data
                 SpellName = "skarnerexoskeleton",
                 ChampionName = "skarner",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5335,6 +6129,7 @@ namespace Support_AIO.Data
                 SpellName = "skarnerfracture",
                 ChampionName = "skarner",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1100f,
                 Delay = 250f,
@@ -5348,10 +6143,11 @@ namespace Support_AIO.Data
                 SpellName = "skarnerimpale",
                 ChampionName = "skarner",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 350f,
                 Delay = 350f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5359,6 +6155,7 @@ namespace Support_AIO.Data
                 SpellName = "sonaq",
                 ChampionName = "sona",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5370,6 +6167,7 @@ namespace Support_AIO.Data
                 SpellName = "sonaw",
                 ChampionName = "sona",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5381,6 +6179,7 @@ namespace Support_AIO.Data
                 SpellName = "sonae",
                 ChampionName = "sona",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5392,6 +6191,7 @@ namespace Support_AIO.Data
                 SpellName = "sonar",
                 ChampionName = "sona",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -5399,7 +6199,7 @@ namespace Support_AIO.Data
                     new[]
                     {
                         EventType.Danger, EventType.Ultimate,
-                        EventType.CrowdControl
+                        EventType.CrowdControl, EventType.Initiator
                     },
                 MissileName = "sonar",
                 MissileSpeed = 2400
@@ -5410,6 +6210,7 @@ namespace Support_AIO.Data
                 SpellName = "sorakaq",
                 ChampionName = "soraka",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 970f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5422,10 +6223,11 @@ namespace Support_AIO.Data
                 SpellName = "sorakaw",
                 ChampionName = "soraka",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5433,10 +6235,11 @@ namespace Support_AIO.Data
                 SpellName = "sorakae",
                 ChampionName = "soraka",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 925f,
                 Delay = 1750f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5444,10 +6247,11 @@ namespace Support_AIO.Data
                 SpellName = "sorakar",
                 ChampionName = "soraka",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5455,10 +6259,11 @@ namespace Support_AIO.Data
                 SpellName = "swaindecrepify",
                 ChampionName = "swain",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5466,11 +6271,12 @@ namespace Support_AIO.Data
                 SpellName = "swainshadowgrasp",
                 ChampionName = "swain",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 1040f,
                 Delay = 1100f,
                 EventTypes = new[] { EventType.CrowdControl },
                 MissileName = "swainshadowgrasp",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5478,6 +6284,7 @@ namespace Support_AIO.Data
                 SpellName = "swaintorment",
                 ChampionName = "swain",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 625f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5489,6 +6296,7 @@ namespace Support_AIO.Data
                 SpellName = "swainmetamorphism",
                 ChampionName = "swain",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5500,6 +6308,7 @@ namespace Support_AIO.Data
                 SpellName = "syndraq",
                 ChampionName = "syndra",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5512,6 +6321,7 @@ namespace Support_AIO.Data
                 SpellName = "syndrawcast",
                 ChampionName = "syndra",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 950f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5524,6 +6334,7 @@ namespace Support_AIO.Data
                 SpellName = "syndrae",
                 ChampionName = "syndra",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 300f,
@@ -5537,6 +6348,7 @@ namespace Support_AIO.Data
                 SpellName = "syndrar",
                 ChampionName = "syndra",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 675f,
                 Delay = 450f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
@@ -5548,6 +6360,8 @@ namespace Support_AIO.Data
                 SpellName = "tahmkenchq",
                 ChampionName = "tahmkench",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 250f,
@@ -5557,14 +6371,30 @@ namespace Support_AIO.Data
 
             ZLib.Spells.Add(new Gamedata
             {
+                SpellName = "taliyahq",
+                ChampionName = "taliyah",
+                Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                CastRange = 1000f,
+                Radius = 80f,
+                Delay = 250f,
+                FixedRange = true,
+                MissileName = "taliyahqmis",
+                MissileSpeed = 1750
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
                 SpellName = "taliyahwvc",
                 ChampionName = "taliyah",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Radius = 150f,
                 Delay = 900f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5572,6 +6402,7 @@ namespace Support_AIO.Data
                 SpellName = "taliyahe",
                 ChampionName = "taliyah",
                 Slot = SpellSlot.E,
+                CastType = CastType.Sector,
                 CastRange = 500f,
                 Radius = 165f,
                 Delay = 250f,
@@ -5585,10 +6416,11 @@ namespace Support_AIO.Data
                 SpellName = "talonq",
                 ChampionName = "talon",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 275f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5596,6 +6428,7 @@ namespace Support_AIO.Data
                 SpellName = "talonw",
                 ChampionName = "talon",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 900f,
                 Delay = 250f,
@@ -5610,10 +6443,11 @@ namespace Support_AIO.Data
                 SpellName = "talone",
                 ChampionName = "talon",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5621,12 +6455,13 @@ namespace Support_AIO.Data
                 SpellName = "talonr",
                 ChampionName = "talon",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
                 CastRange = 750f,
                 Delay = 260f,
                 MissileName = "talonrmisone",
-                EventTypes = new[] { EventType.Stealth },
+                EventTypes = new[] { EventType.Stealth, EventType.Initiator },
                 ExtraMissileNames = new[] { "talonrmistwo" },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5634,6 +6469,7 @@ namespace Support_AIO.Data
                 SpellName = "taricq",
                 ChampionName = "taric",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5645,10 +6481,11 @@ namespace Support_AIO.Data
                 SpellName = "taricw",
                 ChampionName = "taric",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5656,10 +6493,11 @@ namespace Support_AIO.Data
                 SpellName = "tarice",
                 ChampionName = "taric",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 625f,
                 Delay = 1000f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5667,10 +6505,11 @@ namespace Support_AIO.Data
                 SpellName = "taricr",
                 ChampionName = "taric",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator },
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5678,6 +6517,7 @@ namespace Support_AIO.Data
                 SpellName = "blindingdart",
                 ChampionName = "teemo",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 580f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5689,6 +6529,7 @@ namespace Support_AIO.Data
                 SpellName = "movequick",
                 ChampionName = "teemo",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -5700,10 +6541,11 @@ namespace Support_AIO.Data
                 SpellName = "toxicshot",
                 ChampionName = "teemo",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5711,6 +6553,7 @@ namespace Support_AIO.Data
                 SpellName = "bantamtrap",
                 ChampionName = "teemo",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
@@ -5722,6 +6565,8 @@ namespace Support_AIO.Data
                 SpellName = "threshq",
                 ChampionName = "thresh",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1175f,
                 Delay = 500f,
@@ -5735,10 +6580,11 @@ namespace Support_AIO.Data
                 SpellName = "threshw",
                 ChampionName = "thresh",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5746,11 +6592,12 @@ namespace Support_AIO.Data
                 SpellName = "threshe",
                 ChampionName = "thresh",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
                 MissileName = "threshemissile1",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5758,9 +6605,10 @@ namespace Support_AIO.Data
                 SpellName = "threshrpenta",
                 ChampionName = "thresh",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 420f,
                 Delay = 300f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 1550
             });
 
@@ -5769,10 +6617,11 @@ namespace Support_AIO.Data
                 SpellName = "tristanaq",
                 ChampionName = "tristana",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5780,6 +6629,7 @@ namespace Support_AIO.Data
                 SpellName = "tristanaw",
                 ChampionName = "tristana",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 Radius = 270f,
                 CastRange = 900f,
                 Delay = 250f,
@@ -5792,6 +6642,7 @@ namespace Support_AIO.Data
                 SpellName = "tristanae",
                 ChampionName = "tristana",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 Radius = 210f,
                 CastRange = 700f,
                 Delay = 250f,
@@ -5804,6 +6655,7 @@ namespace Support_AIO.Data
                 SpellName = "tristanar",
                 ChampionName = "tristana",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 Radius = 200f,
                 CastRange = 700f,
                 Delay = 250f,
@@ -5815,12 +6667,14 @@ namespace Support_AIO.Data
             {
                 SpellName = "trundleq",
                 ChampionName = "trundle",
-                Slot = (SpellSlot) 45,
+                Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 800f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5828,11 +6682,13 @@ namespace Support_AIO.Data
                 SpellName = "trundletrollsmash",
                 ChampionName = "trundle",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 Radius = 210f,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5840,10 +6696,11 @@ namespace Support_AIO.Data
                 SpellName = "trundledesecrate",
                 ChampionName = "trundle",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5851,10 +6708,11 @@ namespace Support_AIO.Data
                 SpellName = "trundlecircle",
                 ChampionName = "trundle",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 1000f,
                 Radius = 340f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 1600
             });
 
@@ -5863,11 +6721,12 @@ namespace Support_AIO.Data
                 SpellName = "trundlepain",
                 ChampionName = "trundle",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 650f,
                 Radius = 300f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5875,10 +6734,11 @@ namespace Support_AIO.Data
                 SpellName = "bloodlust",
                 ChampionName = "tryndamere",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5886,10 +6746,11 @@ namespace Support_AIO.Data
                 SpellName = "mockingshout",
                 ChampionName = "tryndamere",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5897,6 +6758,7 @@ namespace Support_AIO.Data
                 SpellName = "slashcast",
                 ChampionName = "tryndamere",
                 Slot = SpellSlot.E,
+                CastType = CastType.Linear,
                 CastRange = 660f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -5909,10 +6771,11 @@ namespace Support_AIO.Data
                 SpellName = "undyingrage",
                 ChampionName = "tryndamere",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5920,10 +6783,11 @@ namespace Support_AIO.Data
                 SpellName = "twitchhideinshadows",
                 ChampionName = "twitch",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 1000f,
                 Delay = 450f,
                 EventTypes = new[] { EventType.Stealth },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5931,6 +6795,7 @@ namespace Support_AIO.Data
                 SpellName = "twitchvenomcask",
                 ChampionName = "twitch",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5943,6 +6808,7 @@ namespace Support_AIO.Data
                 SpellName = "twitchvenomcaskmissle",
                 ChampionName = "twitch",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -5954,10 +6820,11 @@ namespace Support_AIO.Data
                 SpellName = "twitchexpungewrapper",
                 ChampionName = "twitch",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5965,10 +6832,11 @@ namespace Support_AIO.Data
                 SpellName = "twitchexpunge",
                 ChampionName = "twitch",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -5976,9 +6844,10 @@ namespace Support_AIO.Data
                 SpellName = "twitchfullautomatic",
                 ChampionName = "twitch",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Initiator },
                 MissileSpeed = 500
             });
 
@@ -5987,6 +6856,7 @@ namespace Support_AIO.Data
                 SpellName = "wildcards",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 CastRange = 1450f,
                 FixedRange = true,
                 Delay = 250f,
@@ -6000,10 +6870,11 @@ namespace Support_AIO.Data
                 SpellName = "pickacard",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6011,10 +6882,12 @@ namespace Support_AIO.Data
                 SpellName = "goldcardpreattack",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6022,10 +6895,12 @@ namespace Support_AIO.Data
                 SpellName = "redcardpreattack",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6033,10 +6908,12 @@ namespace Support_AIO.Data
                 SpellName = "bluecardpreattack",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6044,9 +6921,11 @@ namespace Support_AIO.Data
                 SpellName = "cardmasterstack",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 1200
             });
 
@@ -6055,10 +6934,11 @@ namespace Support_AIO.Data
                 SpellName = "destiny",
                 ChampionName = "twistedfate",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6066,10 +6946,12 @@ namespace Support_AIO.Data
                 SpellName = "udyrtigerstance",
                 ChampionName = "udyr",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6077,10 +6959,12 @@ namespace Support_AIO.Data
                 SpellName = "udyrturtlestance",
                 ChampionName = "udyr",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6088,10 +6972,12 @@ namespace Support_AIO.Data
                 SpellName = "udyrbearstanceattack",
                 ChampionName = "udyr",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 250f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6099,10 +6985,12 @@ namespace Support_AIO.Data
                 SpellName = "udyrphoenixstance",
                 ChampionName = "udyr",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6110,6 +6998,7 @@ namespace Support_AIO.Data
                 SpellName = "urgotheatseekinglineqqmissile",
                 ChampionName = "urgot",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -6122,6 +7011,7 @@ namespace Support_AIO.Data
                 SpellName = "urgotheatseekingmissile",
                 ChampionName = "urgot",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -6134,10 +7024,11 @@ namespace Support_AIO.Data
                 SpellName = "urgotterrorcapacitoractive2",
                 ChampionName = "urgot",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6145,6 +7036,7 @@ namespace Support_AIO.Data
                 SpellName = "urgotplasmagrenade",
                 ChampionName = "urgot",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 950f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6157,6 +7049,7 @@ namespace Support_AIO.Data
                 SpellName = "urgotplasmagrenadeboom",
                 ChampionName = "urgot",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 950f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6168,6 +7061,7 @@ namespace Support_AIO.Data
                 SpellName = "urgotswap2",
                 ChampionName = "urgot",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6179,6 +7073,7 @@ namespace Support_AIO.Data
                 SpellName = "varusq",
                 ChampionName = "varus",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1250f,
                 Delay = 0f,
@@ -6192,10 +7087,12 @@ namespace Support_AIO.Data
                 SpellName = "varusw",
                 ChampionName = "varus",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6203,6 +7100,7 @@ namespace Support_AIO.Data
                 SpellName = "varuse",
                 ChampionName = "varus",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 925f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6215,6 +7113,8 @@ namespace Support_AIO.Data
                 SpellName = "varusr",
                 ChampionName = "varus",
                 Slot = SpellSlot.R,
+                CastType = CastType.MissileLinearAoE,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1300f,
                 Delay = 250f,
@@ -6233,10 +7133,12 @@ namespace Support_AIO.Data
                 SpellName = "vaynetumble",
                 ChampionName = "vayne",
                 Slot = SpellSlot.Q,
-                CastRange = 850f,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6244,10 +7146,12 @@ namespace Support_AIO.Data
                 SpellName = "vaynesilverbolts",
                 ChampionName = "vayne",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
-                Delay = 0f,
+                Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6255,10 +7159,11 @@ namespace Support_AIO.Data
                 SpellName = "vaynecondemnmissile",
                 ChampionName = "vayne",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 550f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6266,10 +7171,11 @@ namespace Support_AIO.Data
                 SpellName = "vayneinquisition",
                 ChampionName = "vayne",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Stealth, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6277,6 +7183,7 @@ namespace Support_AIO.Data
                 SpellName = "veigarbalefulstrike",
                 ChampionName = "veigar",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 950f,
                 Delay = 250f,
@@ -6290,11 +7197,12 @@ namespace Support_AIO.Data
                 SpellName = "veigardarkmatter",
                 ChampionName = "veigar",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Delay = 1200f,
                 EventTypes = new EventType[] { },
                 MissileName = "",
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6302,6 +7210,7 @@ namespace Support_AIO.Data
                 SpellName = "veigareventhorizon",
                 ChampionName = "veigar",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 650f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6314,6 +7223,7 @@ namespace Support_AIO.Data
                 SpellName = "veigarprimordialburst",
                 ChampionName = "veigar",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
@@ -6325,6 +7235,8 @@ namespace Support_AIO.Data
                 SpellName = "velkozq",
                 ChampionName = "velkoz",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1250f,
                 Delay = 100f,
@@ -6338,6 +7250,9 @@ namespace Support_AIO.Data
                 SpellName = "velkozqsplitactivate",
                 ChampionName = "velkoz",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
+                IsPerpindicular = true,
                 CastRange = 1050f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger },
@@ -6350,6 +7265,7 @@ namespace Support_AIO.Data
                 SpellName = "velkozw",
                 ChampionName = "velkoz",
                 Slot = SpellSlot.W,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 0f,
@@ -6363,6 +7279,7 @@ namespace Support_AIO.Data
                 SpellName = "velkoze",
                 ChampionName = "velkoz",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 950f,
                 Delay = 0f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6375,9 +7292,10 @@ namespace Support_AIO.Data
                 SpellName = "velkozr",
                 ChampionName = "velkoz",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 CastRange = 1575f,
                 Delay = 0f,
-                EventTypes = new[] { EventType.Danger },
+                EventTypes = new[] { EventType.Danger, EventType.Initiator },
                 MissileSpeed = 1500
             });
 
@@ -6386,6 +7304,7 @@ namespace Support_AIO.Data
                 SpellName = "viqmissile",
                 ChampionName = "vi",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
@@ -6397,10 +7316,12 @@ namespace Support_AIO.Data
                 SpellName = "viw",
                 ChampionName = "vi",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6408,10 +7329,11 @@ namespace Support_AIO.Data
                 SpellName = "vie",
                 ChampionName = "vi",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6419,9 +7341,10 @@ namespace Support_AIO.Data
                 SpellName = "vir",
                 ChampionName = "vi",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 800f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Initiator },
                 MissileSpeed = 1400
             });
 
@@ -6430,6 +7353,7 @@ namespace Support_AIO.Data
                 SpellName = "viktorpowertransfer",
                 ChampionName = "viktor",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6441,6 +7365,7 @@ namespace Support_AIO.Data
                 SpellName = "viktorgravitonfield",
                 ChampionName = "viktor",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 815f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6452,6 +7377,7 @@ namespace Support_AIO.Data
                 SpellName = "viktordeathray",
                 ChampionName = "viktor",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 700f,
                 Delay = 250f,
@@ -6466,6 +7392,7 @@ namespace Support_AIO.Data
                 SpellName = "viktorchaosstorm",
                 ChampionName = "viktor",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 710f,
                 Delay = 250f,
                 EventTypes =
@@ -6474,7 +7401,7 @@ namespace Support_AIO.Data
                         EventType.CrowdControl, EventType.Ultimate,
                         EventType.Danger, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6482,6 +7409,7 @@ namespace Support_AIO.Data
                 SpellName = "vladimirq",
                 ChampionName = "vladimir",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
@@ -6493,6 +7421,7 @@ namespace Support_AIO.Data
                 SpellName = "vladimirw",
                 ChampionName = "vladimir",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6504,6 +7433,7 @@ namespace Support_AIO.Data
                 SpellName = "vladimire",
                 ChampionName = "vladimir",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 610f,
                 Delay = 800f,
                 EventTypes = new EventType[] { },
@@ -6515,10 +7445,11 @@ namespace Support_AIO.Data
                 SpellName = "vladimirr",
                 ChampionName = "vladimir",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 875f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6526,10 +7457,12 @@ namespace Support_AIO.Data
                 SpellName = "volibearq",
                 ChampionName = "volibear",
                 Slot = SpellSlot.Q,
-                CastRange = 300f,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Initiator, EventType.CrowdControl },
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6537,6 +7470,7 @@ namespace Support_AIO.Data
                 SpellName = "volibearw",
                 ChampionName = "volibear",
                 Slot = SpellSlot.W,
+                CastType = CastType.Targeted,
                 CastRange = 400f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
@@ -6547,6 +7481,7 @@ namespace Support_AIO.Data
             {
                 SpellName = "volibeare",
                 ChampionName = "volibear",
+                CastType = CastType.Proximity,
                 Slot = SpellSlot.E,
                 CastRange = 425f,
                 Delay = 250f,
@@ -6559,9 +7494,11 @@ namespace Support_AIO.Data
                 SpellName = "volibearr",
                 ChampionName = "volibear",
                 Slot = SpellSlot.R,
-                CastRange = 425f,
-                Delay = 0f,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
+                Delay = 250f,
                 EventTypes = new EventType[] { },
+                BasicAttackAmplifier = true,
                 MissileSpeed = 825
             });
 
@@ -6570,11 +7507,12 @@ namespace Support_AIO.Data
                 SpellName = "hungeringstrike",
                 ChampionName = "warwick",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Targeted,
                 CastRange = 400f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6582,10 +7520,11 @@ namespace Support_AIO.Data
                 SpellName = "hunterscall",
                 ChampionName = "warwick",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6593,10 +7532,11 @@ namespace Support_AIO.Data
                 SpellName = "bloodscent",
                 ChampionName = "warwick",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 0f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6604,6 +7544,7 @@ namespace Support_AIO.Data
                 SpellName = "infiniteduress",
                 ChampionName = "warwick",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes =
@@ -6612,7 +7553,7 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6620,6 +7561,7 @@ namespace Support_AIO.Data
                 SpellName = "infiniteduresschannel",
                 ChampionName = "warwick",
                 Slot = SpellSlot.R,
+                CastType = CastType.Linear,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes =
@@ -6628,7 +7570,61 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "xayahq",
+                ChampionName = "xayah",
+                Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                FixedRange = true,
+                CastRange = 1100f,
+                Delay = 500f,
+                EventTypes = new EventType[] { },
+                MissileName = "xayahqmissile1",
+                MissileSpeed = 2060
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "xayahw",
+                ChampionName = "xayah",
+                Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
+                CastRange = 1000f,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "xayahe",
+                ChampionName = "xayah",
+                Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CastRange = 2000f,
+                Radius = 80,
+                Delay = 250f,
+                EventTypes = new EventType[] { },
+                MissileName = "xayahemissilesfx",
+                MissileSpeed = 4800
+            });
+
+            ZLib.Spells.Add(new Gamedata
+            {
+                SpellName = "xayahr",
+                ChampionName = "xayah",
+                Slot = SpellSlot.R,
+                CastType = CastType.MissileLinear,
+                CastRange = 1100f,
+                Radius = 25,
+                Delay = 500f,
+                EventTypes = new[] { EventType.Initiator },
+                MissileName = "xayahrmissile",
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6636,6 +7632,7 @@ namespace Support_AIO.Data
                 SpellName = "xeratharcanopulsechargeup",
                 ChampionName = "xerath",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 750f,
                 Delay = 750f,
@@ -6648,6 +7645,7 @@ namespace Support_AIO.Data
                 SpellName = "xeratharcanebarrage2",
                 ChampionName = "xerath",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 1100f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -6660,6 +7658,8 @@ namespace Support_AIO.Data
                 SpellName = "xerathmagespear",
                 ChampionName = "xerath",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyMinions, CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
                 CastRange = 1050f,
                 Delay = 250f,
@@ -6673,6 +7673,7 @@ namespace Support_AIO.Data
                 SpellName = "xerathlocusofpower2",
                 ChampionName = "xerath",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 5600f,
                 Delay = 750f,
                 EventTypes = new EventType[] { },
@@ -6684,11 +7685,13 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaocombotarget",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 375,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6696,11 +7699,13 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaothrust",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 625f,
                 Radius = 225f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6708,11 +7713,12 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaothrust2",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 625f,
                 Radius = 225f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6720,6 +7726,7 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaothrust3",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Proximity,
                 CastRange = 625f,
                 Radius = 225f,
                 Delay = 250f,
@@ -6732,11 +7739,13 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaobattlecry",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Radius = 210f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6744,6 +7753,7 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaosweep",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 600f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl, EventType.Danger, EventType.Initiator },
@@ -6755,6 +7765,7 @@ namespace Support_AIO.Data
                 SpellName = "xenzhaoparry",
                 ChampionName = "xinzhao",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 500f,
                 Radius = 210f,
                 Delay = 250f,
@@ -6772,11 +7783,12 @@ namespace Support_AIO.Data
                 SpellName = "yasuoqw",
                 ChampionName = "yasuo",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 475f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6784,11 +7796,12 @@ namespace Support_AIO.Data
                 SpellName = "yasuoq2w",
                 ChampionName = "yasuo",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Linear,
                 FixedRange = true,
                 CastRange = 475f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6796,6 +7809,7 @@ namespace Support_AIO.Data
                 SpellName = "yasuoq3",
                 ChampionName = "yasuo",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1000f,
                 Delay = 250f,
@@ -6808,7 +7822,9 @@ namespace Support_AIO.Data
             {
                 SpellName = "yasuowmovingwall",
                 ChampionName = "yasuo",
+                CastType = CastType.Linear,
                 Slot = SpellSlot.W,
+                IsPerpindicular = true,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6820,6 +7836,7 @@ namespace Support_AIO.Data
                 SpellName = "yasuodashwrapper",
                 ChampionName = "yasuo",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 475f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6831,10 +7848,11 @@ namespace Support_AIO.Data
                 SpellName = "yasuorknockupcombow",
                 ChampionName = "yasuo",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 1200f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.Danger, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6842,10 +7860,12 @@ namespace Support_AIO.Data
                 SpellName = "yorickq",
                 ChampionName = "yorick",
                 Slot = SpellSlot.Q,
-                CastRange = 350f,
+                CastType = CastType.Proximity,
+                CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                BasicAttackAmplifier = true,
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6853,10 +7873,11 @@ namespace Support_AIO.Data
                 SpellName = "yorickw",
                 ChampionName = "yorick",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6864,6 +7885,7 @@ namespace Support_AIO.Data
                 SpellName = "yoricke",
                 ChampionName = "yorick",
                 Slot = SpellSlot.E,
+                CastType = CastType.LinearAoE,
                 CastRange = 700f,
                 Radius = 125f,
                 Delay = 250f,
@@ -6877,6 +7899,7 @@ namespace Support_AIO.Data
                 SpellName = "yorickr",
                 ChampionName = "yorick",
                 Slot = SpellSlot.R,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6888,12 +7911,14 @@ namespace Support_AIO.Data
                 SpellName = "zacq",
                 ChampionName = "zac",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 FixedRange = true,
-                CastRange = 550f,
+                CastRange = 800f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileName = "zacq",
-                MissileSpeed = 1600
+                MissileName = "zaqmissile",
+                MissileSpeed = 2600
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6901,10 +7926,11 @@ namespace Support_AIO.Data
                 SpellName = "zacw",
                 ChampionName = "zac",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 350f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6912,9 +7938,10 @@ namespace Support_AIO.Data
                 SpellName = "zace",
                 ChampionName = "zac",
                 Slot = SpellSlot.E,
-                CastRange = 0f,
+                CastType = CastType.Proximity,
+                CastRange = 300f,
                 Delay = 250f,
-                EventTypes = new EventType[] { },
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
                 MissileSpeed = 1500
             });
 
@@ -6923,10 +7950,12 @@ namespace Support_AIO.Data
                 SpellName = "zacr",
                 ChampionName = "zac",
                 Slot = SpellSlot.R,
-                CastRange = 850f,
+                CastType = CastType.Proximity,
+                CastRange = 600f,
+                Radius = 300f,
                 Delay = 250f,
-                EventTypes = new[] { EventType.Danger, EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                EventTypes = new[] { EventType.Danger, EventType.CrowdControl, EventType.Ultimate },
+                MissileSpeed = 1800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6934,6 +7963,7 @@ namespace Support_AIO.Data
                 SpellName = "zedq",
                 ChampionName = "zed",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 900f,
                 Delay = 250f,
@@ -6949,6 +7979,7 @@ namespace Support_AIO.Data
                 SpellName = "zedw",
                 ChampionName = "zed",
                 Slot = SpellSlot.W,
+                CastType = CastType.LinearAoE,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -6960,10 +7991,11 @@ namespace Support_AIO.Data
                 SpellName = "zede",
                 ChampionName = "zed",
                 Slot = SpellSlot.E,
+                CastType = CastType.Proximity,
                 CastRange = 300f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6971,10 +8003,11 @@ namespace Support_AIO.Data
                 SpellName = "zedr",
                 ChampionName = "zed",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 850f,
                 Delay = 450f,
                 EventTypes = new[] { EventType.Danger, EventType.Initiator },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -6982,6 +8015,8 @@ namespace Support_AIO.Data
                 SpellName = "ziggsq",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
+                CollidesWith = new[] { CollisionObjectType.EnemyHeroes },
                 CastRange = 850f,
                 Radius = 100f,
                 Delay = 250f,
@@ -6996,6 +8031,7 @@ namespace Support_AIO.Data
                 SpellName = "ziggsw",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -7008,6 +8044,7 @@ namespace Support_AIO.Data
                 SpellName = "ziggswtoggle",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -7019,6 +8056,7 @@ namespace Support_AIO.Data
                 SpellName = "ziggse",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -7031,6 +8069,7 @@ namespace Support_AIO.Data
                 SpellName = "ziggse2",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.E,
+                CastType = CastType.Circlular,
                 CastRange = 850f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
@@ -7042,6 +8081,7 @@ namespace Support_AIO.Data
                 SpellName = "ziggsr",
                 ChampionName = "ziggs",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 2250f,
                 Delay = 1800f,
                 EventTypes = new[] { EventType.Danger, EventType.Ultimate },
@@ -7054,6 +8094,7 @@ namespace Support_AIO.Data
                 SpellName = "zileanq",
                 ChampionName = "zilean",
                 Slot = SpellSlot.Q,
+                CastType = CastType.Circlular,
                 CastRange = 900f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -7066,10 +8107,11 @@ namespace Support_AIO.Data
                 SpellName = "zileanw",
                 ChampionName = "zilean",
                 Slot = SpellSlot.W,
+                CastType = CastType.Proximity,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -7077,10 +8119,11 @@ namespace Support_AIO.Data
                 SpellName = "zileane",
                 ChampionName = "zilean",
                 Slot = SpellSlot.E,
+                CastType = CastType.Targeted,
                 CastRange = 700f,
                 Delay = 250f,
                 EventTypes = new[] { EventType.CrowdControl },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -7088,10 +8131,11 @@ namespace Support_AIO.Data
                 SpellName = "zileanr",
                 ChampionName = "zilean",
                 Slot = SpellSlot.R,
+                CastType = CastType.Targeted,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
 
             ZLib.Spells.Add(new Gamedata
@@ -7099,6 +8143,7 @@ namespace Support_AIO.Data
                 SpellName = "zyraq",
                 ChampionName = "zyra",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
                 CastRange = 800f,
                 Radius = 430f,
                 Delay = 250f,
@@ -7112,6 +8157,8 @@ namespace Support_AIO.Data
                 SpellName = "zyraqplantmissile",
                 ChampionName = "zyra",
                 Slot = SpellSlot.Q,
+                CastType = CastType.MissileLinear,
+                IsPerpindicular = true,
                 CastRange = 675f,
                 Radius = 710f,
                 Delay = 250f,
@@ -7125,6 +8172,7 @@ namespace Support_AIO.Data
                 SpellName = "zyraw",
                 ChampionName = "zyra",
                 Slot = SpellSlot.W,
+                CastType = CastType.Circlular,
                 CastRange = 0f,
                 Delay = 250f,
                 EventTypes = new EventType[] { },
@@ -7136,6 +8184,7 @@ namespace Support_AIO.Data
                 SpellName = "zyrae",
                 ChampionName = "zyra",
                 Slot = SpellSlot.E,
+                CastType = CastType.MissileLinear,
                 FixedRange = true,
                 CastRange = 1150f,
                 Radius = 70f,
@@ -7150,6 +8199,7 @@ namespace Support_AIO.Data
                 SpellName = "zyrar",
                 ChampionName = "zyra",
                 Slot = SpellSlot.R,
+                CastType = CastType.Circlular,
                 CastRange = 700f,
                 Radius = 500f,
                 Delay = 500f,
@@ -7159,7 +8209,7 @@ namespace Support_AIO.Data
                         EventType.Danger, EventType.Ultimate,
                         EventType.CrowdControl, EventType.Initiator
                     },
-                MissileSpeed = int.MaxValue
+                MissileSpeed = 4800
             });
         }
 

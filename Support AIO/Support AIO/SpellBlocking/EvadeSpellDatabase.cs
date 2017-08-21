@@ -80,7 +80,20 @@ namespace Support_AIO.SpellBlocking
                     _dangerLevel = 1
                 });
             }
-        
-    }
+            if (ObjectManager.GetLocalPlayer().ChampionName == "Lulu")
+            {
+
+                Spells.Add(new EvadeSpellData
+                {
+                    Name = "sonaw",
+                    Slot = SpellSlot.E,
+                    Range = 650,
+                    Delay = 250,
+                    Speed = int.MaxValue,
+                    _dangerLevel = 1
+                });
+            }
+
+        }
     }
 }

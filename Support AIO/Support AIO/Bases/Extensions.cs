@@ -140,9 +140,12 @@
 
         public static Obj_AI_Hero GetBestKillableHero(this Spell spell, DamageType damageType = DamageType.True, bool ignoreShields = false)
         {
-            return TargetSelector.Implementation.GetOrderedTargets(spell.Range-100f).FirstOrDefault();
+            return TargetSelector.Implementation.GetOrderedTargets(spell.Range).FirstOrDefault();
         }
-
+        public static Obj_AI_Hero GetBestKillableHeroEQ(DamageType damageType = DamageType.True, bool ignoreShields = false)
+        {
+            return TargetSelector.Implementation.GetOrderedTargets(1800).FirstOrDefault();
+        }
         /// <summary>
         ///     Gets the valid enemy heroes targets in the game.
         /// </summary>

@@ -14,12 +14,15 @@ namespace Support_AIO.Data
 {
     #region
 
-    using System.Collections.Generic;
+    using System;
     using Aimtec;
     using Base;
 
     #endregion
 
+    /// <summary>
+    ///     Class Troydata.
+    /// </summary>
     public class Troydata
     {
         #region Public Properties
@@ -97,6 +100,7 @@ namespace Support_AIO.Data
         /// </summary>
         static Troydata()
         {
+            Console.WriteLine("ZLib: Troydata Loaded!");
             ZLib.TroyList.Add(new Troydata
             {
                 Name = "R_buf",

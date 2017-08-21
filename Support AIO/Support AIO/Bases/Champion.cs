@@ -195,10 +195,14 @@ namespace Support_AIO.Bases
            
         }
 
-        private static void ZLib_OnPredictDamage(Base.Champion hero, PredictDamageEventArgs args)
+        private static void ZLib_OnPredictDamage(Base.Unit hero, PredictDamageEventArgs args)
         {
-            if (Player.ChampionName == "Zilean")
+            if (Player.ChampionName == "Lulu")
             {
+                if (hero.Instance.IsEnemy)
+                {
+                    return;
+                }
                 if (hero.IncomeDamage < 0)
                 {
 
@@ -206,42 +210,97 @@ namespace Support_AIO.Bases
                 }
 
 
-                if (!hero.Player.IsValidTarget(float.MaxValue, true))
+                if (!hero.Instance.IsValidTarget(float.MaxValue, true))
                 {
                     Helpers.ResetIncomeDamage(hero);
                 }
 
-                if (hero.Player.HasBuffOfType(BuffType.Invulnerability))
+                if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
                 {
                     args.NoProcess = true;
                 }
 
 
                 var objShop = ObjectManager.Get<GameObject>()
-                    .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Player.Team);
+                    .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
 
                 if (objShop != null
-                    && objShop.Distance(hero.Player.ServerPosition) <= 1250)
+                    && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
+                {
+                    args.NoProcess = true;
+                }
+                
+                if (args.HpInstance.PredictedDmg * 2 >= hero.Instance.Health && R.Ready)
+                {
+
+                        R.CastOnUnit(hero.Instance);
+                    
+                }
+            }
+            if (Player.ChampionName == "Zilean")
+            {
+                if (hero.Instance.IsEnemy)
+                {
+                    return;
+                }
+                if (hero.IncomeDamage < 0)
+                {
+
+                    Helpers.ResetIncomeDamage(hero);
+                }
+
+
+                if (!hero.Instance.IsValidTarget(float.MaxValue, true))
+                {
+                    Helpers.ResetIncomeDamage(hero);
+                }
+
+                if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
+                {
+                    args.NoProcess = true;
+                }
+
+
+                var objShop = ObjectManager.Get<GameObject>()
+                    .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
+
+                if (objShop != null
+                    && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
                 {
                     args.NoProcess = true;
                 }
               
-                if (args.HpInstance.PredictedDmg*2 >= hero.Player.Health && R.Ready)
+                if (args.HpInstance.PredictedDmg*2 >= hero.Instance.Health && R.Ready)
                 {
                   
-                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled)
                     {
 
-                        R.CastOnUnit(hero.Player);
+                        R.CastOnUnit(hero.Instance);
                     }
                 }
             }
-            if (Player.ChampionName == "Janna" || Player.ChampionName == "Rakan" || Player.ChampionName == "Karma")
+            if (Player.ChampionName == "Janna" || Player.ChampionName == "Lulu" || Player.ChampionName == "Rakan" || Player.ChampionName == "Karma")
             {
 
                 if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
-            {
-
+                {
+                    if (hero.Instance.IsEnemy)
+                    {
+                        return;
+                    }
+                    if (hero.Attacker.IsAlly)
+                    {
+                        return;
+                    }
+                    if (hero.MinionDamage > 0)
+                    {
+                        if (hero.AbilityDamage == 0 && hero.BuffDamage == 0 && hero.ItemDamage == 0 &&
+                            hero.TowerDamage == 0 && hero.TroyDamage == 0)
+                        {
+                            return;
+                        }
+                    }
                     if (hero.IncomeDamage < 0)
                     {
 
@@ -249,55 +308,55 @@ namespace Support_AIO.Bases
                     }
                   
 
-                    if (!hero.Player.IsValidTarget(float.MaxValue, true))
+                    if (!hero.Instance.IsValidTarget(float.MaxValue, true))
                     {
                         Helpers.ResetIncomeDamage(hero);
                     }
                    
-                    if (hero.Player.HasBuffOfType(BuffType.Invulnerability))
+                    if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.PhysicalImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.PhysicalImmunity)
                         && args.HpInstance.EventType == EventType.AutoAttack)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.SpellImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.SpellImmunity)
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("sivire")
+                    if (hero.Instance.HasBuff("sivire")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("bansheesviel")
+                    if (hero.Instance.HasBuff("bansheesviel")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
                   
                     var objShop = ObjectManager.Get<GameObject>()
-                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Player.Team);
+                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
 
                     if (objShop != null
-                        && objShop.Distance(hero.Player.ServerPosition) <= 1250)
+                        && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
                     {
                         args.NoProcess = true;
                     }
                     
                   
                       
-                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled)
                     {
 
-                        E.CastOnUnit(hero.Player);
+                        E.CastOnUnit(hero.Instance);
                     }
 
                 }
@@ -307,7 +366,10 @@ namespace Support_AIO.Bases
 
                 if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
                 {
-
+                    if (hero.Instance.IsEnemy)
+                    {
+                        return;
+                    }
                     if (hero.IncomeDamage < 0)
                     {
 
@@ -315,55 +377,55 @@ namespace Support_AIO.Bases
                     }
 
 
-                    if (!hero.Player.IsValidTarget(float.MaxValue, true))
+                    if (!hero.Instance.IsValidTarget(float.MaxValue, true))
                     {
                         Helpers.ResetIncomeDamage(hero);
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.Invulnerability))
+                    if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.PhysicalImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.PhysicalImmunity)
                         && args.HpInstance.EventType == EventType.AutoAttack)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.SpellImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.SpellImmunity)
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("sivire")
+                    if (hero.Instance.HasBuff("sivire")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("bansheesviel")
+                    if (hero.Instance.HasBuff("bansheesviel")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
                     var objShop = ObjectManager.Get<GameObject>()
-                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Player.Team);
+                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
 
                     if (objShop != null
-                        && objShop.Distance(hero.Player.ServerPosition) <= 1250)
+                        && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
                     {
                         args.NoProcess = true;
                     }
 
 
 
-                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled && hero.Player.Distance(Player) < 400)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
                     {
 
-                        W2.CastOnUnit(hero.Player);
+                        W2.CastOnUnit(hero.Instance);
                     }
 
                 }
@@ -373,7 +435,10 @@ namespace Support_AIO.Bases
 
                 if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
                 {
-
+                    if (hero.Instance.IsEnemy)
+                    {
+                        return;
+                    }
                     if (hero.IncomeDamage < 0)
                     {
 
@@ -381,45 +446,45 @@ namespace Support_AIO.Bases
                     }
 
 
-                    if (!hero.Player.IsValidTarget(float.MaxValue, true))
+                    if (!hero.Instance.IsValidTarget(float.MaxValue, true))
                     {
                         Helpers.ResetIncomeDamage(hero);
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.Invulnerability))
+                    if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.PhysicalImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.PhysicalImmunity)
                         && args.HpInstance.EventType == EventType.AutoAttack)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuffOfType(BuffType.SpellImmunity)
+                    if (hero.Instance.HasBuffOfType(BuffType.SpellImmunity)
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("sivire")
+                    if (hero.Instance.HasBuff("sivire")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
-                    if (hero.Player.HasBuff("bansheesviel")
+                    if (hero.Instance.HasBuff("bansheesviel")
                         && args.HpInstance.EventType == EventType.Spell)
                     {
                         args.NoProcess = true;
                     }
 
                     var objShop = ObjectManager.Get<GameObject>()
-                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Player.Team);
+                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
 
                     if (objShop != null
-                        && objShop.Distance(hero.Player.ServerPosition) <= 1250)
+                        && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
                     {
                         args.NoProcess = true;
                     }
@@ -433,12 +498,12 @@ namespace Support_AIO.Bases
                     {
                         return;
                     }
-                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled && hero.Player.Distance(Player) < 400)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
                     {
           
-                        W.CastOnUnit(hero.Player);
+                        W.CastOnUnit(hero.Instance);
                     }
-                    if (ZLib.Menu["whitelist"][hero.Player.ChampionName.ToLower()].Enabled && hero.Player.Distance(Player) < 400)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
                     {
 
                        E.Cast();

@@ -11,6 +11,9 @@
 #endregion
 
 using Aimtec.SDK.Util.Cache;
+using Support_AIO.Base;
+using Support_AIO.Data;
+using Support_AIO.Handlers;
 
 namespace Support_AIO
 {
@@ -23,61 +26,85 @@ namespace Support_AIO
     using Aimtec.SDK.Menu;
     using Aimtec.SDK.Menu.Components;
     using Aimtec.SDK.Util;
-    using Base;
-    using Data;
-    using Handlers;
+ 
 
     #endregion
 
+    /// <summary>
+    ///     Class ZLib.
+    /// </summary>
     public static class ZLib
     {
         #region Delegates and Events
 
-        public static event OnPredictDamageHanlder OnPredictDamage;
+        /// <summary>
+        ///     The OnPredictDamage event.
+        /// </summary>
+        public static event OnPredictDamageHandlder OnPredictDamage;
 
-        public delegate void OnPredictDamageHanlder(Champion hero, PredictDamageEventArgs args);
+        /// <summary>
+        ///     The OnPredictDamage handlder.
+        /// </summary>
+        /// <param name="unit">The unit.</param>
+        /// <param name="args">The <see cref="PredictDamageEventArgs" /> instance containing the event data.</param>
+        public delegate void OnPredictDamageHandlder(Unit unit, PredictDamageEventArgs args);
 
         #endregion
 
         #region Static Fields and Constants
 
-        internal static bool Init;
-        internal static Menu Menu;
-
         /// <summary>
-        ///     The heroes
+        ///     The list of all the units the library is tracking
         /// </summary>
-        public static List<Champion> Heroes = new List<Champion>();
+        public static List<Unit> AllUnits = new List<Unit>();
 
         /// <summary>
-        ///     The active predicted damge instances
+        ///     The active predicted damge instances [HPInstance].
         /// </summary>
         public static Dictionary<int, HPInstance> DamageCollection = new Dictionary<int, HPInstance>();
 
         /// <summary>
-        ///     A generated spell lists of everything
+        ///     A generated entry lists of all spells.
         /// </summary>
         public static List<Gamedata> Spells = new List<Gamedata>();
 
         /// <summary>
-        ///     A generated spell lists of spells only in the current game.
+        ///     A generated entry lists of spells only in the current game.
         /// </summary>
         public static List<Gamedata> CachedSpells = new List<Gamedata>();
 
         /// <summary>
-        ///     A generated aura lists of everything
+        ///     A generated entry lists of enemy spells only in the current game.
+        /// </summary>
+        public static List<Gamedata> EnemyCachedSpells = new List<Gamedata>();
+
+        /// <summary>
+        ///     A generated entry lists of ally spells only in the current game.
+        /// </summary>
+        public static List<Gamedata> AllyCachedSpells = new List<Gamedata>();
+
+        /// <summary>
+        ///     A generated entry list of all auras.
         /// </summary>
         public static List<Auradata> AuraList = new List<Auradata>();
 
         /// <summary>
-        ///     A generated aura lists of spells only in the current game.
+        ///     A generated entry lists of auras only in the current game.
         /// </summary>
         public static List<Auradata> CachedAuras = new List<Auradata>();
 
         /// <summary>
-        ///     A generated troy lists of everything
+        ///     A generated entry list of all troys.
         /// </summary>
         public static List<Troydata> TroyList = new List<Troydata>();
+
+        /// <summary>
+        ///     A generated entry list of all turrets.
+        /// </summary>
+        public static List<Unit> Turrets = new List<Unit>();
+
+        internal static bool Init;
+        internal static Menu Menu;
 
         #endregion
 
@@ -85,45 +112,70 @@ namespace Support_AIO
 
         private static void GetHeroesInGame()
         {
-            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.Team != Player.Team))
+            foreach (var i in ObjectManager.Get<Obj_AI_Hero>())
             {
-                Heroes.Add(new Champion { Player = i });
+                AllUnits.Add(new Unit { Instance = i });
             }
 
-            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.Team == Player.Team))
-            {
-                Heroes.Add(new Champion { Player = i });
-            }
+            Console.WriteLine("ZLib: Heroes List Generated!");
         }
 
-        private static void GetGameTroysInGame()
+        private static void GetTurretsInGame()
         {
-            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.Team != Player.Team))
+            foreach (var t in ObjectManager.Get<Obj_AI_Turret>())
+            {
+                if (!t.IsDead)
+                {
+                    Turrets.Add(new Unit { Instances = t });
+                }
+            }
+
+            Console.WriteLine("ZLib: Turret List Generated!");
+        }
+
+        private static void GetGameTroysInGame(Troydata data)
+        {
+            foreach (var i in ObjectManager.Get<Obj_AI_Hero>())
             {
                 foreach (var item in TroyList.Where(x => x.ChampionName.ToLower() == i.ChampionName.ToLower()))
                 {
                     Gametroy.Troys.Add(new Gametroy(i.ChampionName, item.Slot, item.Name, 0, false));
                 }
             }
+
+            Console.WriteLine("ZLib: Gametroy List Generated!");
         }
 
-        private static void GetSpellsInGame()
+
+
+        private static void GetSpellsInGame(Gamedata data)
         {
-            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.Team != Player.Team))
+            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.Team != ObjectManager.GetLocalPlayer().Team))
             {
                 foreach (var item in Spells.Where(x => x.ChampionName.ToLower() == i.ChampionName.ToLower()))
                 {
                     CachedSpells.Add(item);
+                    EnemyCachedSpells.Add(item);
                 }
             }
+
+            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.Team == ObjectManager.GetLocalPlayer().Team))
+            {
+                foreach (var item in Spells.Where(x => x.ChampionName.ToLower() == i.ChampionName.ToLower()))
+                {
+                    CachedSpells.Add(item);
+                    AllyCachedSpells.Add(item);
+                }
+            }
+
+            Console.WriteLine("ZLib: Spell List Generated!");
         }
 
-        private static void GetAurasInGame()
+        private static void GetAurasInGame(Auradata data)
         {
-            foreach (var i in ObjectManager.Get<Obj_AI_Hero>().Where(h => h.Team != Player.Team))
+            foreach (var i in ObjectManager.Get<Obj_AI_Hero>())
             {
-                foreach (var aura in AuraList.Where(x => x.Champion != null
-                    && x.Champion.ToLower() == i.ChampionName.ToLower()))
+                foreach (var aura in AuraList.Where(x => x.Champion != null && x.Champion.ToLower() == i.ChampionName.ToLower()))
                 {
                     CachedAuras.Add(aura);
                 }
@@ -133,204 +185,118 @@ namespace Support_AIO
             {
                 CachedAuras.Add(generalaura);
             }
-        }
 
-        private static void LoadSpellMenu(Menu parent)
-        {
-            foreach (var unit in Heroes.Where(h => h.Player.Team != Player.Team))
-            {
-                var menu = new Menu(unit.Player.ChampionName.ToLower() + "menu", unit.Player.ChampionName);
-
-                // new menu per spell
-                foreach (var entry in CachedSpells)
-                {
-                    if (entry.ChampionName.ToLower() == unit.Player.ChampionName.ToLower())
-                    {
-                        var newmenu = new Menu(entry.SpellName, entry.SpellName);
-
-                        // activation parameters
-                        newmenu.Add(new MenuBool(entry.SpellName + "predict", "Enabled"));
-                        newmenu.Add(new MenuBool(entry.SpellName + "danger", "Danger",
-                            entry.EventTypes.Contains(EventType.Danger)));
-                        newmenu.Add(new MenuBool(entry.SpellName + "crowdcontrol", "CC",
-                            entry.EventTypes.Contains(EventType.CrowdControl)));
-                        newmenu.Add(new MenuBool(entry.SpellName + "ultimate", "Danger Ultimate",
-                            entry.EventTypes.Contains(EventType.Ultimate)));
-                        newmenu.Add(new MenuBool(entry.SpellName + "forceexhaust", "Force Exhaust",
-                            entry.EventTypes.Contains(EventType.ForceExhaust)));
-                        menu.Add(newmenu);
-
-                        DelayAction.Queue(5000,
-                            () => newmenu[entry.SpellName + "predict"].As<MenuBool>().Value = entry.CastRange != 0);
-                    }
-                }
-
-                parent.Add(menu);
-            }
+            Console.WriteLine("ZLib: Aura List Generated!");
         }
 
         #endregion
 
         #region Public Methods and Operators
 
-        public static void Attach(Menu parent)
+        /// <summary>
+        ///     Attaches the specified the menu initializing the library.
+        /// </summary>
+        /// <param name="parent">The root menu.</param>
+        /// <param name="menuDisplayName">Display name of the attached menu.</param>
+        public static void Attach(Menu parent, string menuDisplayName = "ZLib")
         {
-            if (Init)
-            {
-                return;
-            }
-
-            new Auradata();
-            new Gamedata();
-            new Troydata();
-
             GetHeroesInGame();
-            GetSpellsInGame();
-            GetGameTroysInGame();
-            GetAurasInGame();
+            GetTurretsInGame();
+            GetSpellsInGame(new Gamedata());
+            GetAurasInGame(new Auradata());
+            GetGameTroysInGame(new Troydata());
 
             Helpers.CreateLogPath();
 
-            if (Player.ChampionName == "Zilean")
+            Menu = new Menu("zlib", menuDisplayName);
+            var hpmenu = new Menu("dhp", "Debug Health Prediction");
 
+            var itest = new MenuBool("testdamage", "Trigger Damage Event", false);
+            hpmenu.Add(itest).OnValueChanged += (sender, eventArgs) =>
             {
-                Menu = new Menu("zlib", "ZLib");
-
-                var dmenu = new Menu("debugmenu", "Debug Tools");
-                var hpmenu = new Menu("dhp", "Debug Health Prediction");
-
-                var itest = new MenuBool("testdamage", "Trigger Damage Event", false);
-                hpmenu.Add(itest).OnValueChanged += (sender, eventArgs) =>
+                if (eventArgs.GetNewValue<MenuBool>().Value)
                 {
-                    if (eventArgs.GetNewValue<MenuBool>().Value)
-                    {
-                        var caster = ObjectManager.GetLocalPlayer();
+                    var caster = ObjectManager.GetLocalPlayer();
 
-                        var target = Heroes.First(x =>
-                            x.Player.ChampionName.ToLower() ==
-                            Menu["debugmenu"]["dhp"]["testdamagetarget"]
-                                .As<MenuList>().SelectedItem.ToLower());
+                    var target = AllUnits.First(x =>
+                        ((Obj_AI_Hero)x.Instance).ChampionName.ToLower() ==
+                        Menu["dhp"]["testdamagetarget"]
+                            .As<MenuList>().SelectedItem.ToLower());
 
-                        var type = (EventType) Enum.Parse(typeof(EventType),
-                            Menu["debugmenu"]["dhp"]["testdamagetype"].As<MenuList>().SelectedItem);
+                    var type = (EventType)Enum.Parse(typeof(EventType),
+                        Menu["dhp"]["testdamagetype"].As<MenuList>().SelectedItem);
 
-                        Projections.EmulateDamage(caster, target,
-                            new Gamedata {SpellName = "test" + Environment.TickCount}, type,
-                            "debug.Test");
-                        DelayAction.Queue(100, () => itest.Value = false);
-                    }
-                };
-
-                hpmenu.Add(new MenuList("testdamagetype", "EventType",
-                    Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(v => v.ToString()).ToArray(), 0));
-                hpmenu.Add(new MenuList("testdamagetarget", "Target",
-                    Heroes.Select(x => x.Player.ChampionName).ToArray(), 0));
-
-                dmenu.Add(hpmenu);
-                dmenu.Add(new MenuBool("acdebug", "Debug Income Damage", false));
-                dmenu.Add(new MenuBool("dumpdata", "Debug & Dump Spell Data", false));
-                Menu.Add(dmenu);
-
-                Menu.Add(new MenuList("healthp", "Ally Priority:", new[] {"Low HP", "Most AD/AP", "Most HP"}, 1));
-                Menu.Add(
-                    new MenuSlider("weightdmg", "Weight Income Damage (%)", 115, 100, 150).SetToolTip(
-                        "Make it think you are taking more damage than calulated."));
-                Menu.Add(
-                    new MenuSlider("lagtolerance", "Lag Tolerance (%)", 25).SetToolTip(
-                        "Make it think you are taking damage longer than intended"));
-
-                var uumenu = new Menu("evadem", "Spell Database");
-                var WhiteList = new Menu("whitelist", "R Whitelist");
-                {
-                    foreach (var target in GameObjects.AllyHeroes)
-                    {
-                        WhiteList.Add(new MenuBool(target.ChampionName.ToLower(), "Enable: " + target.ChampionName));
-                    }
+                    Projections.EmulateDamage(caster, target, new Gamedata { SpellName = "test" + Environment.TickCount }, type,
+                        "debug.Test");
+                    DelayAction.Queue(100, () => itest.Value = false);
                 }
-                Menu.Add(WhiteList);
-                LoadSpellMenu(uumenu);
-                Menu.Add(uumenu);
+            };
 
-                parent.Add(Menu);
+            hpmenu.Add(new MenuList("testdamagetype", "EventType",
+                Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(v => v.ToString()).ToArray(), 0));
+            hpmenu.Add(new MenuList("testdamagetarget", "Target",
+                AllUnits.Select(x => ((Obj_AI_Hero)x.Instance).ChampionName).ToArray(), AllUnits.Count - 1));
 
-                Projections.Init();
-                Drawings.Init();
-                Buffs.StartOnUpdate();
-                Gametroys.StartOnUpdate();
+            Menu.Add(hpmenu);
+            Menu.Add(new MenuBool("acdebug", "Debug Income Damage", false));
+            Menu.Add(new MenuBool("dumpdata", "Debug & Dump Spell Data", false));
+            Menu.Add(new MenuBool("logerror", "Debug Errors in Console"));
 
-                Init = true;
-            }
-            if (Player.ChampionName != "Zilean")
-
+            Menu.Add(new MenuList("hprior", "Hero Priority:", new[] { "Low HP", "Most AD/AP", "Most HP" }, 1));
+            Menu.Add(
+                new MenuSlider("weightdmg", "Weight Income Damage (%)", 115, 100, 150).SetToolTip(
+                    "Make it think you are taking more damage than calulated."));
+            Menu.Add(
+                new MenuSlider("lagtolerance", "Lag Tolerance (%)", 25).SetToolTip(
+                    "Make it think you are taking damage longer than intended"));
+            var WhiteList = new Menu("whitelist", "Whitelist");
             {
-                Menu = new Menu("zlib", "ZLib");
-
-                var dmenu = new Menu("debugmenu", "Debug Tools");
-                var hpmenu = new Menu("dhp", "Debug Health Prediction");
-
-                var itest = new MenuBool("testdamage", "Trigger Damage Event", false);
-                hpmenu.Add(itest).OnValueChanged += (sender, eventArgs) =>
+                foreach (var target in GameObjects.AllyHeroes)
                 {
-                    if (eventArgs.GetNewValue<MenuBool>().Value)
-                    {
-                        var caster = ObjectManager.GetLocalPlayer();
-
-                        var target = Heroes.First(x =>
-                            x.Player.ChampionName.ToLower() ==
-                            Menu["debugmenu"]["dhp"]["testdamagetarget"]
-                                .As<MenuList>().SelectedItem.ToLower());
-
-                        var type = (EventType)Enum.Parse(typeof(EventType),
-                            Menu["debugmenu"]["dhp"]["testdamagetype"].As<MenuList>().SelectedItem);
-
-                        Projections.EmulateDamage(caster, target,
-                            new Gamedata { SpellName = "test" + Environment.TickCount }, type,
-                            "debug.Test");
-                        DelayAction.Queue(100, () => itest.Value = false);
-                    }
-                };
-
-                hpmenu.Add(new MenuList("testdamagetype", "EventType",
-                    Enum.GetValues(typeof(EventType)).Cast<EventType>().Select(v => v.ToString()).ToArray(), 0));
-                hpmenu.Add(new MenuList("testdamagetarget", "Target",
-                    Heroes.Select(x => x.Player.ChampionName).ToArray(), 0));
-
-                dmenu.Add(hpmenu);
-                dmenu.Add(new MenuBool("acdebug", "Debug Income Damage", false));
-                dmenu.Add(new MenuBool("dumpdata", "Debug & Dump Spell Data", false));
-                Menu.Add(dmenu);
-
-                Menu.Add(new MenuList("healthp", "Ally Priority:", new[] { "Low HP", "Most AD/AP", "Most HP" }, 1));
-                Menu.Add(
-                    new MenuSlider("weightdmg", "Weight Income Damage (%)", 115, 100, 150).SetToolTip(
-                        "Make it think you are taking more damage than calulated."));
-                Menu.Add(
-                    new MenuSlider("lagtolerance", "Lag Tolerance (%)", 25).SetToolTip(
-                        "Make it think you are taking damage longer than intended"));
-
-                var uumenu = new Menu("evadem", "Spell Database");
-                var WhiteList = new Menu("whitelist", "Shielding Whitelist");
-                {
-                    foreach (var target in GameObjects.AllyHeroes)
-                    {
-                        WhiteList.Add(new MenuBool(target.ChampionName.ToLower(), "Enable: " + target.ChampionName));
-                    }
+                    WhiteList.Add(new MenuBool(target.ChampionName.ToLower(), "Enable: " + target.ChampionName));
                 }
-                Menu.Add(WhiteList);
-                LoadSpellMenu(uumenu);
-                Menu.Add(uumenu);
-
-                parent.Add(Menu);
-
-                Projections.Init();
-                Drawings.Init();
-                Buffs.StartOnUpdate();
-                Gametroys.StartOnUpdate();
-
-                Init = true;
             }
+            Menu.Add(WhiteList);
+            parent.Add(Menu);
+
+            Projections.Initizialize();
+            Drawings.Initialize();
+            Buffs.Initialize();
+            Gametroys.Initialize();
+
+            Console.WriteLine("ZLib: Loaded!");
         }
 
+        /// <summary>
+        ///     Gets the units in the priority order.
+        /// </summary>
+        /// <returns>IEnumerable&lt;Unit&gt;.</returns>
+        public static IEnumerable<Unit> GetUnits()
+        {
+            switch (Menu["hprior"].As<MenuList>().Value)
+            {
+                case 0:
+                    return AllUnits.Where(h => !h.Instance.IsDead)
+                        .OrderBy(h => h.Instance.Health / h.Instance.MaxHealth * 100);
+
+                case 1:
+                    return AllUnits.Where(h => !h.Instance.IsDead)
+                        .OrderByDescending(h => h.Instance.FlatPhysicalDamageMod + h.Instance.FlatMagicDamageMod);
+
+                case 2:
+                    return AllUnits.Where(h => !h.Instance.IsDead)
+                        .OrderByDescending(h => h.Instance.Health);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        ///     Gets the game data.
+        /// </summary>
+        /// <param name="hero">The hero.</param>
+        /// <param name="slot">The slot.</param>
+        /// <returns>Gamedata.</returns>
         public static Gamedata GetGameData(Obj_AI_Hero hero, SpellSlot slot)
         {
             foreach (var entry in Spells)
@@ -347,6 +313,12 @@ namespace Support_AIO
             return new Gamedata();
         }
 
+        /// <summary>
+        ///     Gets the game data.
+        /// </summary>
+        /// <param name="hero">The hero.</param>
+        /// <param name="spellName">Name of the spell.</param>
+        /// <returns>Gamedata.</returns>
         public static Gamedata GetGameData(Obj_AI_Hero hero, string spellName)
         {
             foreach (var entry in Spells)
@@ -363,65 +335,42 @@ namespace Support_AIO
             return new Gamedata();
         }
 
-        internal static bool IsSpellEnabled(Gamedata data)
-        {
-            return Menu["evadem"][data.ChampionName.ToLower() + "menu"][data.SpellName]
-                [data.SpellName + "predict"].As<MenuBool>().Enabled;
-        }
-
         /// <summary>
-        ///     Checks if the spell is enabled through the menu
+        ///     Emulates the damage.
         /// </summary>
-        /// <param name="data">The spell.</param>
-        /// <param name="type">The type.</param>
-        /// <returns></returns>
-        public static bool IsSpellEnabled(Gamedata data, EventType type)
-        {
-            if (type != EventType.CrowdControl
-                && type != EventType.Danger
-                && type != EventType.Ultimate
-                && type != EventType.ForceExhaust)
-            {
-                return false;
-            }
-
-            return Menu["evadem"][data.ChampionName.ToLower() + "menu"][data.SpellName]
-                [data.SpellName + type.ToString().ToLower()].As<MenuBool>().Enabled;
-        }
-
-        public static void EmulateDamage(Obj_AI_Base sender, Champion hero, Gamedata data, EventType dmgType, string notes = null,
+        /// <param name="sender">The sender.</param>
+        /// <param name="hero">The hero.</param>
+        /// <param name="data">The data.</param>
+        /// <param name="dmgType">Type of the damage.</param>
+        /// <param name="notes">The notes.</param>
+        /// <param name="dmgEntry">The damage ammount.</param>
+        /// <param name="expiry">The time of expiry.</param>
+        public static void EmulateDamage(Obj_AI_Base sender, Unit hero, Gamedata data, EventType dmgType, string notes = null,
             float dmgEntry = 0f, int expiry = 500)
         {
             Projections.EmulateDamage(sender, hero, data, dmgType, notes, dmgEntry, expiry);
         }
 
-        public static IEnumerable<Champion> Allies()
+        #endregion
+
+        #region Internal Methods and Operators
+
+        internal static void TriggerOnPredictDamage(Unit unit, PredictDamageEventArgs args)
         {
-            switch (Menu["healthp"].As<MenuList>().Value)
+            try
             {
-                case 0:
-                    return Heroes.Where(h => h.Player.IsAlly && !h.Player.IsDead)
-                        .OrderBy(h => h.Player.Health / h.Player.MaxHealth * 100);
-
-                case 1:
-                    return Heroes.Where(h => h.Player.IsAlly && !h.Player.IsDead)
-                        .OrderByDescending(h => h.Player.FlatPhysicalDamageMod + h.Player.FlatMagicDamageMod);
-
-                case 2:
-                    return Heroes.Where(h => h.Player.IsAlly && !h.Player.IsDead)
-                        .OrderByDescending(h => h.Player.Health);
+                OnPredictDamage?.Invoke(unit, args);
             }
-
-            return null;
+            catch (Exception e)
+            {
+                if (Menu["logerror"].As<MenuBool>().Enabled)
+                {
+                    Console.WriteLine("== Error at ZLib.TriggerOnPredictDamage");
+                    Console.WriteLine(e);
+                }
+            }
         }
 
         #endregion
-
-        internal static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
-
-        internal static void TriggerOnPredictDamage(Champion hero, PredictDamageEventArgs args)
-        {
-            OnPredictDamage?.Invoke(hero, args);
-        }
     }
 }

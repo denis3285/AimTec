@@ -10,38 +10,35 @@
 
     internal class Drawings
     {
-        #region Private Methods and Operators
+        #region Internal Methods and Operators
 
-        private static void Render_OnRender()
+        internal static void Render_OnRender()
         {
-            if (ZLib.Menu["debugmenu"]["acdebug"].As<MenuBool>().Enabled)
+            if (ZLib.Menu["acdebug"].As<MenuBool>().Enabled)
             {
-                foreach (var hero in ZLib.Allies())
+                foreach (var hero in ZLib.GetUnits())
                 {
-                    if (Render.WorldToScreen(hero.Player.Position, out Vector2 mpos))
+                    Vector2 mpos;
+                    if (Render.WorldToScreen(hero.Instance.Position, out mpos))
                     {
-                        if (!hero.Player.IsDead)
+                        if (!hero.Instance.IsDead)
                         {
-                            Render.Text(mpos.X - 40, mpos.Y - 15, Color.Wheat,
-                                "Ability Damage: " + hero.AbilityDamage);
-                            Render.Text(mpos.X - 40, mpos.Y + 0, Color.Wheat,
-                                "Tower Damage: " + hero.TowerDamage);
-                            Render.Text(mpos.X - 40, mpos.Y + 15, Color.Wheat,
-                                "Buff Damage: " + hero.BuffDamage);
-                            Render.Text(mpos.X - 40, mpos.Y + 30, Color.Wheat,
-                                "Troy Damage: " + hero.TroyDamage);
-  
+                            Render.Text(mpos.X - 40, mpos.Y - 15, Color.Wheat, "Ability Damage: " + hero.AbilityDamage);
+                            Render.Text(mpos.X - 40, mpos.Y + 0, Color.Wheat, "Tower Damage: " + hero.TowerDamage);
+                            Render.Text(mpos.X - 40, mpos.Y + 15, Color.Wheat, "Buff Damage: " + hero.BuffDamage);
+                            Render.Text(mpos.X - 40, mpos.Y + 30, Color.Wheat, "Troy Damage: " + hero.TroyDamage);
+                            Render.Text(mpos.X - 40, mpos.Y + 45, Color.Wheat, "Minion Damage: " + hero.MinionDamage);
                         }
                     }
                 }
             }
         }
 
-        #endregion
-
-        internal static void Init()
+        internal static void Initialize()
         {
             Render.OnRender += Render_OnRender;
         }
+
+        #endregion
     }
 }

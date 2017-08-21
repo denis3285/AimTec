@@ -10,38 +10,39 @@
 
 #endregion
 
+using System;
+using System.Linq;
+using Aimtec;
+using Aimtec.SDK.Menu.Components;
+using Support_AIO;
+using Support_AIO.Base;
+using Support_AIO.Data;
+using Support_AIO.Handlers;
+
 namespace Support_AIO.Handlers
-{
+{ 
     #region
 
+    using System;
     using System.Linq;
     using Aimtec;
     using Aimtec.SDK.Extensions;
-    using Base;
-    using Data;
+    using Aimtec.SDK.Menu.Components;
 
     #endregion
 
     internal class Gametroys
     {
-        internal static void StartOnUpdate()
-        {
-            Game.OnUpdate += Game_OnUpdate;
-            GameObject.OnCreate += GameObject_OnCreate;
-            GameObject.OnDestroy += GameObject_OnDestroy;
-        }
+        #region Internal Methods and Operators
 
-        #region Private Methods
-
-        private static void GameObject_OnDestroy(GameObject obj)
+        internal static void OnDestory(GameObject obj)
         {
             if (obj.Type == GameObjectType.MissileClient)
                 return;
 
             foreach (var troy in Gametroy.Troys)
             {
-                if (troy.Included
-                    && obj.Name.ToLower().Contains(troy.Name.ToLower()))
+                if (troy.Included && obj.Name.ToLower().Contains(troy.Name.ToLower()))
                 {
                     troy.Obj = null;
                     troy.Start = 0;
@@ -51,7 +52,7 @@ namespace Support_AIO.Handlers
             }
         }
 
-        private static void GameObject_OnCreate(GameObject obj)
+        internal static void OnCreate(GameObject obj)
         {
             if (obj.Type == GameObjectType.MissileClient)
                 return;
@@ -61,66 +62,82 @@ namespace Support_AIO.Handlers
                 if (obj.Name.ToLower().Contains(troy.Name.ToLower()))
                 {
                     troy.Obj = obj;
-                    troy.Start = (int) (Game.ClockTime * 1000);
+                    troy.Start = (int)(Game.ClockTime * 1000);
 
                     if (!troy.Included)
-                        troy.Included = Helpers.IsEnemyInGame(troy.Owner);
+                        troy.Included = Helpers.IsHeroInGame(troy.Owner);
                 }
             }
         }
 
-        private static void Game_OnUpdate()
+        internal static void OnUpdate()
         {
-            foreach (var hero in ZLib.Allies())
+            try
             {
-                var troy = Gametroy.Troys.Find(x => x.Included);
-                if (troy == null)
-                    continue;
-
-                if (!troy.Obj.IsVisible
-                    || !troy.Obj.IsValid)
+                foreach (var hero in ZLib.GetUnits())
                 {
-                    continue;
-                }
+                    var troy = Gametroy.Troys.Find(x => x.Included);
+                    if (troy == null)
+                        continue;
 
-                foreach (var entry in ZLib.TroyList.Where(x => x.Name.ToLower() == troy.Name.ToLower()))
-                {
-                    var owner = ZLib.Heroes.FirstOrDefault(x => x.HeroNameMatch(entry.ChampionName));
-                    if (owner == null
-                        || !owner.Player.IsEnemy)
+                    if (!troy.Obj.IsVisible || !troy.Obj.IsValid)
                     {
                         continue;
                     }
 
-                    Gamedata data = null;
-
-                    if (entry.ChampionName == null
-                        && entry.Slot == SpellSlot.Unknown)
-                        data = new Gamedata { SpellName = troy.Obj.Name };
-
-                    if (entry.ChampionName != null
-                        && entry.Slot != SpellSlot.Unknown)
+                    foreach (var entry in ZLib.TroyList.Where(x => x.Name.ToLower() == troy.Name.ToLower()))
                     {
-                        data = ZLib.CachedSpells.Where(x => x.Slot == entry.Slot)
-                            .FirstOrDefault(x => x.HeroNameMatch(entry.ChampionName));
-                        data.EventTypes = entry.EventTypes;
-                    }
-
-                    if (hero.Player.Distance(troy.Obj.Position) <= entry.Radius + hero.Player.BoundingRadius)
-                    {
-                        // check delay (e.g fizz bait)
-                        if ((int) (Game.ClockTime * 1000) - troy.Start >= entry.DelayFromStart)
+                        var owner = ZLib.GetUnits().FirstOrDefault(x => x.HeroNameMatch(entry.ChampionName));
+                        if (owner == null)
                         {
-                            // limit the damage using an interval
-                            if ((int) (Game.ClockTime * 1000) - troy.Limiter >= entry.Interval * 1000)
+                            continue;
+                        }
+
+                        Gamedata data = null;
+
+                        if (entry.ChampionName == null && entry.Slot == SpellSlot.Unknown)
+                            data = new Gamedata { SpellName = troy.Obj.Name };
+
+                        if (entry.ChampionName != null && entry.Slot != SpellSlot.Unknown)
+                        {
+                            data = ZLib.CachedSpells.Where(x => x.Slot == entry.Slot)
+                                .FirstOrDefault(x => x.HeroNameMatch(entry.ChampionName));
+
+                            if (data != null)
+                                data.EventTypes = entry.EventTypes;
+                        }
+
+                        if (hero.Instance.Distance(troy.Obj.Position) <= entry.Radius + hero.Instance.BoundingRadius)
+                        {
+                            // check delay (e.g fizz bait)
+                            if ((int)(Game.ClockTime * 1000) - troy.Start >= entry.DelayFromStart)
                             {
-                                Projections.EmulateDamage(owner.Player, hero, data, EventType.Troy, "troy.OnUpdate");
-                                troy.Limiter = (int) (Game.ClockTime * 1000);
+                                // limit the damage using an interval
+                                if ((int)(Game.ClockTime * 1000) - troy.Limiter >= entry.Interval * 1000)
+                                {
+                                    Projections.EmulateDamage(owner.Instance, hero, data, EventType.Troy, "troy.onupdate");
+                                    troy.Limiter = (int)(Game.ClockTime * 1000);
+                                }
                             }
                         }
                     }
                 }
             }
+            catch (Exception e)
+            {
+                if (ZLib.Menu["logerror"].As<MenuBool>().Enabled)
+                {
+                    Console.WriteLine("== Error at: ZLib.Gametroys.OnUpdate");
+                    Console.WriteLine(e);
+                }
+            }
+        }
+
+        internal static void Initialize()
+        {
+            Game.OnUpdate += OnUpdate;
+            GameObject.OnCreate += OnCreate;
+            GameObject.OnDestroy += OnDestory;
         }
 
         #endregion

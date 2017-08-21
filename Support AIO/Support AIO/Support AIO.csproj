@@ -69,10 +69,11 @@
     <Compile Include="Bases\GameObjects.cs" />
     <Compile Include="Bases\Gapcloser.cs" />
     <Compile Include="Bases\Geometry.cs" />
-    <Compile Include="Base\Champion.cs" />
+    <Compile Include="Base\Unit.cs" />
     <Compile Include="Base\Gametroy.cs" />
     <Compile Include="Base\Helpers.cs" />
     <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\Lulu.cs" />
     <Compile Include="Champions\Nami.cs" />
     <Compile Include="Champions\TahmKench.cs" />
     <Compile Include="Champions\Nautilus.cs" />
