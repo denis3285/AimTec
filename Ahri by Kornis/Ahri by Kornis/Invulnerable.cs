@@ -82,8 +82,8 @@ namespace Ahri_By_Kornis
             bool ignoreShields = true,
             float damage = -1f)
         {
-            if (hero.Buffs.Any(b => b.Type == BuffType.Invulnerability) || hero.IsInvulnerable)
-            {
+            if (hero.ValidActiveBuffs().Any(b => b.Type == BuffType.Invulnerability) || hero.IsInvulnerable)
+             {
                 return true;
             }
             foreach (var entry in Entries)

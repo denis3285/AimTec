@@ -39,8 +39,8 @@ namespace Ahri_By_Kornis
             W = new Spell(SpellSlot.W, 700);
             E = new Spell(SpellSlot.E, 900);
             R = new Spell(SpellSlot.R, 600);
-            Q.SetSkillshot(0.25f, 70f, 1800, false, SkillshotType.Line);
-            E.SetSkillshot(0.25f, 60, 1600, true, SkillshotType.Line, false, HitChance.High);
+            Q.SetSkillshot(0.25f, 70f, 1700, false, SkillshotType.Line);
+            E.SetSkillshot(0.25f, 60, 1550, true, SkillshotType.Line, false, HitChance.High);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
