@@ -198,7 +198,7 @@ namespace Support_AIO.Bases
         private static void ZLib_OnPredictDamage(Base.Unit hero, PredictDamageEventArgs args)
         {
             if (Player.ChampionName == "Lulu")
-            {
+            {     
                 if (hero.Instance.IsEnemy)
                 {
                     return;
@@ -229,14 +229,18 @@ namespace Support_AIO.Bases
                 {
                     args.NoProcess = true;
                 }
-                
+
                 if (args.HpInstance.PredictedDmg * 2 >= hero.Instance.Health && R.Ready)
                 {
+                    if (RootMenu["combo"]["autor"].Enabled)
+                    {
 
                         R.CastOnUnit(hero.Instance);
-                    
+
+                    }
                 }
             }
+
             if (Player.ChampionName == "Zilean")
             {
                 if (hero.Instance.IsEnemy)

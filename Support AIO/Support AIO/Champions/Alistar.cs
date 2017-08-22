@@ -81,6 +81,16 @@ namespace Support_AIO.Champions
 
         protected override void SemiR()
         {
+            if (RootMenu["combo"]["autor"].Enabled)
+            {
+                if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Stun) ||
+                    Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Snare) ||
+                    Player.HasBuffOfType(BuffType.Taunt) || Player.HasBuffOfType(BuffType.Knockback) ||
+                    Player.HasBuffOfType(BuffType.Suppression))
+                {
+                    R.Cast();
+                }
+            }
             if (RootMenu["flashe"].Enabled)
             {
                 Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
@@ -183,7 +193,28 @@ namespace Support_AIO.Champions
 
         protected override void Killsteal()
         {
-            
+            if (Q.Ready &&
+                RootMenu["killsteal"]["useq"].Enabled)
+            {
+                var bestTarget = Extensions.GetBestKillableHero(Q, DamageType.Magical, false);
+                if (bestTarget != null &&
+                    Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
+                    bestTarget.IsValidTarget(Q.Range))
+                {
+              Q.Cast();
+                }
+            }
+            if (W.Ready &&
+                RootMenu["killsteal"]["usew"].Enabled)
+            {
+                var bestTarget = Extensions.GetBestKillableHero(W, DamageType.Magical, false);
+                if (bestTarget != null &&
+                    Player.GetSpellDamage(bestTarget, SpellSlot.W) >= bestTarget.Health &&
+                    bestTarget.IsValidTarget(W.Range))
+                {
+                    W.CastOnUnit(bestTarget);
+                }
+            }
         }
 
         protected override void Harass()
@@ -203,11 +234,19 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
+                ComboMenu.Add(new MenuBool("autor", "Auto R on CC"));
                 ComboMenu.Add(new MenuSlider("hp", "Use R if HP <=", 25, 10, 100));
                 ComboMenu.Add(new MenuSlider("hitr", "Min. Enemies", 2, 1, 5));
 
             }
             RootMenu.Add(ComboMenu);
+            KillstealMenu = new Menu("killsteal", "Killsteal");
+            {
+                KillstealMenu.Add(new MenuBool("useq", "Use Q to Killsteal"));
+                KillstealMenu.Add(new MenuBool("usew", "Use W to Killsteal"));
+
+            }
+            RootMenu.Add(KillstealMenu);
             DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
