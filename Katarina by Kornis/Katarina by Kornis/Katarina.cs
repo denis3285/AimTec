@@ -173,8 +173,8 @@ namespace Katarina_By_Kornis
                 var target = GetBestEnemyHeroTargetInRange(E.Range);
                 if (ksR)
                 {
-                    if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability))
-                    {
+                    if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability) && !target.HasBuff("UndyingRage"))
+                        {
                         if (Player.HasBuff("katarinarsound"))
                         {
                             if (target.Distance(Player) >= R.Range - 100 && E.Ready)
@@ -271,7 +271,7 @@ namespace Katarina_By_Kornis
                             {
                                 var bestTarget = GetEGAP(DamageType.Magical, false);
                                 if (bestTarget != null && !bestTarget.IsDead &&
-                                    !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                                    !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                                 {
                                     if (Passive(bestTarget) >= bestTarget.Health &&
                                         bestTarget.Distance(dagger) < 450 &&
@@ -293,7 +293,7 @@ namespace Katarina_By_Kornis
                 {
                     var bestTarget = GetBestKillableHero(Q, DamageType.Magical, false);
                     if (bestTarget != null && !bestTarget.IsDead &&
-                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                     {
                         if (
                             Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
@@ -309,7 +309,7 @@ namespace Katarina_By_Kornis
                 {
                     var bestTarget = GetBestKillableHero(E, DamageType.Magical, false);
                     if (bestTarget != null && !bestTarget.IsDead &&
-                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                     {
                         if (
                             Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
@@ -326,7 +326,7 @@ namespace Katarina_By_Kornis
                 {
                     var bestTarget = GetEGAP(DamageType.Magical, false);
                     if (bestTarget != null && !bestTarget.IsDead &&
-                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                     {
                         if (
                             bestTarget.Distance(Player) > Q.Range &&
@@ -350,7 +350,7 @@ namespace Katarina_By_Kornis
                 {
                     var bestTarget = GetItemGAP(DamageType.Magical, false);
                     if (bestTarget != null && !bestTarget.IsDead &&
-                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                     {
                         if (
                             bestTarget.Distance(Player) > 550 &&
@@ -374,7 +374,7 @@ namespace Katarina_By_Kornis
                 {
                     var bestTarget = GetItemGAP(DamageType.Magical, false);
                     if (bestTarget != null && !bestTarget.IsDead &&
-                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                     {
                         var ItemGunblade = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
                             .FirstOrDefault(o => o.SpellData.Name == "HextechGunblade");
@@ -519,7 +519,7 @@ namespace Katarina_By_Kornis
                 {
 
                    
-                    mmm = dagger;
+                    
                     if (dagger.CountEnemyHeroesInRange(450) != 0)
                     {
                         Render.Circle(dagger.ServerPosition, 450, 20, Color.LawnGreen);
@@ -531,10 +531,7 @@ namespace Katarina_By_Kornis
                         Render.Circle(dagger.ServerPosition, 150, 20, Color.Red);
                     }
                 }
-                if (daggers.Count() == 0)
-                {
-                    mmm = null;
-                }
+                
             }
 
 
@@ -594,6 +591,17 @@ namespace Katarina_By_Kornis
 
         private void Game_OnUpdate()
         {
+            var daggers = ObjectManager.Get<GameObject>()
+                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                            d.Name == "HiddenMinion");
+            foreach (var dagger in daggers)
+            {
+                mmm = dagger;
+            }
+            if (daggers.Count() == 0)
+            {
+                mmm = null;
+            }
             if (Player.HasBuff("katarinarsound"))
             {
                 Orbwalker.MovingEnabled = false;
@@ -884,7 +892,7 @@ namespace Katarina_By_Kornis
                     {
                         var bestTarget = GetEGAP(DamageType.Magical, false);
                         if (bestTarget != null && !bestTarget.IsDead &&
-                            !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                            !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                         {
                             if (Passive(bestTarget) >= bestTarget.Health && bestTarget.Distance(dagger) < 450 &&
                                 bestTarget.IsValidTarget(E.Range))
@@ -903,7 +911,7 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["ksq"].Enabled)
             {
                 var bestTarget = GetBestKillableHero(Q, DamageType.Magical, false);
-                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                 {
                     if (
                         Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
@@ -918,7 +926,7 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["kse"].Enabled)
             {
                 var bestTarget = GetBestKillableHero(E, DamageType.Magical, false);
-                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                 {
                     if (
                         Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
@@ -935,7 +943,7 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["ksegap"].Enabled)
             {
                 var bestTarget = GetEGAP(DamageType.Magical, false);
-                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                 {
                     if (
                         bestTarget.Distance(Player) > Q.Range &&
@@ -959,7 +967,7 @@ namespace Katarina_By_Kornis
             if (Menu["killsteal"]["item"].Enabled && E.Ready)
             {
                 var bestTarget = GetItemGAP(DamageType.Magical, false);
-                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
                 {
                     if (
                         bestTarget.Distance(Player) > 550 &&
@@ -983,7 +991,7 @@ namespace Katarina_By_Kornis
             if (Menu["killsteal"]["item"].Enabled)
             {
                 var bestTarget = GetItemGAP(DamageType.Magical, false);
-                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage") && !bestTarget.HasBuff("UndyingRage"))
                 {
                     if (
                         bestTarget.Health <= 100)
@@ -1083,7 +1091,7 @@ namespace Katarina_By_Kornis
             }
             if (ksR)
             {
-                if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability))
+                if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability) && !target.HasBuff("UndyingRage"))
                 {
                     if (Player.HasBuff("katarinarsound"))
                     {
@@ -1178,7 +1186,7 @@ namespace Katarina_By_Kornis
                 }
 
             }
-            if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
+            if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability) ||  target.HasBuff("UndyingRage"))
 
             {
                 return;
@@ -1240,6 +1248,7 @@ namespace Katarina_By_Kornis
                     {
                         return;
                     }
+   
                     if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
                     {
                         if (target != null)
@@ -1394,7 +1403,7 @@ namespace Katarina_By_Kornis
                                 {
                                     if (target != null && Player.CountEnemyHeroesInRange(R.Range - 150) >= hitR)
                                     {
-                                        if (target.Health > meow && !Q.Ready)
+                                        if (target.Health > meow && !Q.Ready && !W.Ready)
                                         {
                                             R.Cast();
                                         }
@@ -1409,7 +1418,7 @@ namespace Katarina_By_Kornis
                                         Player.GetSpellDamage(target, SpellSlot.E) + Passive(target) +
                                         GetR(target) * dagggggggers)
                                     {
-                                        if (target.Health > meow && !Q.Ready)
+                                        if (target.Health > meow && !Q.Ready && !W.Ready)
                                         {
                                             R.Cast();
                                         }
@@ -1426,6 +1435,7 @@ namespace Katarina_By_Kornis
                     {
                         return;
                     }
+      
                     if (E.Ready && useE && target.IsValidTarget(E.Range))
                     {
                         if (target != null)
@@ -1578,7 +1588,7 @@ namespace Katarina_By_Kornis
                                 {
                                     if (target != null && Player.CountEnemyHeroesInRange(R.Range - 50) >= hitR)
                                     {
-                                        if (target.Health > meow && !Q.Ready)
+                                        if (target.Health > meow && !Q.Ready && !W.Ready)
                                         {
                                             R.Cast();
                                         }
@@ -1593,7 +1603,7 @@ namespace Katarina_By_Kornis
                                         Player.GetSpellDamage(target, SpellSlot.E) + Passive(target) +
                                         GetR(target) * dagggggggers)
                                     {
-                                        if (target.Health > meow && !Q.Ready)
+                                        if (target.Health > meow && !Q.Ready && !W.Ready)
                                         {
                                             R.Cast();
                                         }
@@ -1745,7 +1755,6 @@ namespace Katarina_By_Kornis
 
                         }
                     }
-
                     if (W.Ready && useW)
                     {
                         if (Player.CountEnemyHeroesInRange(W.Range) > 0)
@@ -1779,9 +1788,17 @@ namespace Katarina_By_Kornis
             switch (Menu["harass"]["harassmode"].As<MenuList>().Value)
             {
                 case 0:
-                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
+                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability) || target.HasBuff("UndyingRage"))
                     {
                         return;
+                    }
+                    if (W.Ready && useW)
+                    {
+                        if (Player.CountEnemyHeroesInRange(W.Range) > 0)
+                        {
+                            W.Cast();
+                        }
+
                     }
                     if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
                     {
@@ -1826,6 +1843,14 @@ namespace Katarina_By_Kornis
                         }
 
                     }
+
+                    break;
+                case 1:
+                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability) || target.HasBuff("UndyingRage"))
+
+                    {
+                        return;
+                    }
                     if (W.Ready && useW)
                     {
                         if (Player.CountEnemyHeroesInRange(W.Range) > 0)
@@ -1833,13 +1858,6 @@ namespace Katarina_By_Kornis
                             W.Cast();
                         }
 
-                    }
-                    break;
-                case 1:
-                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
-
-                    {
-                        return;
                     }
                     if (E.Ready && useE && target.IsValidTarget(E.Range))
                     {
@@ -1871,13 +1889,7 @@ namespace Katarina_By_Kornis
                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                         }
                     }
-                    if (W.Ready)
-                    {
-                        if (Player.CountEnemyHeroesInRange(W.Range) > 0)
-                        {
-                            W.Cast();
-                        }
-                    }
+
                     if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
                     {
                         Q.CastOnUnit(target);
