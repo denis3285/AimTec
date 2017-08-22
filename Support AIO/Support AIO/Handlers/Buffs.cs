@@ -48,7 +48,7 @@ namespace Support_AIO.Handlers
                     }
 
                     var owner = GetBuffCaster(unit, aura.Name);
-                    if (owner == null)
+                    if (owner == null || unit.Instance.NetworkId == owner.NetworkId)
                     {
                         continue;
                     }
@@ -144,7 +144,7 @@ namespace Support_AIO.Handlers
                     }
 
                     var owner = GetBuffCaster(hero, aura.Name);
-                    if (owner == null)
+                    if (owner == null || owner.NetworkId == hero.Instance.NetworkId)
                     {
                         continue;
                     }

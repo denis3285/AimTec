@@ -474,7 +474,7 @@
 
                         if (data.CastType == CastType.Targeted)
                         {
-                            if (args.Target == null || args.Target.Type != GameObjectType.obj_AI_Hero)
+                            if (args.Target == null)
                             {
                                 continue;
                             }
@@ -512,21 +512,18 @@
             {
                 #region Turret
 
-                if (sender.Type == GameObjectType.obj_AI_Turret && args.Target is Obj_AI_Hero)
+                var turret = sender as Obj_AI_Turret;
+                if (turret != null && !turret.IsDead && args.Target != null)
                 {
-                    var turret = sender as Obj_AI_Turret;
-                    if (turret != null && turret.IsValid)
+                    foreach (var hero in ZLib.GetUnits())
                     {
-                        foreach (var hero in ZLib.GetUnits())
+                        if (args.Target.NetworkId == hero.Instance.NetworkId)
                         {
-                            if (args.Target.NetworkId == hero.Instance.NetworkId)
+                            if (turret.Distance(hero.Instance.ServerPosition) <= 900
+                                && Player.Distance(hero.Instance.ServerPosition) <= 1000)
                             {
-                                if (turret.Distance(hero.Instance.ServerPosition) <= 900
-                                    && Player.Distance(hero.Instance.ServerPosition) <= 1000)
-                                {
-                                    EmulateDamage(turret, hero, new Gamedata { SpellName = args.SpellData.Name },
-                                        EventType.TurretAttack, "enemy.turret");
-                                }
+                                EmulateDamage(turret, hero, new Gamedata { SpellName = args.SpellData.Name },
+                                    EventType.TurretAttack, "enemy.turret");
                             }
                         }
                     }
@@ -547,21 +544,18 @@
             {
                 #region Minion
 
-                if (sender.Type == GameObjectType.obj_AI_Minion && args.Target.Type == Player.Type)
+                var minion = sender as Obj_AI_Minion;
+                if (minion != null && !minion.IsDead && args.Target != null)
                 {
-                    var minion = sender as Obj_AI_Minion;
-                    if (minion != null && minion.IsValidTarget())
+                    foreach (var hero in ZLib.GetUnits())
                     {
-                        foreach (var hero in ZLib.GetUnits())
+                        if (hero.Instance.NetworkId == args.Target.NetworkId)
                         {
-                            if (hero.Instance.NetworkId == args.Target.NetworkId)
+                            if (hero.Instance.Distance(minion.ServerPosition) <= 750
+                                && Player.Distance(hero.Instance.ServerPosition) <= 1000)
                             {
-                                if (hero.Instance.Distance(minion.ServerPosition) <= 750
-                                    && Player.Distance(hero.Instance.ServerPosition) <= 1000)
-                                {
-                                    EmulateDamage(minion, hero, new Gamedata { SpellName = args.SpellData.Name },
-                                        EventType.MinionAttack, "enemy.minion");
-                                }
+                                EmulateDamage(minion, hero, new Gamedata { SpellName = args.SpellData.Name },
+                                    EventType.MinionAttack, "enemy.minion");
                             }
                         }
                     }
@@ -582,43 +576,41 @@
             {
                 #region Gangplank Barrel
 
-                if (sender.Type == GameObjectType.obj_AI_Hero)
+                var attacker = sender as Obj_AI_Hero;
+                if (attacker != null && attacker.ChampionName.Equals("Gangplank"))
                 {
-                    var attacker = sender as Obj_AI_Hero;
-                    if (attacker.ChampionName.Equals("Gangplank") && attacker.IsValid)
+                    var data = ZLib.CachedSpells.Find(x => x.SpellName.ToLower() == "gangplanke");
+                    if (data != null)
                     {
-                        var data = ZLib.CachedSpells.Find(x => x.SpellName.ToLower() == "gangplanke");
-                        if (data != null)
+                        foreach (var hero in ZLib.GetUnits())
                         {
-                            foreach (var hero in ZLib.GetUnits())
+                            var gplist = new List<Obj_AI_Minion>();
+
+                            gplist.AddRange(ObjectManager.Get<Obj_AI_Minion>()
+                                .Where(
+                                    x =>
+                                        x.UnitSkinName.ToLower() == "gangplankbarrel" &&
+                                        x.Position.Distance(x.Position) <= 375 && x.IsFloatingHealthBarActive)
+                                .OrderBy(y => y.Position.Distance(hero.Instance.ServerPosition)));
+
+                            foreach (var obj in gplist)
                             {
-                                var gplist = new List<Obj_AI_Minion>();
-
-                                gplist.AddRange(ObjectManager.Get<Obj_AI_Minion>()
-                                    .Where(
-                                        x =>
-                                            x.UnitSkinName.ToLower() == "gangplankbarrel" &&
-                                            x.Position.Distance(x.Position) <= 375 && x.IsFloatingHealthBarActive)
-                                    .OrderBy(y => y.Position.Distance(hero.Instance.ServerPosition)));
-
-                                foreach (var obj in gplist)
+                                if (hero.Instance.Distance(obj.Position) <= 375 && args.Target.Name == "Barrel")
                                 {
-                                    if (hero.Instance.Distance(obj.Position) <= 375 && args.Target.Name == "Barrel")
+                                    var dmg = (float)Math.Abs(attacker.GetAutoAttackDamage(hero.Instance) * 1.2 + 150);
+
+                                    if (args.SpellData.Name.ToLower().Contains("crit"))
                                     {
-                                        var dmg = (float)Math.Abs(attacker.GetAutoAttackDamage(hero.Instance) * 1.2 + 150);
-
-                                        if (args.SpellData.Name.ToLower().Contains("crit"))
-                                        {
-                                            dmg = dmg * 2;
-                                        }
-
-                                        EmulateDamage(attacker, hero, data, EventType.Spell, "enemy.gankplankbarrel", dmg);
+                                        dmg = dmg * 2;
                                     }
+
+                                    EmulateDamage(attacker, hero, data, EventType.Spell, "enemy.gankplankbarrel", dmg);
                                 }
                             }
                         }
                     }
                 }
+
 
                 #endregion
             }
@@ -635,63 +627,61 @@
             {
                 #region Items
 
-                if (sender.Type == GameObjectType.obj_AI_Hero)
+                var attacker = sender as Obj_AI_Hero;
+                if (attacker != null && attacker.IsValid)
                 {
-                    var attacker = sender as Obj_AI_Hero;
-                    if (attacker != null && attacker.IsValid)
+                    if (args.SpellData.TargettingType == 1 && args.Target != null)
                     {
-                        if (args.SpellData.TargettingType == (ulong)ProcessSpellType.Targeted)
+                        foreach (var hero in ZLib.GetUnits())
                         {
-                            foreach (var hero in ZLib.GetUnits())
+                            if (args.Target.NetworkId != hero.Instance.NetworkId)
                             {
-                                if (args.Target.NetworkId != hero.Instance.NetworkId)
-                                {
-                                    continue;
-                                }
+                                continue;
+                            }
 
-                                // todo: item damage
+                            // todo: item damage
 
-                                if (args.SpellData.Name.ToLower() == "bilgewatercutlass")
-                                {
-                                    var dmg = (float)0;
-                                    EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
-                                        "enemy.itemcast", dmg);
-                                }
+                            if (args.SpellData.Name.ToLower() == "bilgewatercutlass")
+                            {
+                                var dmg = (float)0;
+                                EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
+                                    "enemy.itemcast", dmg);
+                            }
 
-                                if (args.SpellData.Name.ToLower() == "itemswordoffeastandfamine")
-                                {
-                                    var dmg = (float)0;
-                                    EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
-                                        "enemy.itemcast", dmg);
-                                }
+                            if (args.SpellData.Name.ToLower() == "itemswordoffeastandfamine")
+                            {
+                                var dmg = (float)0;
+                                EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
+                                    "enemy.itemcast", dmg);
+                            }
 
-                                if (args.SpellData.Name.ToLower() == "hextechgunblade")
-                                {
-                                    var dmg = (float)0;
-                                    EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
-                                        "enemy.itemcast", dmg);
-                                }
+                            if (args.SpellData.Name.ToLower() == "hextechgunblade")
+                            {
+                                var dmg = (float)0;
+                                EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
+                                    "enemy.itemcast", dmg);
                             }
                         }
+                    }
 
-                        // todo:
-                        if (args.SpellData.TargettingType == (ulong)ProcessSpellType.Self)
+                    // todo:
+                    if (args.SpellData.TargettingType == 0)
+                    {
+                        foreach (var hero in ZLib.GetUnits())
                         {
-                            foreach (var hero in ZLib.GetUnits())
+                            if (args.SpellData.Name.ToLower() == "itemtiamatcleave")
                             {
-                                if (args.SpellData.Name.ToLower() == "itemtiamatcleave")
+                                if (attacker.Distance(hero.Instance.ServerPosition) <= 375)
                                 {
-                                    if (attacker.Distance(hero.Instance.ServerPosition) <= 375)
-                                    {
-                                        var dmg = (float)0;
-                                        EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
-                                            "enemy.itemcast", dmg);
-                                    }
+                                    var dmg = (float)0;
+                                    EmulateDamage(attacker, hero, new Gamedata { SpellName = args.SpellData.Name }, EventType.Item,
+                                        "enemy.itemcast", dmg);
                                 }
                             }
                         }
                     }
                 }
+
 
                 #endregion
             }
