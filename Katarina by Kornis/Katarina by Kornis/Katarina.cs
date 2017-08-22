@@ -2,6 +2,9 @@
 using System.Net.Configuration;
 using System.Resources;
 using System.Security.Authentication.ExtendedProtection;
+using Aimtec.SDK.Menu.Config;
+using Aimtec.SDK.Prediction.Health;
+
 
 namespace Katarina_By_Kornis
 {
@@ -146,6 +149,7 @@ namespace Katarina_By_Kornis
         private int timeW;
         private bool meowmeowRthing = false;
         private int meowwwwwwwwwww;
+        private GameObject mmm;
 
         public void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs args)
         {
@@ -162,16 +166,265 @@ namespace Katarina_By_Kornis
                     Player.HasBuff("katarinarsound"))
 
                 {
-
                     args.Process = false;
+
+                }
+                bool ksR = Menu["combo"]["rset"]["cancelks"].Enabled;
+                var target = GetBestEnemyHeroTargetInRange(E.Range);
+                if (ksR)
+                {
+                    if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        if (Player.HasBuff("katarinarsound"))
+                        {
+                            if (target.Distance(Player) >= R.Range - 100 && E.Ready)
+                            {
+
+
+                                if (mmm != null)
+                                {
+                                    if (target.Distance(mmm) < 450 &&
+                                        target.IsValidTarget(E.Range) && E.Ready && args.Slot == SpellSlot.E)
+
+                                    {
+
+                                        args.Process = true;
+
+
+                                    }
+
+                                    if (mmm.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
+                                    {
+                                        args.Process = true;
+                                    }
+                                    if (mmm.Distance(target) > 450 && args.Slot == SpellSlot.E)
+                                    {
+
+                                        args.Process = true;
+                                    }
+
+
+                                }
+                                if (mmm == null && args.Slot == SpellSlot.E)
+                                {
+
+                                    args.Process = true;
+                                }
+
+                            }
+                            if (Player.GetSpellDamage(target, SpellSlot.Q) +
+                                Player.GetSpellDamage(target, SpellSlot.E) >=
+                                target.Health)
+                            {
+
+
+                                if (mmm != null && E.Ready)
+                                {
+
+                                    if (target.Distance(mmm) < 450 &&
+                                        target.IsValidTarget(E.Range) && E.Ready && args.Slot == SpellSlot.E)
+
+                                    {
+
+                                        args.Process = true;
+
+
+                                    }
+                                    if (mmm.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
+                                    {
+                                        args.Process = true;
+                                    }
+                                    if (mmm.Distance(target) > 450 && args.Slot == SpellSlot.E)
+                                    {
+
+                                        args.Process = true;
+                                    }
+                                }
+                                if (mmm == null && E.Ready && args.Slot == SpellSlot.E)
+                                {
+                                    args.Process = true;
+                                }
+
+                                if (target.IsValidTarget(Q.Range) && Q.Ready && args.Slot == SpellSlot.Q)
+                                {
+                                    args.Process = true;
+                                }
+
+
+
+                            }
+                        }
+                    }
+                }
+                if (Player.HasBuff("katarinarsound"))
+
+                {
+                    if (Menu["killsteal"]["ksdagger"].Enabled && E.Ready)
+                    {
+                        var daggers = ObjectManager.Get<GameObject>()
+                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                        d.Name == "HiddenMinion");
+                        foreach (var dagger in daggers)
+                        {
+
+                            if (dagger != null)
+                            {
+                                var bestTarget = GetEGAP(DamageType.Magical, false);
+                                if (bestTarget != null && !bestTarget.IsDead &&
+                                    !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                                {
+                                    if (Passive(bestTarget) >= bestTarget.Health &&
+                                        bestTarget.Distance(dagger) < 450 &&
+                                        bestTarget.IsValidTarget(E.Range))
+                                    {
+
+                                        args.Process = true;
+
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
 
+                if (Q.Ready &&
+                    Menu["killsteal"]["ksq"].Enabled && args.Slot == SpellSlot.Q)
+                {
+                    var bestTarget = GetBestKillableHero(Q, DamageType.Magical, false);
+                    if (bestTarget != null && !bestTarget.IsDead &&
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        if (
+                            Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
+                            bestTarget.IsValidTarget(Q.Range))
+                        {
+
+                            args.Process = true;
+                        }
+                    }
+                }
+                if (E.Ready &&
+                    Menu["killsteal"]["kse"].Enabled)
+                {
+                    var bestTarget = GetBestKillableHero(E, DamageType.Magical, false);
+                    if (bestTarget != null && !bestTarget.IsDead &&
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        if (
+                            Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
+                            bestTarget.IsValidTarget(E.Range))
+                        {
+                            args.Process = true;
+                        }
+                    }
+
+                }
+
+                if (Q.Ready &&
+                    Menu["killsteal"]["ksegap"].Enabled)
+                {
+                    var bestTarget = GetEGAP(DamageType.Magical, false);
+                    if (bestTarget != null && !bestTarget.IsDead &&
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        if (
+                            bestTarget.Distance(Player) > Q.Range &&
+                            bestTarget.Health <= Player.GetSpellDamage(bestTarget, SpellSlot.Q))
+                        {
+                            foreach (var en in ObjectManager.Get<Obj_AI_Base>())
+                            {
+                                if (!en.IsDead &&
+                                    en.Distance(bestTarget) < Q.Range && en.Distance(Player) < E.Range)
+                                {
+                                    args.Process = true;
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if (Menu["killsteal"]["item"].Enabled && E.Ready)
+                {
+                    var bestTarget = GetItemGAP(DamageType.Magical, false);
+                    if (bestTarget != null && !bestTarget.IsDead &&
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        if (
+                            bestTarget.Distance(Player) > 550 &&
+                            bestTarget.Health <= 100)
+                        {
+                            foreach (var en in ObjectManager.Get<Obj_AI_Base>())
+                            {
+                                if (!en.IsDead &&
+                                    en.Distance(bestTarget) < Q.Range && en.Distance(Player) < E.Range)
+                                {
+                                    args.Process = true;
+
+
+                                }
+                            }
+                        }
+                    }
+
+                }
+                if (Menu["killsteal"]["item"].Enabled)
+                {
+                    var bestTarget = GetItemGAP(DamageType.Magical, false);
+                    if (bestTarget != null && !bestTarget.IsDead &&
+                        !bestTarget.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        var ItemGunblade = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                            .FirstOrDefault(o => o.SpellData.Name == "HextechGunblade");
+                        if (ItemGunblade != null)
+                        {
+                            Spell Gunblade = new Spell(ItemGunblade.Slot, 700);
+                            if (Gunblade.Ready)
+                            {
+                                if (!GlobalKeys.ComboKey.Active)
+                                {
+                                    return;
+                                }
+
+                                var Enemies =
+                                    GameObjects.EnemyHeroes.Where(
+                                        t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
+                                foreach (var enemy in Enemies.Where(
+                                    e => e.IsValidTarget(Gunblade.Range) && e != null))
+                                {
+                                    args.Process = true;
+                                }
+                            }
+                        }
+                        var ItemCutlass = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                            .FirstOrDefault(o => o.SpellData.Name == "BilgewaterCutlass");
+                        if (ItemCutlass != null)
+                        {
+                            Spell Cutlass = new Spell(ItemCutlass.Slot, 550);
+
+                            var Enemies =
+                                GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Cutlass.Range, true) && !t.IsInvulnerable);
+                            foreach (var enemy in Enemies.Where(
+                                e => e.IsValidTarget(Cutlass.Range) && e != null))
+                            {
+
+                                args.Process = true;
+                            }
+                        }
+                    }
+
+                }
+
             }
+
         }
+
 
         static double GetR(Obj_AI_Base target)
         {
+
             double meow = 0;
             if (Player.SpellBook.GetSpell(SpellSlot.R).Level == 1)
             {
@@ -197,11 +450,15 @@ namespace Katarina_By_Kornis
         {
             double dmg = 0;
             double yay = 0;
-            foreach (var daggers in GameObjects.AllGameObjects)
+            var daggers = ObjectManager.Get<GameObject>()
+                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                            d.Name == "HiddenMinion");
+            foreach (var dagger in daggers)
             {
-                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                if (dagger != null)
                 {
-                    if (daggers.Distance(target) < 450)
+                    if (dagger.Distance(target) < 450)
                     {
 
 
@@ -240,39 +497,47 @@ namespace Katarina_By_Kornis
 
             if (Menu["drawings"]["drawq"].Enabled)
             {
-                Render.Circle(Player.Position, Q.Range, 40, Color.CornflowerBlue);
+                Render.Circle(Player.Position, Q.Range, 20, Color.CornflowerBlue);
             }
 
             if (Menu["drawings"]["drawe"].Enabled)
             {
-                Render.Circle(Player.Position, E.Range, 40, Color.Crimson);
+                Render.Circle(Player.Position, E.Range, 20, Color.Crimson);
             }
             if (Menu["drawings"]["drawr"].Enabled)
             {
-                Render.Circle(Player.Position, R.Range, 40, Color.Crimson);
+                Render.Circle(Player.Position, R.Range, 20, Color.Crimson);
             }
             if (Menu["drawings"]["drawdagger"].Enabled)
             {
 
 
-                foreach (var daggers in GameObjects.AllGameObjects)
+                var daggers = ObjectManager.Get<GameObject>()
+                    .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= 2000 &&
+                                d.Name == "HiddenMinion");
+                foreach (var dagger in daggers)
                 {
-                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
-                    {
 
-                        if (daggers.CountEnemyHeroesInRange(450) != 0)
-                        {
-                            Render.Circle(daggers.ServerPosition, 450, 40, Color.LawnGreen);
-                            Render.Circle(daggers.ServerPosition, 150, 40, Color.LawnGreen);
-                        }
-                        if (daggers.CountEnemyHeroesInRange(450) == 0)
-                        {
-                            Render.Circle(daggers.ServerPosition, 450, 40, Color.Red);
-                            Render.Circle(daggers.ServerPosition, 150, 40, Color.Red);
-                        }
+                   
+                    mmm = dagger;
+                    if (dagger.CountEnemyHeroesInRange(450) != 0)
+                    {
+                        Render.Circle(dagger.ServerPosition, 450, 20, Color.LawnGreen);
+                        Render.Circle(dagger.ServerPosition, 150, 20, Color.LawnGreen);
+                    }
+                    if (dagger.CountEnemyHeroesInRange(450) == 0)
+                    {
+                        Render.Circle(dagger.ServerPosition, 450, 20, Color.Red);
+                        Render.Circle(dagger.ServerPosition, 150, 20, Color.Red);
                     }
                 }
+                if (daggers.Count() == 0)
+                {
+                    mmm = null;
+                }
             }
+
+
 
 
 
@@ -365,7 +630,7 @@ namespace Katarina_By_Kornis
             {
                 Flee();
             }
-          
+
         }
 
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargets()
@@ -426,57 +691,62 @@ namespace Katarina_By_Kornis
 
                     if (minion.IsValidTarget(E.Range) && minion != null)
                     {
+
+                        var daggers = ObjectManager.Get<GameObject>()
+                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                        d.Name == "HiddenMinion");
+                        foreach (var dagger in daggers)
                         {
-                            foreach (var daggers in GameObjects.AllGameObjects)
+
+                            if (dagger != null)
                             {
-                                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(450, false, false,
+                                        dagger.ServerPosition)) >= hitE)
                                 {
-                                    if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(450, false, false,
-                                            daggers.ServerPosition)) >= hitE)
+                                    if (timeW < Game.TickCount)
                                     {
-                                        if (timeW < Game.TickCount)
+                                        if (Menu["farming"]["turret"].Enabled)
                                         {
-                                            if (Menu["farming"]["turret"].Enabled)
+                                            if (!dagger.IsUnderEnemyTurret())
                                             {
-                                                if (!daggers.IsUnderEnemyTurret())
-                                                {
-                                                    E.Cast(daggers.ServerPosition.Extend(minion.ServerPosition, 200));
-
-                                                }
-                                            }
-                                            if (!Menu["farming"]["turret"].Enabled)
-                                            {
-
-                                                E.Cast(daggers.ServerPosition.Extend(minion.ServerPosition, 200));
+                                                E.Cast(dagger.ServerPosition.Extend(minion.ServerPosition, 200));
 
                                             }
+                                        }
+                                        if (!Menu["farming"]["turret"].Enabled)
+                                        {
+
+                                            E.Cast(dagger.ServerPosition.Extend(minion.ServerPosition, 200));
 
                                         }
-                                    }
 
+                                    }
                                 }
+
                             }
                         }
                     }
                 }
-                if (useW)
+            }
+
+            if (useW)
+            {
+
+                foreach (var minion in GetEnemyLaneMinionsTargetsInRange(300))
                 {
 
-                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(300))
+                    if (minion.IsValidTarget(W.Range) && minion != null &&
+                        GetEnemyLaneMinionsTargetsInRange(300).Count >= hitW)
                     {
 
-                        if (minion.IsValidTarget(W.Range) && minion != null &&
-                            GetEnemyLaneMinionsTargetsInRange(300).Count >= hitW)
-                        {
+                        W.Cast();
 
-                            W.Cast();
-
-                        }
                     }
                 }
-
             }
+
         }
+
 
 
         public static List<Obj_AI_Minion> GetGenericJungleMinionsTargets()
@@ -563,19 +833,24 @@ namespace Katarina_By_Kornis
                 }
                 if (meow)
                 {
-                    foreach (var daggers in GameObjects.AllGameObjects)
+                    var daggers = ObjectManager.Get<GameObject>()
+                        .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                    d.Name == "HiddenMinion");
+                    foreach (var dagger in daggers)
                     {
-                        if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                        if (dagger != null)
                         {
-                            if (daggers.Distance(Game.CursorPos) < 200)
+                            if (dagger.Distance(Game.CursorPos) < 200)
                             {
-                                E.Cast(daggers.ServerPosition);
+                                E.Cast(dagger.ServerPosition);
                             }
                         }
                     }
                 }
             }
         }
+
 
         public static Obj_AI_Hero GetBestKillableHero(Spell spell, DamageType damageType = DamageType.True,
             bool ignoreShields = false)
@@ -599,22 +874,23 @@ namespace Katarina_By_Kornis
         {
             if (Menu["killsteal"]["ksdagger"].Enabled && E.Ready)
             {
-                foreach (var daggers in GameObjects.AllGameObjects)
-
+                var daggers = ObjectManager.Get<GameObject>()
+                    .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                d.Name == "HiddenMinion");
+                foreach (var dagger in daggers)
                 {
-                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                    if (dagger != null)
                     {
                         var bestTarget = GetEGAP(DamageType.Magical, false);
-                        if (bestTarget != null)
+                        if (bestTarget != null && !bestTarget.IsDead &&
+                            !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                         {
-                            if (Passive(bestTarget) >= bestTarget.Health && bestTarget.Distance(daggers) < 450 &&
+                            if (Passive(bestTarget) >= bestTarget.Health && bestTarget.Distance(dagger) < 450 &&
                                 bestTarget.IsValidTarget(E.Range))
                             {
-                                if (Player.HasBuff("katarinarsound"))
-                                {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                }
-                                E.Cast(bestTarget.ServerPosition.Extend(daggers.ServerPosition, 200));
+
+                                E.Cast(bestTarget.ServerPosition.Extend(dagger.ServerPosition, 200));
 
 
                             }
@@ -627,16 +903,13 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["ksq"].Enabled)
             {
                 var bestTarget = GetBestKillableHero(Q, DamageType.Magical, false);
-                if (bestTarget != null)
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (
                         Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
                         bestTarget.IsValidTarget(Q.Range))
                     {
-                        if (Player.HasBuff("katarinarsound"))
-                        {
-                            Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                        }
+
                         Q.CastOnUnit(bestTarget);
                     }
                 }
@@ -645,16 +918,13 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["kse"].Enabled)
             {
                 var bestTarget = GetBestKillableHero(E, DamageType.Magical, false);
-                if (bestTarget != null)
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (
                         Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
                         bestTarget.IsValidTarget(E.Range))
                     {
-                        if (Player.HasBuff("katarinarsound"))
-                        {
-                            Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                        }
+
                         E.CastOnUnit(bestTarget);
                     }
                 }
@@ -665,7 +935,7 @@ namespace Katarina_By_Kornis
                 Menu["killsteal"]["ksegap"].Enabled)
             {
                 var bestTarget = GetEGAP(DamageType.Magical, false);
-                if (bestTarget != null)
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (
                         bestTarget.Distance(Player) > Q.Range &&
@@ -676,10 +946,7 @@ namespace Katarina_By_Kornis
                             if (!en.IsDead &&
                                 en.Distance(bestTarget) < Q.Range && en.Distance(Player) < E.Range)
                             {
-                                if (Player.HasBuff("katarinarsound"))
-                                {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                }
+
                                 E.Cast(en.ServerPosition);
 
 
@@ -689,10 +956,10 @@ namespace Katarina_By_Kornis
                 }
 
             }
-            if (Menu["killsteal"]["item"].Enabled)
+            if (Menu["killsteal"]["item"].Enabled && E.Ready)
             {
                 var bestTarget = GetItemGAP(DamageType.Magical, false);
-                if (bestTarget != null)
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (
                         bestTarget.Distance(Player) > 550 &&
@@ -703,10 +970,7 @@ namespace Katarina_By_Kornis
                             if (!en.IsDead &&
                                 en.Distance(bestTarget) < Q.Range && en.Distance(Player) < E.Range)
                             {
-                                if (Player.HasBuff("katarinarsound"))
-                                {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                }
+
                                 E.Cast(en.ServerPosition);
 
 
@@ -719,26 +983,46 @@ namespace Katarina_By_Kornis
             if (Menu["killsteal"]["item"].Enabled)
             {
                 var bestTarget = GetItemGAP(DamageType.Magical, false);
-                if (bestTarget != null)
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (
                         bestTarget.Health <= 100)
                     {
-                        var items = new[] {ItemId.HextechGunblade, ItemId.BilgewaterCutlass};
-                        if (Player.HasItem(ItemId.HextechGunblade) || Player.HasItem(ItemId.BilgewaterCutlass))
+                        var ItemGunblade = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                            .FirstOrDefault(o => o.SpellData.Name == "HextechGunblade");
+                        if (ItemGunblade != null)
                         {
-                            var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
-                            if (slot != null)
+                            Spell Gunblade = new Spell(ItemGunblade.Slot, 700);
+                            if (Gunblade.Ready)
+                            {
+                                if (!GlobalKeys.ComboKey.Active)
+                                {
+                                    return;
+                                }
+
+                                var Enemies =
+                                    GameObjects.EnemyHeroes.Where(
+                                        t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
+                                foreach (var enemy in Enemies.Where(
+                                    e => e.IsValidTarget(Gunblade.Range) && e != null))
+                                {
+                                    Gunblade.Cast(enemy);
+                                }
+                            }
+                        }
+                        var ItemCutlass = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                            .FirstOrDefault(o => o.SpellData.Name == "BilgewaterCutlass");
+                        if (ItemCutlass != null)
+                        {
+                            Spell Cutlass = new Spell(ItemCutlass.Slot, 550);
+
+                            var Enemies =
+                                GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Cutlass.Range, true) && !t.IsInvulnerable);
+                            foreach (var enemy in Enemies.Where(
+                                e => e.IsValidTarget(Cutlass.Range) && e != null))
                             {
 
-                                var spellslot = slot.SpellSlot;
-                                if (spellslot != SpellSlot.Unknown &&
-                                    Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
-                                {
-                                    Player.SpellBook.CastSpell(spellslot, bestTarget);
-
-
-                                }
+                                Cutlass.Cast(enemy);
                             }
                         }
                     }
@@ -790,7 +1074,7 @@ namespace Katarina_By_Kornis
             {
                 if (Player.HasBuff("katarinarsound"))
                 {
-                    if (Player.CountEnemyHeroesInRange(R.Range) == 0)
+                    if (Player.CountEnemyHeroesInRange(R.Range + 10) == 0)
                     {
 
                         Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
@@ -799,35 +1083,36 @@ namespace Katarina_By_Kornis
             }
             if (ksR)
             {
-                if (target != null)
+                if (target != null && !target.IsDead && !target.HasBuffOfType(BuffType.Invulnerability))
                 {
                     if (Player.HasBuff("katarinarsound"))
                     {
                         if (target.Distance(Player) >= R.Range - 100 && E.Ready)
                         {
-                            Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                            var dagger = ObjectManager.Get<Obj_AI_Base>()
-                                .Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
 
+                            var daggers = ObjectManager.Get<GameObject>()
+                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                            d.Name == "HiddenMinion");
+                            foreach (var dagger in daggers)
                             {
-                                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                                if (dagger != null)
                                 {
-                                    if (target.Distance(daggers) < 450 &&
+                                    if (target.Distance(dagger) < 450 &&
                                         target.IsValidTarget(E.Range) && E.Ready)
 
                                     {
 
-                                        E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
                                     }
 
-                                    if (daggers.Distance(Player) > E.Range)
+                                    if (dagger.Distance(Player) > E.Range)
                                     {
                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                     }
-                                    if (daggers.Distance(target) > 450)
+                                    if (dagger.Distance(target) > 450)
                                     {
 
                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
@@ -835,63 +1120,66 @@ namespace Katarina_By_Kornis
                                     break;
 
                                 }
-                                if (dagger.Count() == 0)
-                                {
+                            }
+                            if (mmm == null && E.Ready)
+                            {
 
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                }
+                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                             }
                         }
+
                         if (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E) >=
-                            target.Health)
+                            target.Health && E.Ready)
                         {
 
-                            var dagger = ObjectManager.Get<Obj_AI_Base>()
-                                .Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
-
+                            var daggers = ObjectManager.Get<GameObject>()
+                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                            d.Name == "HiddenMinion");
+                            foreach (var dagger in daggers)
                             {
-                                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid && E.Ready)
+
+                                if (dagger != null)
                                 {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                    if (target.Distance(daggers) < 450 &&
+                                    if (target.Distance(dagger) < 450 &&
                                         target.IsValidTarget(E.Range) && E.Ready)
 
                                     {
 
-                                        E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
                                     }
-                                    if (daggers.Distance(Player) > E.Range)
+                                    if (dagger.Distance(Player) > E.Range)
                                     {
                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                     }
-                                    if (daggers.Distance(target) > 450)
+                                    if (dagger.Distance(target) > 450)
                                     {
 
                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                     }
                                 }
-                                if (dagger.Count() == 0 && E.Ready)
-                                {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                }
+                            }
+                            if (mmm == null && E.Ready)
+                            {
 
-                                if (target.IsValidTarget(Q.Range) && Q.Ready)
-                                {
-                                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                                    Q.CastOnUnit(target);
-                                }
+                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                            }
 
+                            if (target.IsValidTarget(Q.Range) && Q.Ready)
+                            {
+
+                                Q.CastOnUnit(target);
                             }
 
                         }
+
                     }
                 }
+
             }
-            if (!target.IsValidTarget())
+            if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
+
             {
                 return;
             }
@@ -899,26 +1187,51 @@ namespace Katarina_By_Kornis
             {
                 return;
             }
+            if (Player.HasBuff("katarinarsound"))
+            {
+                return;
+            }
             if (!Player.HasBuff("katarinarsound"))
             {
-                var items = new[] {ItemId.HextechGunblade, ItemId.BilgewaterCutlass};
-                if (Player.HasItem(ItemId.HextechGunblade) || Player.HasItem(ItemId.BilgewaterCutlass))
+                var ItemGunblade = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                    .FirstOrDefault(o => o.SpellData.Name == "HextechGunblade");
+                if (ItemGunblade != null)
                 {
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
-                    if (slot != null)
+                    Spell Gunblade = new Spell(ItemGunblade.Slot, 700);
+                    if (Gunblade.Ready)
                     {
-                        
-                        var spellslot = slot.SpellSlot;
-                        if (spellslot != SpellSlot.Unknown &&
-                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        if (!GlobalKeys.ComboKey.Active)
                         {
-                            Player.SpellBook.CastSpell(spellslot, target);
-                            
-                            
+                            return;
+                        }
+
+                        var Enemies =
+                            GameObjects.EnemyHeroes.Where(
+                                t => t.IsValidTarget(Gunblade.Range, true) && !t.IsInvulnerable);
+                        foreach (var enemy in Enemies.Where(
+                            e => e.IsValidTarget(Gunblade.Range) && e != null))
+                        {
+                            Gunblade.Cast(enemy);
                         }
                     }
                 }
+                var ItemCutlass = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null)
+                    .FirstOrDefault(o => o.SpellData.Name == "BilgewaterCutlass");
+                if (ItemCutlass != null)
+                {
+                    Spell Cutlass = new Spell(ItemCutlass.Slot, 550);
+
+                    var Enemies =
+                        GameObjects.EnemyHeroes.Where(t => t.IsValidTarget(Cutlass.Range, true) && !t.IsInvulnerable);
+                    foreach (var enemy in Enemies.Where(
+                        e => e.IsValidTarget(Cutlass.Range) && e != null))
+                    {
+
+                        Cutlass.Cast(enemy);
+                    }
+                }
             }
+
 
             switch (Menu["combo"]["combomode"].As<MenuList>().Value)
             {
@@ -939,42 +1252,45 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var dagger = ObjectManager.Get<Obj_AI_Base>()
-                                .Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
-
+                            var daggers = ObjectManager.Get<GameObject>()
+                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                            d.Name == "HiddenMinion");
+                            foreach (var dagger in daggers)
                             {
-                                if (!SaveE)
+
+                                if (dagger != null)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                                    if (!SaveE)
                                     {
-                                        if (target.Distance(daggers) < 450 &&
+
+                                        if (target.Distance(dagger) < 450 &&
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
                                         }
                                         switch (Menu["combo"]["emode"].As<MenuList>().Value)
                                         {
                                             case 0:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
                                                 break;
                                             case 1:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
@@ -983,11 +1299,11 @@ namespace Katarina_By_Kornis
                                             case 2:
                                                 if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
@@ -995,12 +1311,12 @@ namespace Katarina_By_Kornis
                                                 }
                                                 if (R.Ready)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
                                                             -50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
@@ -1010,58 +1326,53 @@ namespace Katarina_By_Kornis
                                                 break;
                                         }
                                     }
-                                    switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                    {
-                                        case 0:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                            }
-                                            break;
-                                        case 1:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                            }
-                                            break;
-                                        case 2:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-                                                    
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    
-                                                }
-                                                if (R.Ready)
-                                                {
-                                                    
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    
-                                                }
-                                            }
-                                            break;
-                                    }
-
                                 }
+
+
                                 if (SaveE)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                                    if (target.Distance(dagger) < 450 &&
+                                        target.IsValidTarget(E.Range))
                                     {
-                                        if (target.Distance(daggers) < 450 &&
-                                            target.IsValidTarget(E.Range))
+
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+
+                                    }
+
+                                }
+                            }
+                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            {
+                                case 0:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    }
+                                    break;
+                                case 1:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                    break;
+                                case 2:
+                                    if (mmm == null)
+                                    {
+                                     
+                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                         {
-
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
-
-
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                        }
+                                        if (R.Ready)
+                                        {
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
                                     }
-                                }
+                                    break;
                             }
 
                         }
@@ -1119,42 +1430,44 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var dagger = ObjectManager.Get<Obj_AI_Base>()
-                                .Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
-
+                            var daggers = ObjectManager.Get<GameObject>()
+                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                            d.Name == "HiddenMinion");
+                            foreach (var dagger in daggers)
                             {
-                                if (!SaveE)
+
+                                if (dagger != null)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                    if (!SaveE)
                                     {
-                                        if (target.Distance(daggers) < 450 &&
+
+                                        if (target.Distance(dagger) < 450 &&
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
                                         }
                                         switch (Menu["combo"]["emode"].As<MenuList>().Value)
                                         {
                                             case 0:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
                                                 break;
                                             case 1:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
@@ -1163,11 +1476,11 @@ namespace Katarina_By_Kornis
                                             case 2:
                                                 if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
@@ -1175,12 +1488,12 @@ namespace Katarina_By_Kornis
                                                 }
                                                 if (R.Ready)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
                                                             -50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
@@ -1190,59 +1503,54 @@ namespace Katarina_By_Kornis
                                                 break;
                                         }
                                     }
-                                    switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                    {
-                                        case 0:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                            }
-                                            break;
-                                        case 1:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                            }
-                                            break;
-                                        case 2:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-
-
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-
-                                                }
-                                                if (R.Ready)
-                                                {
-
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-
-                                                }
-                                            }
-                                            break;
-                                    }
 
                                 }
                                 if (SaveE)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                    if (target.Distance(dagger) < 450 &&
+                                        target.IsValidTarget(E.Range))
                                     {
-                                        if (target.Distance(daggers) < 450 &&
-                                            target.IsValidTarget(E.Range))
-                                        {
 
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
-                                        }
                                     }
+
                                 }
 
+                            }
+                            
+                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            {
+                                
+                                case 0:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    }
+                                    break;
+                                case 1:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                    break;
+                                case 2:
+                                    if (mmm == null)
+                                    {
+                                     
+                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                        {
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                        }
+                                        if (R.Ready)
+                                        {
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     }
@@ -1313,42 +1621,44 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var dagger = ObjectManager.Get<Obj_AI_Base>()
-                                .Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
-
+                            var daggers = ObjectManager.Get<GameObject>()
+                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                            d.Name == "HiddenMinion");
+                            foreach (var dagger in daggers)
                             {
-                                if (!SaveE)
+
+                                if (dagger != null)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                    if (!SaveE)
                                     {
-                                        if (target.Distance(daggers) < 450 &&
+
+                                        if (target.Distance(dagger) < 450 &&
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
                                         }
                                         switch (Menu["combo"]["emode"].As<MenuList>().Value)
                                         {
                                             case 0:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                 }
                                                 break;
                                             case 1:
-                                                if (daggers.Distance(Player) > E.Range)
+                                                if (dagger.Distance(Player) > E.Range)
                                                 {
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                                 }
-                                                if (daggers.Distance(target) > 450)
+                                                if (dagger.Distance(target) > 450)
                                                 {
 
                                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
@@ -1357,11 +1667,11 @@ namespace Katarina_By_Kornis
                                             case 2:
                                                 if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
@@ -1369,12 +1679,12 @@ namespace Katarina_By_Kornis
                                                 }
                                                 if (R.Ready)
                                                 {
-                                                    if (daggers.Distance(Player) > E.Range)
+                                                    if (dagger.Distance(Player) > E.Range)
                                                     {
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
                                                             -50));
                                                     }
-                                                    if (daggers.Distance(target) > 450)
+                                                    if (dagger.Distance(target) > 450)
                                                     {
 
                                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
@@ -1384,62 +1694,58 @@ namespace Katarina_By_Kornis
                                                 break;
                                         }
                                     }
-                                    switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                    {
-                                        case 0:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                            }
-                                            break;
-                                        case 1:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                            }
-                                            break;
-                                        case 2:
-                                            if (dagger.Count() == 0)
-                                            {
-
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-
-
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-
-                                                }
-                                                if (R.Ready)
-                                                {
-
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-
-                                                }
-                                            }
-                                            break;
-                                    }
-
                                 }
+
+
                                 if (SaveE)
                                 {
-                                    if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+
+                                    if (target.Distance(dagger) < 450 &&
+                                        target.IsValidTarget(E.Range))
                                     {
-                                        if (target.Distance(daggers) < 450 &&
-                                            target.IsValidTarget(E.Range))
+
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+
+                                    }
+
+                                }
+                            }
+                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            {
+                                case 0:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    }
+                                    break;
+                                case 1:
+                                    if (mmm == null)
+                                    {
+
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                    break;
+                                case 2:
+                                    if (mmm == null)
+                                    {
+                                        
+                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                         {
-
-                                            E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
-
-
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                        }
+                                        if (R.Ready)
+                                        {
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
                                     }
-                                }
+                                    break;
                             }
 
                         }
                     }
+
                     if (W.Ready && useW)
                     {
                         if (Player.CountEnemyHeroesInRange(W.Range) > 0)
@@ -1448,34 +1754,21 @@ namespace Katarina_By_Kornis
                         }
 
                     }
-
                     if (useR)
                     {
 
                         if (R.Ready && target.IsValidTarget(R.Range - 150) && !W.Ready)
                         {
-
                             if (R.Cast())
                             {
-                                
+
                                 meowwwwwwwwwww = Game.TickCount + 1000;
                             }
-
                         }
-
                     }
                     break;
-
             }
-
-
-
-
         }
-
-
-
-
 
         private void OnHarass()
         {
@@ -1486,11 +1779,7 @@ namespace Katarina_By_Kornis
             switch (Menu["harass"]["harassmode"].As<MenuList>().Value)
             {
                 case 0:
-                    if (!target.IsValidTarget())
-                    {
-                        return;
-                    }
-                    if (target == null)
+                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
                     {
                         return;
                     }
@@ -1501,44 +1790,41 @@ namespace Katarina_By_Kornis
                             Q.CastOnUnit(target);
                         }
                     }
-
                     if (E.Ready && useE && target.IsValidTarget(E.Range) && !Q.Ready)
                     {
-                        if (target != null)
+                        var daggers = ObjectManager.Get<GameObject>()
+                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                        d.Name == "HiddenMinion");
+                        foreach (var dagger in daggers)
                         {
-                            var dagger = ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
 
+                            if (dagger != null)
                             {
-                                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                if (target.Distance(dagger) < 450 &&
+                                    target.IsValidTarget(E.Range))
                                 {
-                                    if (target.Distance(daggers) < 450 &&
-                                        target.IsValidTarget(E.Range))
-                                    {
 
-                                        E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
+                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
-                                    }
-                                    if (daggers.Distance(Player) > E.Range)
-                                    {
-                                      E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                    }
-                                    if (daggers.Distance(target) > 450)
-                                    {
-                                        
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                    }
                                 }
-                                if (dagger.Count() == 0)
+                                if (dagger.Distance(Player) > E.Range)
                                 {
-                                  
                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                 }
-    
-                            }
+                                if (dagger.Distance(target) > 450)
+                                {
 
+                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                }
+                            }
                         }
+                        if (mmm == null)
+                        {
+
+                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                        }
+
                     }
                     if (W.Ready && useW)
                     {
@@ -1548,71 +1834,54 @@ namespace Katarina_By_Kornis
                         }
 
                     }
-
                     break;
                 case 1:
-                    if (!target.IsValidTarget())
-                    {
-                        return;
-                    }
-                    if (target == null)
+                    if (!target.IsValidTarget() || target.IsDead || target.HasBuffOfType(BuffType.Invulnerability))
+
                     {
                         return;
                     }
                     if (E.Ready && useE && target.IsValidTarget(E.Range))
                     {
-                        if (target != null)
+                        var daggers = ObjectManager.Get<GameObject>()
+                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
+                                        d.Name == "HiddenMinion");
+                        foreach (var dagger in daggers)
                         {
-                            var dagger = ObjectManager.Get<Obj_AI_Base>().Where(a => a.Name == "HiddenMinion" && a.IsValid && !a.IsDead);
-                            foreach (var daggers in GameObjects.AllGameObjects)
 
+                            if (dagger != null)
                             {
-                                if (daggers.Name == "HiddenMinion" && !daggers.IsDead && daggers.IsValid)
+                                if (target.Distance(dagger) < 450 &&
+                                    target.IsValidTarget(E.Range))
                                 {
-                                    if (target.Distance(daggers) < 450 &&
-                                        target.IsValidTarget(E.Range))
-                                    {
-
-                                        E.Cast(daggers.ServerPosition.Extend(target.ServerPosition, 200));
-
-
-                                    }
-                                    if (daggers.Distance(Player) > E.Range)
-                                    {
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                    }
-                                    if (daggers.Distance(target) > 450)
-                                    {
-
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                    }
+                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
                                 }
-                                if (dagger.Count() == 0)
+                                if (dagger.Distance(Player) > E.Range)
                                 {
-
                                     E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                 }
-
+                                if (dagger.Distance(target) > 450)
+                                {
+                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                }
                             }
-
+                        }
+                        if (mmm == null)
+                        {
+                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                         }
                     }
-
                     if (W.Ready)
                     {
                         if (Player.CountEnemyHeroesInRange(W.Range) > 0)
                         {
                             W.Cast();
                         }
-
                     }
                     if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
                     {
-                        if (target != null)
-                        {
-                            Q.CastOnUnit(target);
-                        }
-                    }              
+                        Q.CastOnUnit(target);
+                    }
                     break;
             }
         }
