@@ -1401,26 +1401,42 @@ namespace Katarina_By_Kornis
                             case 0:
                                 if (R.Ready && target.IsValidTarget(R.Range - 50))
                                 {
-                                    if (target != null && Player.CountEnemyHeroesInRange(R.Range - 150) >= hitR)
+                                    if (target != null && Player.CountEnemyHeroesInRange(R.Range - 100) >= hitR)
                                     {
-                                        if (target.Health > meow && !Q.Ready && !W.Ready)
+                                        if (target.Health > meow && !Q.Ready)
                                         {
-                                            R.Cast();
+                                            if (!W.Ready)
+                                            {
+                                                R.Cast();
+                                            }
+                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
+                                            {
+                                                R.Cast();
+                                            }
+
                                         }
                                     }
                                 }
                                 break;
                             case 1:
-                                if (R.Ready && target.IsValidTarget(R.Range - 150))
+                                if (R.Ready && target.IsValidTarget(R.Range - 50))
                                 {
                                     if (target != null && target.Health <=
                                         Player.GetSpellDamage(target, SpellSlot.Q) +
                                         Player.GetSpellDamage(target, SpellSlot.E) + Passive(target) +
                                         GetR(target) * dagggggggers)
                                     {
-                                        if (target.Health > meow && !Q.Ready && !W.Ready)
+                                        if (target.Health > meow && !Q.Ready)
                                         {
-                                            R.Cast();
+                                            if (!W.Ready)
+                                            {
+                                                R.Cast();
+                                            }
+                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
+                                            {
+                                                R.Cast();
+                                            }
+
                                         }
                                     }
                                 }
@@ -1584,28 +1600,42 @@ namespace Katarina_By_Kornis
                         switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
                         {
                             case 0:
-                                if (R.Ready && target.IsValidTarget(R.Range - 150))
+                                if (R.Ready && target.IsValidTarget(R.Range - 50))
                                 {
                                     if (target != null && Player.CountEnemyHeroesInRange(R.Range - 50) >= hitR)
                                     {
-                                        if (target.Health > meow && !Q.Ready && !W.Ready)
+                                        if (target.Health > meow && !Q.Ready)
                                         {
-                                            R.Cast();
+                                            if (!W.Ready)
+                                            {
+                                                R.Cast();
+                                            }
+                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
+                                            {
+                                                R.Cast();
+                                            }
                                         }
                                     }
                                 }
                                 break;
                             case 1:
-                                if (R.Ready && target.IsValidTarget(R.Range - 150))
+                                if (R.Ready && target.IsValidTarget(R.Range - 50))
                                 {
                                     if (target != null && target.Health <=
                                         Player.GetSpellDamage(target, SpellSlot.Q) +
                                         Player.GetSpellDamage(target, SpellSlot.E) + Passive(target) +
                                         GetR(target) * dagggggggers)
                                     {
-                                        if (target.Health > meow && !Q.Ready && !W.Ready)
+                                        if (target.Health > meow && !Q.Ready)
                                         {
-                                            R.Cast();
+                                            if (!W.Ready)
+                                            {
+                                                R.Cast();
+                                            }
+                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
+                                            {
+                                                R.Cast();
+                                            }
                                         }
                                     }
                                 }
@@ -1766,12 +1796,23 @@ namespace Katarina_By_Kornis
                     if (useR)
                     {
 
-                        if (R.Ready && target.IsValidTarget(R.Range - 150) && !W.Ready)
+                        if (R.Ready && target.IsValidTarget(R.Range - 50))
                         {
-                            if (R.Cast())
+                            if (!W.Ready)
                             {
+                                if (R.Cast())
+                                {
 
-                                meowwwwwwwwwww = Game.TickCount + 1000;
+                                    meowwwwwwwwwww = Game.TickCount + 1000;
+                                }
+                            }
+                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
+                            {
+                                if (R.Cast())
+                                {
+
+                                    meowwwwwwwwwww = Game.TickCount + 1000;
+                                }
                             }
                         }
                     }
