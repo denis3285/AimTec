@@ -1038,7 +1038,7 @@ namespace Syndra_By_Kornis
             }
             if (E.Ready && Menu["combo"]["usee"].Enabled)
             {
-                var target = GetBestEnemyHeroTargetInRange(E.Range);
+                var target = GetBestEnemyHeroTargetInRange(1100);
 
                 if (target.IsValidTarget())
                 {
@@ -1278,7 +1278,7 @@ namespace Syndra_By_Kornis
                 {
                     if (E.Ready && lastwe <= Game.TickCount)
                     {
-                        var target = GetBestEnemyHeroTargetInRange(EQ.Range);
+                        var target = GetBestEnemyHeroTargetInRange(1100);
 
                         if (target.IsValidTarget() && target.Distance(Player) < Q.Range)
                         {
