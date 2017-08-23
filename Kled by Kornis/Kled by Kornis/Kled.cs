@@ -61,6 +61,7 @@ namespace Kled_By_Kornis
                 Kled.Add(new MenuBool("gap", "Use for Smart Gapclosing"));
                 ComboMenu.Add(Skaarl);
                 ComboMenu.Add(Kled);
+                ComboMenu.Add(new MenuBool("items", "Use Items for AA Reset"));
 
             }
 
@@ -109,6 +110,7 @@ namespace Kled_By_Kornis
             Menu.Add(DrawMenu);
             Menu.Attach();
             Gapcloser.Attach(Menu, "Q Anti-GapClose");
+            Orbwalker.PostAttack += OnPostAttack;
             Render.OnPresent += Render_OnPresent;
             Gapcloser.OnGapcloser += OnGapcloser;
             Game.OnUpdate += Game_OnUpdate;
@@ -125,6 +127,46 @@ namespace Kled_By_Kornis
                 Q.Cast(Args.EndPosition);
 
             }
+        }
+
+        public void OnPostAttack(object sender, PostAttackEventArgs args)
+        {
+            var heroTarget = args.Target as Obj_AI_Hero;
+            if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo))
+            {
+                if (!Menu["combo"]["items"].Enabled)
+                {
+                    return;
+                }
+
+                Obj_AI_Hero hero = args.Target as Obj_AI_Hero;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+                if (Menu["combo"]["items"].Enabled)
+                {
+
+
+
+                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                        Player.HasItem(ItemId.RavenousHydra))
+                    {
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                        if (slot != null)
+                        {
+                            var spellslot = slot.SpellSlot;
+                            if (spellslot != SpellSlot.Unknown &&
+                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                            {
+                                Player.SpellBook.CastSpell(spellslot);
+                            }
+                        }
+                    }
+                }
+            }
+
         }
 
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
