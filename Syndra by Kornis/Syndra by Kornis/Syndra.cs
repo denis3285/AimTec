@@ -1,5 +1,7 @@
 ﻿
 
+using Aimtec.SDK.Events;
+
 namespace Syndra_By_Kornis
 {
     using System;
@@ -113,7 +115,7 @@ namespace Syndra_By_Kornis
             {
                 HarassMenu.Add(new MenuKeyBind("qtoggle", "Auto Q Toggle", KeyCode.K, KeybindType.Toggle));
                 HarassMenu.Add(new MenuSlider("mana", "Mana Manager", 50));
-                HarassMenu.Add(new MenuBool("autoq", "Auto Q on Dash"));
+                HarassMenu.Add(new MenuBool("dashing", "Auto Q on Dash"));
 
                 HarassMenu.Add(new MenuBool("useq", "Use Q to Harass"));
                 HarassMenu.Add(new MenuBool("usew", "Use W to Harass"));
@@ -168,16 +170,21 @@ namespace Syndra_By_Kornis
                 DrawMenu.Add(new MenuBool("drawdamage", "Draw R Damage"));
                 DrawMenu.Add(new MenuBool("drawrmode", "Draw R Mode"));
                 DrawMenu.Add(new MenuBool("toggles", "Draw Toggles"));
-                ;
+                
             }
 
 
             Menu.Add(DrawMenu);
-            Menu.Add(new MenuList("pred", "Pred.", new[] { "Old Version", "New Version" }, 1));
+            Menu.Add(new MenuList("pred", "Pred.", new[] {"Old Version", "New Version"}, 1));
+            Gapcloser.Attach(Menu, "E Anti-GapClose");
+            Syndra_By_Kornis.DashQ.AutoQ.Attach(Menu, "Auto Q on Dashes");
             Menu.Attach();
+
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+            Gapcloser.OnGapcloser += OnGapcloser;
+            DashQ.AutoQ.DashQ += OnDash;
             Obj_AI_Base.OnProcessSpellCast += ProcessCast;
             Orbwalker.PreAttack += OnPreAttack;
 
@@ -187,6 +194,26 @@ namespace Syndra_By_Kornis
             Console.WriteLine("Syndra by Kornis - Loaded");
         }
 
+        private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+            if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready && !target.IsDashing() && target.IsValidTarget(E.Range))
+            {
+
+                E.Cast(Args.EndPosition);
+
+            }
+        }
+        private void OnDash(Obj_AI_Hero target, Syndra_By_Kornis.DashQ.GapcloserArgs Args)
+        {
+            if (Menu["harass"]["dashing"].Enabled && Q.Ready)
+            {
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range && Q.Ready)
+                {
+
+                    Q.Cast(Args.EndPosition);
+                }
+            }
+        }
         public void OnPreAttack(object sender, PreAttackEventArgs args)
         {
             if (Menu["aa"]["aakey"].Enabled)
@@ -349,18 +376,24 @@ namespace Syndra_By_Kornis
 
                         });
             }
-            
+
         }
+        
+
 
         private void Game_OnUpdate()
         {
+            if (Player.SpellBook.GetSpell(SpellSlot.R).Level == 3)
+            {
+                R.Range = 750;
+            }
             if (Menu["pred"].As<MenuList>().Value == 1)
             {
 
                 Q.SetSkillshot(0.6f, 120, float.MaxValue, false, SkillshotType.Circle, false, HitChance.None);
 
                 W.SetSkillshot(0.25f, 60, 1600, false, SkillshotType.Circle, false, HitChance.None);
-                E.SetSkillshot(0.25f, (float)(45 * 0.5), 2500, false, SkillshotType.Circle);
+                E.SetSkillshot(0.25f, (float) (45 * 0.5), 2500, false, SkillshotType.Circle);
                 EQ.SetSkillshot(float.MaxValue, 55, 2000, false, SkillshotType.Circle);
 
             }
@@ -371,7 +404,7 @@ namespace Syndra_By_Kornis
                 Q2.SetSkillshot(0, 60, float.MaxValue, false, SkillshotType.Circle, false, HitChance.High);
 
                 W.SetSkillshot(0.45f, 40, 2000, false, SkillshotType.Circle, false, HitChance.None);
-                E.SetSkillshot(0.25f, (float)(45 * 0.5), 2500f, false, SkillshotType.Cone);
+                E.SetSkillshot(0.25f, (float) (45 * 0.5), 2500f, false, SkillshotType.Cone);
                 EQ.SetSkillshot(0.4f, 80, 1900, false, SkillshotType.Line);
             }
             if (Player.IsDead || MenuGUI.IsChatOpen())
@@ -396,23 +429,6 @@ namespace Syndra_By_Kornis
                     Q.Cast(target);
                 }
 
-            }
-
-            if (Menu["harass"]["autoq"].Enabled && Q.Ready)
-            {
-                var bestTarget = GetBestEnemyHeroTargetInRange(Q.Range);
-                if (bestTarget != null &&
-                    bestTarget.IsValidTarget(Q.Range))
-                {
-
-                    var pred = Q.GetPrediction(bestTarget);
-                    if (pred.HitChance == HitChance.Impossible)
-                    {
-
-                        Q.Cast(pred.CastPosition);
-
-                    }
-                }
             }
             if (Menu["combo"]["engage"]["rtoggle"].Enabled && time <= Game.TickCount)
             {
@@ -624,7 +640,7 @@ namespace Syndra_By_Kornis
                     break;
 
             }
-          
+
 
 
         }
@@ -893,7 +909,7 @@ namespace Syndra_By_Kornis
                         if (!bestTarget.HasBuff("SyndraEDebuff"))
                         {
 
-                            
+
 
                             if (lastqe < Game.TickCount)
                             {
@@ -950,238 +966,35 @@ namespace Syndra_By_Kornis
 
         private void OnCombo()
         {
-            var target = GetBestEnemyHeroTargetInRange(EQ.Range);
 
-            if (!target.IsValidTarget())
-            {
-                return;
-            }
             if (Menu["combo"]["useq"].Enabled)
             {
-                if (target.Distance(Player) < Q.Range)
+                var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                if (target.IsValidTarget())
                 {
-
-                    if (target != null)
-                    {
-                       
-                        Q.Cast(target);
-                    }
-
-                }
-            }
-            if (target.Distance(Player) <= W.Range && Menu["combo"]["usew"].Enabled)
-            {
-                if (target != null)
-                {
-
-                    if (!Player.HasBuff("syndrawtooltip"))
-                    {
-                        if (target.IsValidTarget(W.Range) && W.Ready)
-                        {
-                            if (delayyyy <= Game.TickCount)
-                            {
-                                if (Objects() != null)
-                                {
-                                    if (W.Cast(Objects().ServerPosition))
-                                    {
-
-                                        lastw = Game.TickCount + Game.Ping + 20;
-                                        lastwe = Game.TickCount + Game.Ping + 200;
-                                        delayyyy = 1000 + Game.TickCount;
-                                        return;
-                                    }
-                                }
-
-                            }
-                        }
-                    }
-                    if (Player.HasBuff("syndrawtooltip"))
+                    if (target.Distance(Player) < Q.Range)
                     {
 
-                        if (!target.HasBuff("SyndraEDebuff"))
-                        {
-                            if (Objects() != null)
-                            {
-                                
-
-                                if (lastqe < Game.TickCount)
-                                {
-                                    W.Cast(target);
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-            }
-            if (E.Ready && Menu["combo"]["usee"].Enabled)
-            {
-                foreach (var orb in GameObjects.AllGameObjects.Where(x => x.Distance(Player) < 1000))
-                {
-                    if (orb.Name == "Seed" && orb.IsValid && !orb.IsDead)
-                    {
-                        if (orb.Distance(Player) <= E.Range && Player.Distance(orb.ServerPosition) >= 100 &&
-                            target.Distance(Player) <= 1100)
+                        if (target != null)
                         {
 
-                            var enemyPred = EQ.GetPrediction(target);
-                            var test = Player.Distance(enemyPred.CastPosition);
-                            var miau = Player.ServerPosition.Extend(orb.Position, test);
-                            if (miau.Distance(enemyPred.CastPosition) < EQ.Width + target.BoundingRadius - 60)
-                            {
-                                E.Cast(orb.Position);
-                                lastqe = Game.TickCount + Game.Ping + 100;
-
-                            }
+                            Q.Cast(target);
                         }
+
                     }
                 }
             }
-            if (E.Ready && Menu["combo"]["useqe"].Enabled &&
-                target.Distance(Player) < Menu["combo"]["range"].As<MenuSlider>().Value)
+            if (Menu["combo"]["usew"].Enabled)
             {
 
-                if (Menu["pred"].As<MenuList>().Value == 0)
-                {
-                   
-                    if (target.Distance(Player) >= 800 && target.Distance(Player) <= 900)
-                    {
+                var target = GetBestEnemyHeroTargetInRange(W.Range);
 
-
-                        Q2.From = target.ServerPosition;
-                        Q2.Delay = 0.55f + Player.Distance(target.ServerPosition) / EQ.Speed;
-                        var pred = Q2.GetPrediction(target);
-                        var ppos = Player.ServerPosition;
-                        var startpos = ppos.Extend(pred.CastPosition, Q.Range - 100);
-
-
-                        Q2.Cast(startpos);
-
-                    }
-                    if (target.Distance(Player) >= 900 && target.Distance(Player) <= 1000)
-                    {
-
-
-                        Q2.From = target.ServerPosition;
-                        Q2.Delay = 0.7f + Player.Distance(target.ServerPosition) / EQ.Speed;
-                        var pred = Q2.GetPrediction(target);
-                        var ppos = Player.ServerPosition;
-                        var startpos = ppos.Extend(pred.CastPosition, Q.Range - 100);
-
-
-                        Q2.Cast(startpos);
-
-                    }
-                    if (target.Distance(Player) >= 1000)
-                    {
-
-
-                        Q2.From = target.ServerPosition;
-                        Q2.Delay = 0.83f + Player.Distance(target.ServerPosition) / EQ.Speed;
-                        var pred = Q2.GetPrediction(target);
-                        var ppos = Player.ServerPosition;
-                        var startpos = ppos.Extend(pred.CastPosition, Q.Range - 30);
-
-
-                        Q2.Cast(startpos);
-                    }
-                    if (target.Distance(Player) <= 800)
-                    {
-                        Q.Cast(target);
-                    }
-                
-    
-                }
-                if (Menu["pred"].As<MenuList>().Value == 1 && target.Distance(Player) > E.Range)
-                {
-                    
-                    EQ.Delay = E.Delay + Q.Range / E.Speed;
-
-                    EQ.From = Player.ServerPosition.Extend(target.ServerPosition, Q.Range);
-
-                    var pred = EQ.GetPrediction(target);
-                   
-                    if (pred.HitChance >= HitChance.High)
-                    {
-
-                      
-                        Q.Cast(Player.ServerPosition.Extend(pred.CastPosition, Q.Range - 100));
-                    }
-                }
-
-
-
-
-            }
-            if (R.Ready && Menu["combo"]["engage"]["user"].Enabled)
-            {
-                if (target.Health >= Menu["combo"]["engage"]["waster"].As<MenuSlider>().Value)
-                {
-                    switch (Menu["combo"]["engage"]["rmode"].As<MenuList>().Value)
-                    {
-                        case 0:
-                            if (target != null)
-                            {
-                                if (target.Health < GetR(target))
-                                {
-                                    if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
-                                    {
-                                        R.CastOnUnit(target);
-                                    }
-                                }
-                            }
-                            break;
-                        case 1:
-                            if (target != null)
-                            {
-
-                                if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
-                                {
-                                    if (Player.SpellBook.GetSpell(SpellSlot.R).Ammo >=
-                                        Menu["combo"]["engage"]["orb"].As<MenuSlider>().Value)
-                                    {
-                                        if (!Menu["combo"]["engage"]["kill"].Enabled)
-                                        {
-                                            R.CastOnUnit(target);
-                                        }
-                                        if (Menu["combo"]["engage"]["kill"].Enabled)
-                                        {
-                                            double QDamage = Player.GetSpellDamage(target, SpellSlot.Q);
-                                            double WDamage = Player.GetSpellDamage(target, SpellSlot.W);
-                                            double EDamage = Player.GetSpellDamage(target, SpellSlot.E);
-                                            double RDamage = GetR(target);
-
-                                            if (target.Health <= QDamage + WDamage + EDamage + RDamage)
-                                            {
-                                                R.CastOnUnit(target);
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-
-                            break;
-                    }
-                }
-            }
-        }
-
-
-        private void OnHarass()
-        {
-            if (Player.ManaPercent() >= Menu["harass"]["mana"].As<MenuSlider>().Value)
-            {
-                var target = GetBestEnemyHeroTargetInRange(EQ.Range);
-
-                if (!target.IsValidTarget())
-                {
-                    return;
-                }
-                if (target.Distance(Player) < W.Range && Menu["harass"]["usew"].Enabled)
+                if (target.IsValidTarget() && target.Distance(Player) <= W.Range)
                 {
                     if (target != null)
                     {
+
                         if (!Player.HasBuff("syndrawtooltip"))
                         {
                             if (target.IsValidTarget(W.Range) && W.Ready)
@@ -1203,35 +1016,260 @@ namespace Syndra_By_Kornis
                                 }
                             }
                         }
-
                         if (Player.HasBuff("syndrawtooltip"))
                         {
 
                             if (!target.HasBuff("SyndraEDebuff"))
                             {
-
-                              
-
-                                if (lastqe < Game.TickCount)
+                                if (Objects() != null)
                                 {
-                                    W.Cast(target);
+
+
+                                    if (lastqe < Game.TickCount)
+                                    {
+                                        W.Cast(target);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (E.Ready && Menu["combo"]["usee"].Enabled)
+            {
+                var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                if (target.IsValidTarget())
+                {
+                    foreach (var orb in GameObjects.AllGameObjects.Where(x => x.Distance(Player) < 1000))
+                    {
+                        if (orb.Name == "Seed" && orb.IsValid && !orb.IsDead)
+                        {
+                            if (orb.Distance(Player) <= E.Range && Player.Distance(orb.ServerPosition) >= 100 &&
+                                target.Distance(Player) <= 1100)
+                            {
+
+                                var enemyPred = EQ.GetPrediction(target);
+                                var test = Player.Distance(enemyPred.CastPosition);
+                                var miau = Player.ServerPosition.Extend(orb.Position, test);
+                                if (miau.Distance(enemyPred.CastPosition) < EQ.Width + target.BoundingRadius - 60)
+                                {
+                                    E.Cast(orb.Position);
+                                    lastqe = Game.TickCount + Game.Ping + 100;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (E.Ready && Menu["combo"]["useqe"].Enabled)
+
+            {
+                var target = GetBestEnemyHeroTargetInRange(EQ.Range);
+
+                if (target.IsValidTarget() && target.Distance(Player) < Menu["combo"]["range"].As<MenuSlider>().Value)
+                {
+                    if (Menu["pred"].As<MenuList>().Value == 0)
+                    {
+
+                        if (target.Distance(Player) >= 800 && target.Distance(Player) <= 900)
+                        {
+
+
+                            Q2.From = target.ServerPosition;
+                            Q2.Delay = 0.55f + Player.Distance(target.ServerPosition) / EQ.Speed;
+                            var pred = Q2.GetPrediction(target);
+                            var ppos = Player.ServerPosition;
+                            var startpos = ppos.Extend(pred.CastPosition, Q.Range - 100);
+
+
+                            Q2.Cast(startpos);
+
+                        }
+                        if (target.Distance(Player) >= 900 && target.Distance(Player) <= 1000)
+                        {
+
+
+                            Q2.From = target.ServerPosition;
+                            Q2.Delay = 0.7f + Player.Distance(target.ServerPosition) / EQ.Speed;
+                            var pred = Q2.GetPrediction(target);
+                            var ppos = Player.ServerPosition;
+                            var startpos = ppos.Extend(pred.CastPosition, Q.Range - 100);
+
+
+                            Q2.Cast(startpos);
+
+                        }
+                        if (target.Distance(Player) >= 1000)
+                        {
+
+
+                            Q2.From = target.ServerPosition;
+                            Q2.Delay = 0.83f + Player.Distance(target.ServerPosition) / EQ.Speed;
+                            var pred = Q2.GetPrediction(target);
+                            var ppos = Player.ServerPosition;
+                            var startpos = ppos.Extend(pred.CastPosition, Q.Range - 30);
+
+
+                            Q2.Cast(startpos);
+                        }
+                        if (target.Distance(Player) <= 800)
+                        {
+                            Q.Cast(target);
+                        }
+
+
+                    }
+                    if (Menu["pred"].As<MenuList>().Value == 1 && target.Distance(Player) > E.Range)
+                    {
+
+                        EQ.Delay = E.Delay + Q.Range / E.Speed;
+
+                        EQ.From = Player.ServerPosition.Extend(target.ServerPosition, Q.Range);
+
+                        var pred = EQ.GetPrediction(target);
+
+                        if (pred.HitChance >= HitChance.High)
+                        {
+
+
+                            Q.Cast(Player.ServerPosition.Extend(pred.CastPosition, Q.Range - 100));
+                        }
+                    }
+
+
+
+
+                }
+            }
+            if (R.Ready && Menu["combo"]["engage"]["user"].Enabled)
+            {
+                var target = GetBestEnemyHeroTargetInRange(R.Range);
+
+                if (target.IsValidTarget())
+                {
+                    if (target.Health >= Menu["combo"]["engage"]["waster"].As<MenuSlider>().Value)
+                    {
+                        switch (Menu["combo"]["engage"]["rmode"].As<MenuList>().Value)
+                        {
+                            case 0:
+                                if (target != null)
+                                {
+                                    if (target.Health < GetR(target))
+                                    {
+                                        if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                        {
+                                            R.CastOnUnit(target);
+                                        }
+                                    }
+                                }
+                                break;
+                            case 1:
+                                if (target != null)
+                                {
+
+                                    if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                    {
+                                        if (Player.SpellBook.GetSpell(SpellSlot.R).Ammo >=
+                                            Menu["combo"]["engage"]["orb"].As<MenuSlider>().Value)
+                                        {
+                                            if (!Menu["combo"]["engage"]["kill"].Enabled)
+                                            {
+                                                R.CastOnUnit(target);
+                                            }
+                                            if (Menu["combo"]["engage"]["kill"].Enabled)
+                                            {
+                                                double QDamage = Player.GetSpellDamage(target, SpellSlot.Q);
+                                                double WDamage = Player.GetSpellDamage(target, SpellSlot.W);
+                                                double EDamage = Player.GetSpellDamage(target, SpellSlot.E);
+                                                double RDamage = GetR(target);
+
+                                                if (target.Health <= QDamage + WDamage + EDamage + RDamage)
+                                                {
+                                                    R.CastOnUnit(target);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnHarass()
+        {
+            if (Player.ManaPercent() >= Menu["harass"]["mana"].As<MenuSlider>().Value)
+            {
+
+                if (Menu["harass"]["usew"].Enabled)
+                {
+                    var target = GetBestEnemyHeroTargetInRange(W.Range);
+
+                    if (target.IsValidTarget() && target.Distance(Player) < W.Range)
+                    {
+                        if (target != null)
+                        {
+                            if (!Player.HasBuff("syndrawtooltip"))
+                            {
+                                if (target.IsValidTarget(W.Range) && W.Ready)
+                                {
+                                    if (delayyyy <= Game.TickCount)
+                                    {
+                                        if (Objects() != null)
+                                        {
+                                            if (W.Cast(Objects().ServerPosition))
+                                            {
+
+                                                lastw = Game.TickCount + Game.Ping + 20;
+                                                lastwe = Game.TickCount + Game.Ping + 200;
+                                                delayyyy = 1000 + Game.TickCount;
+                                                return;
+                                            }
+                                        }
+
+                                    }
                                 }
                             }
 
+                            if (Player.HasBuff("syndrawtooltip"))
+                            {
+
+                                if (!target.HasBuff("SyndraEDebuff"))
+                                {
+
+
+
+                                    if (lastqe < Game.TickCount)
+                                    {
+                                        W.Cast(target);
+                                    }
+                                }
+
+                            }
                         }
                     }
                 }
 
 
 
-
-                if (target.Distance(Player) < Q.Range && Menu["harass"]["useq"].Enabled)
+                if (Menu["harass"]["useq"].Enabled)
                 {
-                    if (target != null)
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                    if (target.IsValidTarget() && target.Distance(Player) < Q.Range)
                     {
-                        if (target.IsValidTarget(Q.Range))
+                        if (target != null)
                         {
-                            Q.Cast(target);
+                            if (target.IsValidTarget(Q.Range))
+                            {
+                                Q.Cast(target);
+                            }
                         }
                     }
                 }
@@ -1240,26 +1278,32 @@ namespace Syndra_By_Kornis
                 {
                     if (E.Ready && lastwe <= Game.TickCount)
                     {
-                        if (target.IsValidTarget(EQ.Range))
-                        {
-                            if (target != null)
-                            {
-                                foreach (var orb in GameObjects.AllGameObjects.Where(x => x.Distance(Player) < 1000))
-                                {
-                                    if (orb.Name == "Seed" && orb.IsValid && !orb.IsDead)
-                                    {
-                                        if (orb.Distance(Player) <= E.Range &&
-                                            Player.Distance(orb.ServerPosition) >= 100 &&
-                                            target.Distance(Player) <= 1100)
-                                        {
+                        var target = GetBestEnemyHeroTargetInRange(EQ.Range);
 
-                                            var enemyPred = EQ.GetPrediction(target);
-                                            var test = Player.Distance(enemyPred.CastPosition);
-                                            var miau = Player.ServerPosition.Extend(orb.Position, test);
-                                            if (miau.Distance(enemyPred.CastPosition) <
-                                                EQ.Width + target.BoundingRadius - 60)
+                        if (target.IsValidTarget() && target.Distance(Player) < Q.Range)
+                        {
+                            if (target.IsValidTarget(EQ.Range))
+                            {
+                                if (target != null)
+                                {
+                                    foreach (var orb in GameObjects.AllGameObjects.Where(x => x.Distance(Player) < 1000)
+                                    )
+                                    {
+                                        if (orb.Name == "Seed" && orb.IsValid && !orb.IsDead)
+                                        {
+                                            if (orb.Distance(Player) <= E.Range &&
+                                                Player.Distance(orb.ServerPosition) >= 100 &&
+                                                target.Distance(Player) <= 1100)
                                             {
-                                                E.Cast(orb.Position);
+
+                                                var enemyPred = EQ.GetPrediction(target);
+                                                var test = Player.Distance(enemyPred.CastPosition);
+                                                var miau = Player.ServerPosition.Extend(orb.Position, test);
+                                                if (miau.Distance(enemyPred.CastPosition) <
+                                                    EQ.Width + target.BoundingRadius - 60)
+                                                {
+                                                    E.Cast(orb.Position);
+                                                }
                                             }
                                         }
                                     }
