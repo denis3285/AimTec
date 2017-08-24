@@ -215,14 +215,16 @@ namespace Support_AIO.Champions
             if (useR)
             {
 
-
-                var result = GetLinePosition(R.Range, 180);
-
-                if (result != null)
+                if (Extensions.GetBestEnemyHeroTargetInRange(R.Range) != null)
                 {
-                    if (result.numberOfMinionsHit >= RootMenu["combo"]["hitr"].As<MenuSlider>().Value)
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value > 1)
                     {
-                        R.Cast(result.CastPosition);
+                        R.CastIfWillHit(Extensions.GetBestEnemyHeroTargetInRange(R.Range),
+                            RootMenu["combo"]["hitr"].As<MenuSlider>().Value - 1);
+                    }
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value == 1)
+                    {
+                        R.Cast(Extensions.GetBestEnemyHeroTargetInRange(R.Range));
                     }
                 }
 
@@ -272,13 +274,16 @@ namespace Support_AIO.Champions
             }
             if (RootMenu["combo"]["semir"].Enabled)
             {
-                var result = GetLinePosition(R.Range, 180);
-
-                if (result != null)
+                if (Extensions.GetBestEnemyHeroTargetInRange(R.Range) != null)
                 {
-                    if (result.numberOfMinionsHit >= RootMenu["combo"]["hitr"].As<MenuSlider>().Value)
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value > 1)
                     {
-                        R.Cast(result.CastPosition);
+                        R.CastIfWillHit(Extensions.GetBestEnemyHeroTargetInRange(R.Range),
+                            RootMenu["combo"]["hitr"].As<MenuSlider>().Value - 1);
+                    }
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value == 1)
+                    {
+                        R.Cast(Extensions.GetBestEnemyHeroTargetInRange(R.Range));
                     }
                 }
 
@@ -481,7 +486,7 @@ namespace Support_AIO.Champions
             W2 = new Aimtec.SDK.Spell(SpellSlot.W, 1000);
             E = new Aimtec.SDK.Spell(SpellSlot.E, 400);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 900);
-            R.SetSkillshot(0.5f, 125, 3000f, false, SkillshotType.Line);
+            R.SetSkillshot(0.5f, 115, 3000f, false, SkillshotType.Line);
         }
     }
 }

@@ -355,7 +355,7 @@ namespace Support_AIO.Champions
                 WhiteList.Add(new MenuSlider("ally", "Ally Health Percent <=", 50));
                 WhiteList.Add(new MenuSlider("me", "Don't W if my Health <=", 30));
                 WhiteList.Add(new MenuBool("autor", "Enable R Healing"));
-                WhiteList.Add(new MenuBool("semi", "^- Semi Manual  R", true));
+                WhiteList.Add(new MenuBool("semi", "^- Semi Manual  R", false));
                 WhiteList.Add(new MenuSlider("rhealth", "Ally R Health <=", 20));
             }
             RootMenu.Add(WhiteList);
