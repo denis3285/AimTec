@@ -176,6 +176,7 @@ namespace Syndra_By_Kornis
 
             Menu.Add(DrawMenu);
             Menu.Add(new MenuList("pred", "Pred.", new[] {"Old Version", "New Version"}, 1));
+            Menu.Add(new MenuList("preds", "Prediction Mode", new[] { "Core", "TimbelPred" }, 1));
             Gapcloser.Attach(Menu, "E Anti-GapClose");
             Syndra_By_Kornis.DashQ.AutoQ.Attach(Menu, "Auto Q on Dashes");
             Menu.Attach();
@@ -278,7 +279,7 @@ namespace Syndra_By_Kornis
 
         private void Render_OnPresent()
         {
-
+           
             Vector2 maybeworks;
             var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
             var xaOffset = (int) maybeworks.X;
@@ -340,6 +341,7 @@ namespace Syndra_By_Kornis
             {
                 Render.Circle(Player.Position, Menu["combo"]["range"].As<MenuSlider>().Value, 40, Color.HotPink);
             }
+     
             if (Menu["drawings"]["drawdamage"].Enabled)
             {
 
@@ -349,6 +351,7 @@ namespace Syndra_By_Kornis
                     .ForEach(
                         unit =>
                         {
+                           
 
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
@@ -426,7 +429,14 @@ namespace Syndra_By_Kornis
                 }
                 if (target != null)
                 {
-                    Q.Cast(target);
+                    if (Menu["preds"].As<MenuList>().Value == 1)
+                    {
+                        Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                    }
+                    if (Menu["preds"].As<MenuList>().Value == 0)
+                    {
+                        Q.Cast(target);
+                    }
                 }
 
             }
@@ -603,7 +613,14 @@ namespace Syndra_By_Kornis
                                 }
                                 if (target.Distance(Player) <= 800)
                                 {
-                                    Q.Cast(target);
+                                    if (Menu["preds"].As<MenuList>().Value == 1)
+                                    {
+                                        Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                                    }
+                                    if (Menu["preds"].As<MenuList>().Value == 0)
+                                    {
+                                        Q.Cast(target);
+                                    }
                                 }
 
                             }
@@ -871,8 +888,14 @@ namespace Syndra_By_Kornis
                     Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
                     bestTarget.IsValidTarget(Q.Range))
                 {
-
-                    Q.Cast(bestTarget);
+                    if (Menu["preds"].As<MenuList>().Value == 1)
+                    {
+                        Q.Cast(TimbelPred.PredEx(bestTarget, 0.5f));
+                    }
+                    if (Menu["preds"].As<MenuList>().Value == 0)
+                    {
+                        Q.Cast(bestTarget);
+                    }
                 }
             }
             if (W.Ready &&
@@ -913,7 +936,14 @@ namespace Syndra_By_Kornis
 
                             if (lastqe < Game.TickCount)
                             {
-                                W.Cast(bestTarget);
+                                if (Menu["preds"].As<MenuList>().Value == 1)
+                                {
+                                    W.Cast(TimbelPred.PredEx(bestTarget, 0.4f));
+                                }
+                                if (Menu["preds"].As<MenuList>().Value == 0)
+                                {
+                                    W.Cast(bestTarget);
+                                }
                             }
 
                         }
@@ -979,7 +1009,14 @@ namespace Syndra_By_Kornis
                         if (target != null)
                         {
 
-                            Q.Cast(target);
+                            if (Menu["preds"].As<MenuList>().Value == 1)
+                            {
+                                Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                            }
+                            if (Menu["preds"].As<MenuList>().Value == 0)
+                            {
+                                Q.Cast(target);
+                            }
                         }
 
                     }
@@ -1027,7 +1064,14 @@ namespace Syndra_By_Kornis
 
                                     if (lastqe < Game.TickCount)
                                     {
-                                        W.Cast(target);
+                                        if (Menu["preds"].As<MenuList>().Value == 1)
+                                        {
+                                            W.Cast(TimbelPred.PredEx(target, 0.4f));
+                                        }
+                                        if (Menu["preds"].As<MenuList>().Value == 0)
+                                        {
+                                            W.Cast(target);
+                                        }
                                     }
                                 }
                             }
@@ -1117,7 +1161,14 @@ namespace Syndra_By_Kornis
                         }
                         if (target.Distance(Player) <= 800)
                         {
-                            Q.Cast(target);
+                            if (Menu["preds"].As<MenuList>().Value == 1)
+                            {
+                                Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                            }
+                            if (Menu["preds"].As<MenuList>().Value == 0)
+                            {
+                                Q.Cast(target);
+                            }
                         }
 
 
@@ -1247,7 +1298,14 @@ namespace Syndra_By_Kornis
 
                                     if (lastqe < Game.TickCount)
                                     {
-                                        W.Cast(target);
+                                        if (Menu["preds"].As<MenuList>().Value == 1)
+                                        {
+                                            W.Cast(TimbelPred.PredEx(target, 0.4f));
+                                        }
+                                        if (Menu["preds"].As<MenuList>().Value == 0)
+                                        {
+                                            W.Cast(target);
+                                        }
                                     }
                                 }
 
@@ -1268,7 +1326,14 @@ namespace Syndra_By_Kornis
                         {
                             if (target.IsValidTarget(Q.Range))
                             {
-                                Q.Cast(target);
+                                if (Menu["preds"].As<MenuList>().Value == 1)
+                                {
+                                    Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                                }
+                                if (Menu["preds"].As<MenuList>().Value == 0)
+                                {
+                                    Q.Cast(target);
+                                }
                             }
                         }
                     }
@@ -1295,7 +1360,7 @@ namespace Syndra_By_Kornis
                                                 Player.Distance(orb.ServerPosition) >= 100 &&
                                                 target.Distance(Player) <= 1100)
                                             {
-
+                                                
                                                 var enemyPred = EQ.GetPrediction(target);
                                                 var test = Player.Distance(enemyPred.CastPosition);
                                                 var miau = Player.ServerPosition.Extend(orb.Position, test);
