@@ -222,7 +222,7 @@ namespace Support_AIO.SpellBlocking
                 }
                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
                 {
                     bestAllies = GameObjects.AllyHeroes
@@ -265,7 +265,7 @@ namespace Support_AIO.SpellBlocking
                     {
                         if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                             ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                            ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                            ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                             ObjectManager.GetLocalPlayer().ChampionName == "Karma")
                         {
                             if (Support_AIO.SpellBlocking.EvadeTargetManager.Menu["whitelist"][
@@ -298,17 +298,15 @@ namespace Support_AIO.SpellBlocking
 
         private static void OnDestroy(GameObject sender)
         {
-            var missile = sender as MissileClient;
-            if (missile == null)
-            {
-                return;
-            }
             if (!sender.IsValid)
             {
                 return;
             }
-
-            
+            var missile = sender as MissileClient;
+            if (missile == null)
+            {
+                return;
+            }          
 
             if (missile.SpellCaster.IsValid && missile.SpellCaster.Team != ObjectManager.GetLocalPlayer().Team)
             {

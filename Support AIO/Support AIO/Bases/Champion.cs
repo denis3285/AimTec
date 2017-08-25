@@ -75,6 +75,7 @@ namespace Support_AIO.Bases
             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
             {
                 bestAllies = GameObjects.AllyHeroes
@@ -99,6 +100,7 @@ namespace Support_AIO.Bases
                     if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                        ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Karma")
                     {
 
@@ -121,6 +123,7 @@ namespace Support_AIO.Bases
                     if (ObjectManager.GetLocalPlayer().ChampionName == "Lux" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Sona" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Taric" ||
+                        ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "TahmKench")
 
                     {
@@ -143,6 +146,7 @@ namespace Support_AIO.Bases
                 {
                     if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
+                        ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
                         ObjectManager.GetLocalPlayer().ChampionName == "Karma")
                     {
@@ -192,13 +196,13 @@ namespace Support_AIO.Bases
 
         internal virtual void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
-           
+
         }
 
         private static void ZLib_OnPredictDamage(Base.Unit hero, PredictDamageEventArgs args)
         {
             if (Player.ChampionName == "Lulu")
-            {     
+            {
                 if (hero.Instance.IsEnemy)
                 {
                     return;
@@ -273,10 +277,10 @@ namespace Support_AIO.Bases
                 {
                     args.NoProcess = true;
                 }
-              
-                if (args.HpInstance.PredictedDmg*2 >= hero.Instance.Health && R.Ready)
+
+                if (args.HpInstance.PredictedDmg * 2 >= hero.Instance.Health && R.Ready)
                 {
-                  
+
                     if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled)
                     {
 
@@ -284,7 +288,8 @@ namespace Support_AIO.Bases
                     }
                 }
             }
-            if (Player.ChampionName == "Janna" || Player.ChampionName == "Lulu" || Player.ChampionName == "Rakan" || Player.ChampionName == "Karma")
+            if (Player.ChampionName == "Janna" || Player.ChampionName == "Lulu" || Player.ChampionName == "Rakan" ||
+                Player.ChampionName == "Karma" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern")
             {
 
                 if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
@@ -310,13 +315,13 @@ namespace Support_AIO.Bases
 
                         Helpers.ResetIncomeDamage(hero);
                     }
-                  
+
 
                     if (!hero.Instance.IsValidTarget(float.MaxValue, true))
                     {
                         Helpers.ResetIncomeDamage(hero);
                     }
-                   
+
                     if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
                     {
                         args.NoProcess = true;
@@ -345,7 +350,7 @@ namespace Support_AIO.Bases
                     {
                         args.NoProcess = true;
                     }
-                  
+
                     var objShop = ObjectManager.Get<GameObject>()
                         .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
 
@@ -354,9 +359,9 @@ namespace Support_AIO.Bases
                     {
                         args.NoProcess = true;
                     }
-                    
-                  
-                      
+
+
+
                     if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled)
                     {
 
@@ -426,7 +431,8 @@ namespace Support_AIO.Bases
 
 
 
-                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled &&
+                        hero.Instance.Distance(Player) < 400)
                     {
 
                         W2.CastOnUnit(hero.Instance);
@@ -502,15 +508,17 @@ namespace Support_AIO.Bases
                     {
                         return;
                     }
-                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
-                    {
-          
-                        W.CastOnUnit(hero.Instance);
-                    }
-                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled && hero.Instance.Distance(Player) < 400)
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled &&
+                        hero.Instance.Distance(Player) < 400)
                     {
 
-                       E.Cast();
+                        W.CastOnUnit(hero.Instance);
+                    }
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled &&
+                        hero.Instance.Distance(Player) < 400)
+                    {
+
+                        E.Cast();
                     }
 
                 }
@@ -525,25 +533,26 @@ namespace Support_AIO.Bases
 
         internal virtual void OnPreAttack(object sender, PreAttackEventArgs e)
         {
-           
+
         }
+
         internal virtual void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
         {
-            
+
         }
 
         public void Drawing()
         {
             Drawings();
         }
-    
 
-    protected abstract void Combo();
+
+        protected abstract void Combo();
 
         protected abstract void SemiR();
         protected abstract void Farming();
 
-     
+
         protected abstract void Drawings();
         protected abstract void Killsteal();
         protected abstract void Harass();

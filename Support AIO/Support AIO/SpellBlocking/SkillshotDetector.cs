@@ -294,7 +294,7 @@ namespace Support_AIO.SpellBlocking
             var endPos = args.End.To2D();
             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
             {
                 bestAllies = GameObjects.AllyHeroes

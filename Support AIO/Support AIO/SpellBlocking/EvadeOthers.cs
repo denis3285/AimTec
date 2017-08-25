@@ -39,7 +39,7 @@ namespace Support_AIO.SpellBlocking
         {
             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
             {
                 bestAllies = GameObjects.AllyHeroes
@@ -68,9 +68,9 @@ namespace Support_AIO.SpellBlocking
                     if (ally != null)
                     {
 
-                        if (ObjectManager.GetLocalPlayer().HasBuff("karthusfallenonetarget"))
+                        if (ally.HasBuff("karthusfallenonetarget"))
                         {
-                            if ((ObjectManager.GetLocalPlayer().GetBuff("karthusfallenonetarget")
+                            if ((ally.GetBuff("karthusfallenonetarget")
                                      .EndTime -
                                  Game.ClockTime) *
                                 1000 <= 300)
@@ -78,40 +78,7 @@ namespace Support_AIO.SpellBlocking
                                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Karma")
-
-                                {
-                                    if (EvadeTargetManager.Menu["whitelist"][
-                                            ally.ChampionName.ToLower()]
-                                        .As<MenuBool>().Enabled)
-                                    {
-                                        Bases.Champion.E.CastOnUnit(ally);
-                                    }
-                                }
-                                if (ObjectManager.GetLocalPlayer().ChampionName == "Lux" || ObjectManager.GetLocalPlayer().ChampionName == "Sona" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Taric")
-
-                                {
-                                    if (EvadeTargetManager.Menu["whitelist"][
-                                            ally.ChampionName.ToLower()]
-                                        .As<MenuBool>().Enabled)
-                                    {
-                                        Bases.Champion.W.CastOnUnit(ally);
-                                    }
-                                }
-                            }
-                        }
-                        if (ObjectManager.GetLocalPlayer().HasBuff("nautilusgrandlinetarget"))
-                        {
-                            if ((ObjectManager.GetLocalPlayer().GetBuff("nautilusgrandlinetarget")
-                                     .EndTime -
-                                 Game.ClockTime) *
-                                1000 <= 300)
-                            {
-
-                                if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                                 {
@@ -136,9 +103,44 @@ namespace Support_AIO.SpellBlocking
                                 }
                             }
                         }
-                        if (ObjectManager.GetLocalPlayer().HasBuff("nocturneparanoiadash"))
+                        if (ally.HasBuff("nautilusgrandlinetarget"))
                         {
-                            if ((ObjectManager.GetLocalPlayer().GetBuff("nocturneparanoiadash")
+                            if ((ally.GetBuff("nautilusgrandlinetarget")
+                                     .EndTime -
+                                 Game.ClockTime) *
+                                1000 <= 300)
+                            {
+
+                                if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Karma")
+
+                                {
+                                    if (EvadeTargetManager.Menu["whitelist"][
+                                            ally.ChampionName.ToLower()]
+                                        .As<MenuBool>().Enabled)
+                                    {
+                                        Bases.Champion.E.CastOnUnit(ally);
+                                    }
+                                }
+                                if (ObjectManager.GetLocalPlayer().ChampionName == "Lux" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Sona" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Taric")
+
+                                {
+                                    if (EvadeTargetManager.Menu["whitelist"][
+                                            ally.ChampionName.ToLower()]
+                                        .As<MenuBool>().Enabled)
+                                    {
+                                        Bases.Champion.W.CastOnUnit(ally);
+                                    }
+                                }
+                            }
+                        }
+                        if (ally.HasBuff("nocturneparanoiadash"))
+                        {
+                            if ((ally.GetBuff("nocturneparanoiadash")
                                      .EndTime -
                                  Game.ClockTime) *
                                 1000 <= 300)
@@ -151,7 +153,7 @@ namespace Support_AIO.SpellBlocking
                                             x.Distance(ally) < 500) != null)
                                 {
                                     if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
-                                        ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
+                                        ObjectManager.GetLocalPlayer().ChampionName == "Rakan" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                         ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
                                         ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
@@ -178,9 +180,9 @@ namespace Support_AIO.SpellBlocking
                                 }
                             }
                         }
-                        if (ObjectManager.GetLocalPlayer().HasBuff("soulshackles"))
+                        if (ally.HasBuff("soulshackles"))
                         {
-                            if ((ObjectManager.GetLocalPlayer().GetBuff("soulshackles")
+                            if ((ally.GetBuff("soulshackles")
                                      .EndTime -
                                  Game.ClockTime) *
                                 1000 <= 300)
@@ -188,7 +190,7 @@ namespace Support_AIO.SpellBlocking
 
                                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                                 {
@@ -213,9 +215,9 @@ namespace Support_AIO.SpellBlocking
                                 }
                             }
                         }
-                        if (ObjectManager.GetLocalPlayer().HasBuff("zedrdeathmark"))
+                        if (ally.HasBuff("zedrdeathmark"))
                         {
-                            if ((ObjectManager.GetLocalPlayer().GetBuff("zedrdeathmark")
+                            if ((ally.GetBuff("zedrdeathmark")
                                      .EndTime -
                                  Game.ClockTime) *
                                 1000 <= 300)
@@ -223,7 +225,7 @@ namespace Support_AIO.SpellBlocking
 
                                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                                 {
@@ -268,7 +270,7 @@ namespace Support_AIO.SpellBlocking
 
                                                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                                                 {
@@ -308,7 +310,7 @@ namespace Support_AIO.SpellBlocking
                                         {
                                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                                             {
@@ -360,7 +362,7 @@ namespace Support_AIO.SpellBlocking
                         if (ally.IsHero && ally.IsAlly)
                         {
                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
-                                ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
+                                ObjectManager.GetLocalPlayer().ChampionName == "Rakan" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
@@ -416,7 +418,7 @@ namespace Support_AIO.SpellBlocking
 
                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                             {
@@ -463,7 +465,7 @@ namespace Support_AIO.SpellBlocking
                         {
                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                             {
@@ -526,7 +528,7 @@ namespace Support_AIO.SpellBlocking
                         {
                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                             {
@@ -587,7 +589,7 @@ namespace Support_AIO.SpellBlocking
                 }
                 if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                     ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                    ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                     ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                 {

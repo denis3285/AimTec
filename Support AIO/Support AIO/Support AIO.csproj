@@ -74,6 +74,8 @@
     <Compile Include="Base\Helpers.cs" />
     <Compile Include="Champions\Brand.cs" />
     <Compile Include="Champions\Braum.cs" />
+    <Compile Include="Champions\Ivern.cs" />
+    <Compile Include="Champions\Malzahar.cs" />
     <Compile Include="Champions\Lulu.cs" />
     <Compile Include="Champions\Nami.cs" />
     <Compile Include="Champions\TahmKench.cs" />

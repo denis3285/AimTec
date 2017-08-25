@@ -99,7 +99,7 @@ namespace Support_AIO.SpellBlocking
             mainMenu.Add(Menu);
             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
             {
                 bestAllies = GameObjects.AllyHeroes
@@ -175,7 +175,7 @@ namespace Support_AIO.SpellBlocking
 
                             if (ObjectManager.GetLocalPlayer().ChampionName == "Janna" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Rakan" ||
-                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" ||
+                                ObjectManager.GetLocalPlayer().ChampionName == "Lulu" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern" ||
                                 ObjectManager.GetLocalPlayer().ChampionName == "Karma")
 
                             {

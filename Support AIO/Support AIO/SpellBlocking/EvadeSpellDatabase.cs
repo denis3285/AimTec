@@ -85,7 +85,20 @@ namespace Support_AIO.SpellBlocking
 
                 Spells.Add(new EvadeSpellData
                 {
-                    Name = "sonaw",
+                    Name = "LuluE",
+                    Slot = SpellSlot.E,
+                    Range = 650,
+                    Delay = 250,
+                    Speed = int.MaxValue,
+                    _dangerLevel = 1
+                });
+            }
+            if (ObjectManager.GetLocalPlayer().ChampionName == "Ivern")
+            {
+
+                Spells.Add(new EvadeSpellData
+                {
+                    Name = "IvernE",
                     Slot = SpellSlot.E,
                     Range = 650,
                     Delay = 250,

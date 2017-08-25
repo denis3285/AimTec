@@ -23,147 +23,6 @@ namespace Support_AIO.Champions
 {
     class Nami : Champion
     {
-        public class DrawHelper
-        {
-            public void DrawLine(Vector3 start, Vector3 end, Color color)
-            {
-                var screenStart = start.ToScreenPosition();
-                var screenEnd = end.ToScreenPosition();
-                Render.Line(screenStart, screenEnd, color);
-            }
-        }
-
-
-        public abstract class Polygon : DrawHelper
-        {
-
-
-            public List<Vector3> Points = new List<Vector3>();
-
-            public abstract void Draw(Color color);
-
-            public List<IntPoint> ClipperPoints
-            {
-                get
-                {
-                    List<IntPoint> clipperpoints = new List<IntPoint>();
-
-                    foreach (var p in this.Points)
-                    {
-                        clipperpoints.Add(new IntPoint(p.X, p.Z));
-                    }
-
-                    return clipperpoints;
-                }
-            }
-
-            public bool Contains(Vector3 point)
-            {
-                var p = new IntPoint(point.X, point.Z);
-                var inpolygon = Clipper.PointInPolygon(p, this.ClipperPoints);
-                return inpolygon == 1;
-
-            }
-        }
-        public class Rectangle : Polygon
-        {
-            public Rectangle(Vector3 startPosition, Vector3 endPosition, float width)
-            {
-                var direction = (startPosition - endPosition).Normalized();
-                var perpendicular = Perpendicular(direction);
-
-                var leftBottom = startPosition + width * perpendicular;
-                var leftTop = startPosition - width * perpendicular;
-
-                var rightBottom = endPosition - width * perpendicular;
-                var rightLeft = endPosition + width * perpendicular;
-
-                this.Points.Add(leftBottom);
-                this.Points.Add(leftTop);
-                this.Points.Add(rightBottom);
-                this.Points.Add(rightLeft);
-            }
-
-
-            public Vector3 Perpendicular(Vector3 v)
-            {
-                return new Vector3(-v.Z, v.Y, v.X);
-            }
-
-            public override void Draw(Color color)
-            {
-                if (Points.Count < 4)
-                {
-                    return;
-                }
-
-                for (var i = 0; i <= Points.Count - 1; i++)
-                {
-                    var p2 = (Points.Count - 1 == i) ? 0 : (i + 1);
-                    this.DrawLine(Points[i], Points[p2], color);
-                }
-            }
-        }
-        public class Results
-        {
-            public Results(int hit, Vector3 cp)
-            {
-                this.numberOfMinionsHit = hit;
-                this.CastPosition = cp;
-            }
-
-            public int numberOfMinionsHit = 0;
-            public Vector3 CastPosition;
-        }
-
-        public static Results GetLinePosition(float range, float width)
-        {
-            var enemies = GameObjects.EnemyHeroes.Where(x => x.IsValidSpellTarget(range));
-
-            var positions = enemies.Select(x => x.ServerPosition).ToList();
-
-            var locations = new List<Vector3>();
-
-            locations.AddRange(positions);
-
-            var max = positions.Count();
-
-            for (var i = 0; i < max; i++)
-            {
-                for (var j = 0; j < max; j++)
-                {
-                    if (positions[j] != positions[i])
-                    {
-                        locations.Add((positions[j] + positions[i]) / 2);
-                    }
-                }
-            }
-
-            HashSet<Results> results = new HashSet<Results>();
-
-            foreach (var p in locations)
-            {
-                var rect = new Rectangle(Player.ServerPosition, Player.ServerPosition.Extend(p, R.Range), width);
-
-                var count = 0;
-
-                foreach (var m in enemies)
-                {
-                    if (rect.Contains(m.ServerPosition))
-                    {
-                        count++;
-                    }
-                }
-
-                results.Add(new Results(count, p));
-            }
-
-            var maxhit = results.MaxBy(x => x.numberOfMinionsHit);
-
-            return maxhit;
-        }
-
-
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
 
@@ -216,14 +75,16 @@ namespace Support_AIO.Champions
 
             if (RootMenu["combo"]["user"].Enabled)
             {
-                var result = GetLinePosition(R.Range, 240);
-
-                if (result != null)
+                if (Extensions.GetBestEnemyHeroTargetInRange(R.Range) != null)
                 {
-                    if (result.numberOfMinionsHit >= RootMenu["combo"]["hitr"].As<MenuSlider>().Value &&
-                        RootMenu["combo"]["allyr"].As<MenuSlider>().Value <= Player.CountAllyHeroesInRange(1000))
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value > 1)
                     {
-                        R.Cast(result.CastPosition);
+                        R.CastIfWillHit(Extensions.GetBestEnemyHeroTargetInRange(R.Range),
+                            RootMenu["combo"]["hitr"].As<MenuSlider>().Value - 1);
+                    }
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value == 1)
+                    {
+                        R.Cast(Extensions.GetBestEnemyHeroTargetInRange(R.Range));
                     }
                 }
 
@@ -273,13 +134,16 @@ namespace Support_AIO.Champions
         {
             if (RootMenu["combo"]["semir"].Enabled)
             {
-                var result = GetLinePosition(R.Range, 240);
-
-                if (result != null)
+                if (Extensions.GetBestEnemyHeroTargetInRange(R.Range) != null)
                 {
-                    if (result.numberOfMinionsHit >= RootMenu["combo"]["hitr"].As<MenuSlider>().Value)
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value > 1)
                     {
-                        R.Cast(result.CastPosition);
+                        R.CastIfWillHit(Extensions.GetBestEnemyHeroTargetInRange(R.Range),
+                            RootMenu["combo"]["hitr"].As<MenuSlider>().Value - 1);
+                    }
+                    if (RootMenu["combo"]["hitr"].As<MenuSlider>().Value == 1)
+                    {
+                        R.Cast(Extensions.GetBestEnemyHeroTargetInRange(R.Range));
                     }
                 }
 
@@ -467,7 +331,7 @@ namespace Support_AIO.Champions
             E = new Aimtec.SDK.Spell(SpellSlot.E, 800);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 1000);
             Q.SetSkillshot(1f, 110, float.MaxValue, false, SkillshotType.Circle);
-            R.SetSkillshot(0.5f, 260f, 850, false, SkillshotType.Circle, false, HitChance.None);
+            R.SetSkillshot(0.5f, 180, 850, false, SkillshotType.Circle, false, HitChance.None);
         }
     }
 }

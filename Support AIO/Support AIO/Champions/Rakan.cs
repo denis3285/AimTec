@@ -168,6 +168,33 @@ namespace Support_AIO.Champions
 
         protected override void SemiR()
         {
+            if (RootMenu["combo"]["wflash"].Enabled)
+            {
+
+                var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range + 410);
+                if (W.Ready)
+                {
+                    if (Flash.Ready && Flash != null)
+                    {
+                        var ummm = W.GetPrediction(target);
+                        Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
+                        if (target.IsValidTarget())
+                        {
+                            if (target.Distance(Player) > W.Range)
+                            {
+                                if (Flash.Cast(target.ServerPosition))
+                                {
+                                    W.Cast(ummm.CastPosition);
+                                }
+
+
+
+                            }
+                        }
+                    }
+                }
+            }
+
             if (RootMenu["combo"]["engage"].Enabled)
             {
                 Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
@@ -284,6 +311,10 @@ namespace Support_AIO.Champions
             if (RootMenu["drawings"]["drawrange"].Enabled)
             {
                 Render.Circle(Player.Position, E.Range + W.Range, 40, Color.CornflowerBlue);
+            }
+            if (RootMenu["drawings"]["wflash"].Enabled)
+            {
+                Render.Circle(Player.Position, W.Range + 410, 40, Color.HotPink);
             }
 
         }
@@ -406,6 +437,7 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuSlider("hitr", "If X Near Enemies", 2, 1, 5));
                 ComboMenu.Add(new MenuSlider("hp", "If Enemy X Health", 50, 1, 100));
                 ComboMenu.Add(new MenuKeyBind("engage", "Engage E - W Combo", KeyCode.T, KeybindType.Press));
+                ComboMenu.Add(new MenuKeyBind("wflash", "W - Flash", KeyCode.Z, KeybindType.Press));
 
             }
             RootMenu.Add(ComboMenu);
@@ -424,6 +456,7 @@ namespace Support_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawe", "Draw E Range"));
                 DrawMenu.Add(new MenuBool("drawflee", "Draw Flee Radius"));
                 DrawMenu.Add(new MenuBool("drawrange", "Draw Engage Range"));
+                DrawMenu.Add(new MenuBool("wflash", "Draw W-Flash"));
             }
             FarmMenu = new Menu("flee", "Flee");
             {
@@ -463,7 +496,11 @@ namespace Support_AIO.Champions
             R = new Aimtec.SDK.Spell(SpellSlot.R, 0);
             Q.SetSkillshot(0.25f, 60, 1800, true, SkillshotType.Line, false, HitChance.None);
             W.SetSkillshot(0.25f, 50, 1800, false, SkillshotType.Circle, false, HitChance.None);
-      
+            if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
+                Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner1, 425);
+            if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
+                Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner2, 425);
+
         }
     }
 }
