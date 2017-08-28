@@ -423,22 +423,22 @@ namespace Syndra_By_Kornis
             {
                 var target = GetBestEnemyHeroTargetInRange(Q.Range);
 
-                if (!target.IsValidTarget())
+                if (target.IsValidTarget())
                 {
-                    return;
-                }
-                if (target != null)
-                {
-                    if (Menu["preds"].As<MenuList>().Value == 1)
-                    {
-                        Q.Cast(TimbelPred.PredEx(target, 0.5f));
-                    }
-                    if (Menu["preds"].As<MenuList>().Value == 0)
-                    {
-                        Q.Cast(target);
-                    }
-                }
 
+                    if (target != null)
+                    {
+                        if (Menu["preds"].As<MenuList>().Value == 1)
+                        {
+                            Q.Cast(TimbelPred.PredEx(target, 0.5f));
+                        }
+                        if (Menu["preds"].As<MenuList>().Value == 0)
+                        {
+                            Q.Cast(target);
+                        }
+                    }
+
+                }
             }
             if (Menu["combo"]["engage"]["rtoggle"].Enabled && time <= Game.TickCount)
             {
