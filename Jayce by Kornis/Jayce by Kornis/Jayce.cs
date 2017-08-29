@@ -72,7 +72,7 @@ namespace Jayce_By_Kornis
             {
                 ESet.Add(new MenuBool("melee", "Use E Melee"));
                 ESet.Add(new MenuList("emode", "E Mode",
-                    new[] {"Use E Melee Only for KS", "Use E Melee only if Killable with Combo", "Always"}, 2));
+                    new[] { "Use E Melee Only for KS", "Use E Melee only if Killable with Combo", "Always" }, 2));
                 ESet.Add(new MenuBool("eq", "Use E on Q"));
             }
             ComboMenu.Add(new MenuKeyBind("key", "QE to Mouse:", KeyCode.T, KeybindType.Press));
@@ -157,13 +157,13 @@ namespace Jayce_By_Kornis
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
-           Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
 
             LoadSpells();
             Console.WriteLine("Jayce by Kornis - Loaded");
         }
 
-        public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
+        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
         private float timer;
         private int helalmoney;
 
@@ -177,7 +177,7 @@ namespace Jayce_By_Kornis
                 {
                     return;
                 }
-                    var spellName = args.SpellData.Name;
+                var spellName = args.SpellData.Name;
                 if (spellName.Equals("JayceShockBlast") && Menu["misc"]["autoe"].Enabled)
                 {
                     DelayAction.Queue(200, () =>
@@ -291,8 +291,8 @@ namespace Jayce_By_Kornis
 
             Vector2 maybeworks;
             var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
-            var xaOffset = (int) maybeworks.X;
-            var yaOffset = (int) maybeworks.Y;
+            var xaOffset = (int)maybeworks.X;
+            var yaOffset = (int)maybeworks.Y;
             if (Menu["drawings"]["drawtime"].Enabled)
             {
                 if (!Player.HasBuff("jaycestancehammer") && timer - Game.ClockTime > 0)
@@ -354,7 +354,7 @@ namespace Jayce_By_Kornis
                                 barPos.Y += yOffset;
                                 var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                                 var drawStartXPos =
-                                    (float) (barPos.X + (unit.Health >
+                                    (float)(barPos.X + (unit.Health >
                                                          Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                          Player.GetSpellDamage(unit, SpellSlot.E) +
                                                          Player.GetSpellDamage(unit, SpellSlot.W)
@@ -392,7 +392,7 @@ namespace Jayce_By_Kornis
                                 barPos.Y += yOffset;
                                 var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                                 var drawStartXPos =
-                                    (float) (barPos.X + (unit.Health >
+                                    (float)(barPos.X + (unit.Health >
                                                          Player.GetSpellDamage(unit, SpellSlot.E)
                                                          + GetEQ(unit)
                                                  ? width * ((unit.Health - (Player.GetSpellDamage(unit, SpellSlot.E)
@@ -427,7 +427,7 @@ namespace Jayce_By_Kornis
             switch (Orbwalker.Mode)
             {
                 case OrbwalkingMode.Combo:
-                         OnCombo();
+                    OnCombo();
                     break;
                 case OrbwalkingMode.Mixed:
                     OnHarass();
@@ -442,9 +442,9 @@ namespace Jayce_By_Kornis
             {
                 Flee();
             }
-              if (Menu["insec"]["key"].Enabled)
+            if (Menu["insec"]["key"].Enabled)
             {
-                  FlashE();
+                FlashE();
             }
             if (Menu["combo"]["key"].Enabled)
             {
@@ -751,24 +751,47 @@ namespace Jayce_By_Kornis
                     if (!Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qe"].Enabled &&
                         GetEQ(enemies) > enemies.Health && enemies.IsValidTarget(QE.Range) && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.E).Cost + Player.SpellBook.GetSpell(SpellSlot.Q).Cost + 30)
                     {
-                        if (E2.Cast(Player.ServerPosition.Extend(enemies.ServerPosition, 150)))
+                        var collisions =
+          (IList<Obj_AI_Base>)QE.GetPrediction(enemies).CollisionObjects;
+                         
+                        if (collisions.Any())
                         {
-                            {
-                                QE.Cast(enemies);
 
+                            if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                            {
+
+
+                                if (E2.Cast(Player.ServerPosition.Extend(enemies.ServerPosition, 150)))
+                                {
+                                    {
+                                        QE.Cast(enemies);
+
+                                    }
+                                }
+                            }
+                        }
+                        if (!collisions.Any())
+                        {
+
+                            if (E2.Cast(Player.ServerPosition.Extend(enemies.ServerPosition, 150)))
+                            {
+                                {
+                                    QE.Cast(enemies);
+
+                                }
                             }
                         }
                     }
-
                 }
             }
         }
-    
 
 
 
 
-    public static Obj_AI_Hero GetBestEnemyHeroTarget()
+
+
+        public static Obj_AI_Hero GetBestEnemyHeroTarget()
         {
             return GetBestEnemyHeroTargetInRange(float.MaxValue);
         }
@@ -795,56 +818,110 @@ namespace Jayce_By_Kornis
 
         private void OnCombo()
         {
-            var target = GetBestEnemyHeroTargetInRange(QE.Range);
 
-            if (!target.IsValidTarget())
+            if (!Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
             {
-                return;
+                var target = GetBestEnemyHeroTargetInRange(QE.Range);
+
+                if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
+                {
+
+                    if (!Player.HasBuff("jaycestancehammer") && Q2.Ready && E2.Ready &&
+                        Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost + 30 <
+                        Player.Mana)
+                    {
+                        var collisions =
+       (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                        if (collisions.Any())
+                        {
+
+                            if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                            {
+
+
+                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                {
+                                    {
+                                        QE.Cast(target);
+
+                                    }
+                                }
+                            }
+                        }
+                        if (!collisions.Any())
+                        {
+
+                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            {
+                                {
+                                    QE.Cast(target);
+
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            if (!Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled && target.IsValidTarget(QE.Range))
+            if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
+
             {
-                if (!Player.HasBuff("jaycestancehammer") && Q2.Ready && E2.Ready &&
+                var target = GetBestEnemyHeroTargetInRange(QE.Range);
+
+                if (target.IsValidTarget() && target.Distance(Player) > Q.Range && target.IsValidTarget(QE.Range))
+                {
+
+                    if (!Player.HasBuff("jaycestancehammer") && Q2.Ready && E2.Ready &&
                     Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost + 30 <
                     Player.Mana)
-                {
-                    if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
                     {
+                        var collisions =
+       (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                        if (collisions.Any())
+                        {
 
-                        QE.Cast(target);
+                            if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                            {
 
 
+                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                {
+                                    {
+                                        QE.Cast(target);
+
+                                    }
+                                }
+                            }
+                        }
+                        if (!collisions.Any())
+                        {
+
+                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            {
+                                {
+                                    QE.Cast(target);
+
+                                }
+                            }
+                        }
                     }
                 }
             }
-            if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled &&
-                target.Distance(Player) > Q.Range && target.IsValidTarget(QE.Range))
-                
+            if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["qset"]["ranged"].Enabled)
             {
-                if (!Player.HasBuff("jaycestancehammer") && Q2.Ready && E2.Ready &&
-                    Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost  + 30<
-                    Player.Mana)
+                var target = GetBestEnemyHeroTargetInRange(Q2.Range);
+
+                if (target.IsValidTarget() && target.IsValidTarget(Q2.Range))
                 {
-                    if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                    if (!Player.HasBuff("jaycestancehammer") && Q2.Ready)
                     {
 
-                        QE.Cast(target);
+                        Q2.Cast(target);
+
 
 
                     }
-                }
-            }
-            if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["qset"]["ranged"].Enabled &&
-                target.IsValidTarget(Q.Range))
-            {
-                if (!Player.HasBuff("jaycestancehammer") && Q2.Ready)
-                {
-
-                    Q2.Cast(target);
-
-
 
                 }
-
             }
             if (!Menu["combo"]["qset"]["qerange"].Enabled && Q2.Ready && !E2.Ready ||
                 (Q2.Ready && !Menu["combo"]["qset"]["qerange"].Enabled && Player.SpellBook.GetSpell(SpellSlot.Q).Cost +
@@ -854,10 +931,14 @@ namespace Jayce_By_Kornis
             {
                 if (!Player.HasBuff("jaycestancehammer"))
                 {
+                    var target = GetBestEnemyHeroTargetInRange(Q2.Range);
 
-                    if (target.IsValidTarget(Q2.Range) && Menu["combo"]["qset"]["ranged"].Enabled)
+                    if (target.IsValidTarget() && target.IsValidTarget(Q2.Range))
                     {
-                        Q2.Cast(target);
+                        if (target.IsValidTarget(Q2.Range) && Menu["combo"]["qset"]["ranged"].Enabled)
+                        {
+                            Q2.Cast(target);
+                        }
                     }
 
 
@@ -867,76 +948,108 @@ namespace Jayce_By_Kornis
             }
             if (!Player.HasBuff("jaycestancehammer"))
             {
-                if (W.Ready && Menu["combo"]["wset"]["ranged"].Enabled && target.IsValidTarget(W2.Range))
+                if (W.Ready && Menu["combo"]["wset"]["ranged"].Enabled)
                 {
+                    var target = GetBestEnemyHeroTargetInRange(W2.Range);
 
-                    if (target != null)
+                    if (target.IsValidTarget() && target.IsValidTarget(W2.Range))
                     {
-                        W2.Cast();
+                        if (target != null)
+                        {
+                            W2.Cast();
+                        }
                     }
                 }
 
             }
             if (R.Ready && Menu["combo"]["user"].Enabled)
             {
-                if (target.IsValidTarget(1200))
+
+
                 {
-                    if (target.IsValidTarget(Q.Range) && !Player.HasBuff("jaycestancehammer"))
+                    if (!Player.HasBuff("jaycestancehammer"))
                     {
-                        if (Menu["combo"]["wset"]["wait"].Enabled && !Player.HasBuff("JayceHyperCharge"))
+                        var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                        if (target.IsValidTarget())
                         {
-                            if (!W.Ready)
+                            if (target.IsValidTarget(Q.Range))
                             {
-                                if (timer - Game.ClockTime < 1)
+                                if (Menu["combo"]["wset"]["wait"].Enabled && !Player.HasBuff("JayceHyperCharge"))
                                 {
-                                    R.Cast();
+                                    if (!W.Ready)
+                                    {
+                                        if (timer - Game.ClockTime < 1)
+                                        {
+                                            R.Cast();
+                                        }
+                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
+                                        {
+                                            R.Cast();
+                                        }
+                                    }
                                 }
-                                if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
+                                if (!Menu["combo"]["wset"]["wait"].Enabled && Player.HasBuff("JayceHyperCharge"))
                                 {
-                                    R.Cast();
-                                }
-                            }
-                        }
-                        if (!Menu["combo"]["wset"]["wait"].Enabled && Player.HasBuff("JayceHyperCharge"))
-                        {
-                            if (!W.Ready)
-                            {
-                                if (timer - Game.ClockTime < 1)
-                                {
-                                    R.Cast();
-                                }
-                                if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
-                                {
-                                    R.Cast();
+                                    if (!W.Ready)
+                                    {
+                                        if (timer - Game.ClockTime < 1)
+                                        {
+                                            R.Cast();
+                                        }
+                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
+                                        {
+                                            R.Cast();
+                                        }
+                                    }
                                 }
                             }
                         }
                     }
+
                     if (!Q.Ready && !W.Ready && Player.HasBuff("jaycestancehammer"))
                     {
                         R.Cast();
                     }
-                    if (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E) >
-                        target.Health && Player.HasBuff("jaycestancehammer") && target.IsValidTarget(QE.Range))
+                    if (Player.HasBuff("jaycestancehammer"))
                     {
-                        R.Cast();
-                    }
-                    if (target.Distance(Player) > Q.Range + 200 && target.Distance(Player) < 1200 &&
-                        Player.HasBuff("jaycestancehammer"))
-                    {
+                        var target = GetBestEnemyHeroTargetInRange(QE.Range);
 
-                        var collisions =
-                            (IList<Obj_AI_Base>) QE.GetPrediction(target).CollisionObjects;
-                        if (collisions.Any())
+                        if (target.IsValidTarget())
                         {
-                            if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                            if (target.IsValidTarget(QE.Range))
                             {
-                                return;
+                                if (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E) >
+                           target.Health)
+                                {
+
+                                    R.Cast();
+                                }
                             }
                         }
-                        R.Cast();
                     }
+                    if (
+                        Player.HasBuff("jaycestancehammer"))
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(1200);
 
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(1200) && target.Distance(Player) > Q.Range + 200)
+                            {
+                                var collisions =
+                            (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                                if (collisions.Any())
+                                {
+                                    if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                    {
+                                        return;
+                                    }
+                                }
+                                R.Cast();
+                            }
+                        }
+                    }
 
                 }
             }
@@ -947,10 +1060,18 @@ namespace Jayce_By_Kornis
                     {
                         if (E.Ready)
                         {
-                            if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range) &&
-                                Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                            var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                            if (target.IsValidTarget())
                             {
-                                E.CastOnUnit(target);
+                                if (target.IsValidTarget(E.Range))
+                                {
+                                    if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range) &&
+                                Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                                    {
+                                        E.CastOnUnit(target);
+                                    }
+                                }
                             }
                         }
                     }
@@ -960,30 +1081,48 @@ namespace Jayce_By_Kornis
                     {
                         if (E.Ready)
                         {
-                            if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range))
+                            var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                            if (target.IsValidTarget())
                             {
-                                if (GetEQ(target) + Player.GetSpellDamage(target, SpellSlot.E) > target.Health &&
-                                    Player.SpellBook.GetSpell(SpellSlot.R).CooldownEnd - Game.ClockTime < 4 ||
-                                    Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                                if (target.IsValidTarget(E.Range))
                                 {
-                                    E.CastOnUnit(target);
+                                    if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range))
+                                    {
+                                        if (GetEQ(target) + Player.GetSpellDamage(target, SpellSlot.E) > target.Health &&
+                                            Player.SpellBook.GetSpell(SpellSlot.R).CooldownEnd - Game.ClockTime < 4 ||
+                                            Player.GetSpellDamage(target, SpellSlot.E) > target.Health)
+                                        {
+                                            E.CastOnUnit(target);
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     }
                     break;
                 case 2:
                     if (Player.HasBuff("jaycestancehammer"))
                     {
-                        if (E.Ready)
+                        var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                        if (target.IsValidTarget())
                         {
-                            if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range))
+                            if (target.IsValidTarget(E.Range))
                             {
-                                if (Player.SpellBook.GetSpell(SpellSlot.R).CooldownEnd - Game.ClockTime < 0.5)
+                                if (E.Ready)
                                 {
-                                    E.CastOnUnit(target);
+                                    if (Menu["combo"]["eset"]["melee"].Enabled && target.IsValidTarget(E.Range))
+                                    {
+                                        if (Player.SpellBook.GetSpell(SpellSlot.R).CooldownEnd - Game.ClockTime < 0.5)
+                                        {
+                                            E.CastOnUnit(target);
+                                        }
+                                    }
                                 }
                             }
+
                         }
                     }
                     break;
@@ -992,9 +1131,17 @@ namespace Jayce_By_Kornis
             {
                 if (Q.Ready)
                 {
-                    if (Menu["combo"]["qset"]["melee"].Enabled && target.IsValidTarget(Q.Range))
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                    if (target.IsValidTarget())
                     {
-                        Q.CastOnUnit(target);
+                        if (target.IsValidTarget(Q.Range))
+                        {
+                            if (Menu["combo"]["qset"]["melee"].Enabled && target.IsValidTarget(Q.Range))
+                            {
+                                Q.CastOnUnit(target);
+                            }
+                        }
                     }
                 }
             }
@@ -1002,9 +1149,17 @@ namespace Jayce_By_Kornis
             {
                 if (W.Ready)
                 {
-                    if (Menu["combo"]["wset"]["melee"].Enabled && target.IsValidTarget(W.Range))
+                    var target = GetBestEnemyHeroTargetInRange(W.Range);
+
+                    if (target.IsValidTarget())
                     {
-                        W.Cast();
+                        if (target.IsValidTarget(W.Range))
+                        {
+                            if (Menu["combo"]["wset"]["melee"].Enabled && target.IsValidTarget(W.Range))
+                            {
+                                W.Cast();
+                            }
+                        }
                     }
                 }
             }
@@ -1042,11 +1197,33 @@ namespace Jayce_By_Kornis
                 {
                     if (target != null)
                     {
-                        if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                        var collisions =
+        (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                        if (collisions.Any())
                         {
-                            {
-                                QE.Cast(target);
 
+                            if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                            {
+
+
+                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                {
+                                    {
+                                        QE.Cast(target);
+
+                                    }
+                                }
+                            }
+                        }
+                        if (!collisions.Any())
+                        {
+
+                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            {
+                                {
+                                    QE.Cast(target);
+
+                                }
                             }
                         }
                     }
@@ -1054,5 +1231,6 @@ namespace Jayce_By_Kornis
             }
         }
     }
+
 }
 // Hello :>
