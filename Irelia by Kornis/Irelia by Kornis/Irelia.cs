@@ -58,6 +58,7 @@ namespace Irelia_By_Kornis
                 ComboMenu.Add(new MenuList("rusage", "R Usage", new[] {"Always", "Only if Killable"}, 1));
                 ComboMenu.Add(new MenuBool("gapr", "Use R on Minions for Q Gapclose"));
                 ComboMenu.Add(new MenuBool("sheen", "Sheen Proc."));
+                ComboMenu.Add(new MenuBool("items", "Use Items"));
             }
             Menu.Add(ComboMenu);
             var HarassMenu = new Menu("harass", "Harass");
@@ -107,10 +108,107 @@ namespace Irelia_By_Kornis
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+            Orbwalker.PostAttack += OnPostAttack;
             LoadSpells();
             Console.WriteLine("Irelia by Kornis - Loaded");
         }
+        public void OnPostAttack(object sender, PostAttackEventArgs args)
+        {
+            var heroTarget = args.Target as Obj_AI_Hero;
+            if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo))
+            {
+                if (!Menu["combo"]["items"].Enabled)
+                {
+                    return;
+                }
+                Obj_AI_Hero hero = args.Target as Obj_AI_Hero;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
 
+
+                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                    Player.HasItem(ItemId.RavenousHydra))
+                {
+                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    if (slot != null)
+                    {
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            Player.SpellBook.CastSpell(spellslot);
+                        }
+                    }
+                }
+            }
+            
+
+
+            if (Orbwalker.Mode.Equals(OrbwalkingMode.Mixed))
+            {
+                if (!Menu["combo"]["items"].Enabled)
+                {
+                    return;
+                }
+                Obj_AI_Hero hero = args.Target as Obj_AI_Hero;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+
+
+                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                    Player.HasItem(ItemId.RavenousHydra))
+                {
+                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    if (slot != null)
+                    {
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            Player.SpellBook.CastSpell(spellslot);
+                        }
+                    }
+                }
+            }
+        
+
+            
+            if (Orbwalker.Mode.Equals(OrbwalkingMode.Laneclear))
+            {
+                if (!Menu["combo"]["items"].Enabled)
+                {
+                    return;
+                }
+                Obj_AI_Minion hero = args.Target as Obj_AI_Minion;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                    Player.HasItem(ItemId.RavenousHydra))
+                {
+                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    if (slot != null)
+                    {
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            Player.SpellBook.CastSpell(spellslot);
+                        }
+                    }
+                }
+            }
+
+
+        }
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
 
         public static int SxOffset(Obj_AI_Hero target)
