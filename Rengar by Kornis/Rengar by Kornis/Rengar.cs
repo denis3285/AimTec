@@ -635,7 +635,7 @@ namespace Rengar_By_Kornis
                 var bestTarget = GetBestKillableHero(Q, DamageType.Physical, false);
                 if (bestTarget != null &&
                     Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
-                    bestTarget.IsValidTarget(Q.Range))
+                    bestTarget.IsValidTarget(Q.Range) && !Player.HasBuff("RengarR"))
                 {
                     Q.Cast(bestTarget);
                 }
@@ -646,9 +646,9 @@ namespace Rengar_By_Kornis
                 var bestTarget = GetBestKillableHero(E, DamageType.Physical, false);
                 if (bestTarget != null &&
                     Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
-                    bestTarget.IsValidTarget(E.Range))
+                    bestTarget.IsValidTarget(E.Range) && !Player.HasBuff("RengarR"))
                 {
-                    E.CastOnUnit(bestTarget);
+                    E.Cast(bestTarget);
                 }
             }
 
