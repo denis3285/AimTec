@@ -55,7 +55,7 @@ namespace Irelia_By_Kornis
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("stune", "^- Only if Stuns"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo "));
-                ComboMenu.Add(new MenuList("rusage", "R Usage", new[] {"Always", "Only if Killable"}, 1));
+                ComboMenu.Add(new MenuList("rusage", "R Usage", new[] { "Always", "Only if Killable" }, 1));
                 ComboMenu.Add(new MenuBool("gapr", "Use R on Minions for Q Gapclose"));
                 ComboMenu.Add(new MenuBool("sheen", "Sheen Proc."));
                 ComboMenu.Add(new MenuBool("items", "Use Items"));
@@ -68,6 +68,9 @@ namespace Irelia_By_Kornis
                 HarassMenu.Add(new MenuBool("gapq", "^- Use Q for Gapclose on Minion"));
                 HarassMenu.Add(new MenuBool("usew", "Use W to Harass"));
                 HarassMenu.Add(new MenuBool("usee", "Use E to Harass"));
+                HarassMenu.Add(new MenuBool("lastq", "Use Q to Last Hit", false));
+                HarassMenu.Add(new MenuBool("qaa", "^- Don't use Q in AA Range"));
+                HarassMenu.Add(new MenuBool("turret", "Don't use Q Under the Turret"));
 
             }
             Menu.Add(HarassMenu);
@@ -144,7 +147,7 @@ namespace Irelia_By_Kornis
                     }
                 }
             }
-            
+
 
 
             if (Orbwalker.Mode.Equals(OrbwalkingMode.Mixed))
@@ -176,9 +179,9 @@ namespace Irelia_By_Kornis
                     }
                 }
             }
-        
 
-            
+
+
             if (Orbwalker.Mode.Equals(OrbwalkingMode.Laneclear))
             {
                 if (!Menu["combo"]["items"].Enabled)
@@ -209,7 +212,7 @@ namespace Irelia_By_Kornis
 
 
         }
-        public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
+        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
 
         public static int SxOffset(Obj_AI_Hero target)
         {
@@ -223,7 +226,7 @@ namespace Irelia_By_Kornis
         static double GetQ(Obj_AI_Base target)
         {
             double meow = 0;
-            
+
             if (Player.SpellBook.GetSpell(SpellSlot.Q).Level == 1)
             {
                 meow = 20;
@@ -272,7 +275,7 @@ namespace Irelia_By_Kornis
                 {
                     if (m.IsValidTarget() && !m.IsDead)
                     {
-                      
+
                         if (Q.Ready)
                         {
                             if (GetQ(m) >= m.Health)
@@ -293,8 +296,8 @@ namespace Irelia_By_Kornis
                     .ForEach(
                         unit =>
                         {
-                            
-                            
+
+
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
                             int height = 8;
@@ -305,7 +308,7 @@ namespace Irelia_By_Kornis
                             barPos.Y += yOffset;
                             var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                             var drawStartXPos =
-                                (float) (barPos.X + (unit.Health >
+                                (float)(barPos.X + (unit.Health >
                                                      Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                      Player.GetSpellDamage(unit, SpellSlot.E) +
                                                      Player.GetSpellDamage(unit, SpellSlot.W) +
@@ -396,53 +399,53 @@ namespace Irelia_By_Kornis
             if (manapercent < Player.ManaPercent())
             {
                 if (Menu["lasthit"]["useq"].Enabled)
-            {
-
-                foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                 {
 
-                    if (minion.Health <= GetQ(minion))
+                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                     {
-                        if (!Menu["lasthit"]["qaa"].Enabled)
+
+                        if (minion.Health <= GetQ(minion))
                         {
-                            if (Menu["lasthit"]["turret"].Enabled)
+                            if (!Menu["lasthit"]["qaa"].Enabled)
                             {
-                                if (!minion.IsUnderEnemyTurret())
+                                if (Menu["lasthit"]["turret"].Enabled)
                                 {
-                                    Q.CastOnUnit(minion);
+                                    if (!minion.IsUnderEnemyTurret())
+                                    {
+                                        Q.CastOnUnit(minion);
+                                    }
+
                                 }
+                                if (!Menu["lasthit"]["turret"].Enabled)
+                                {
 
+                                    Q.CastOnUnit(minion);
+
+
+                                }
                             }
-                            if (!Menu["lasthit"]["turret"].Enabled)
+                            if (Menu["lasthit"]["qaa"].Enabled && minion.Distance(Player) > 200)
                             {
+                                if (Menu["lasthit"]["turret"].Enabled)
+                                {
+                                    if (!minion.IsUnderEnemyTurret())
+                                    {
+                                        Q.CastOnUnit(minion);
+                                    }
 
-                                Q.CastOnUnit(minion);
+                                }
+                                if (!Menu["lasthit"]["turret"].Enabled)
+                                {
+
+                                    Q.CastOnUnit(minion);
 
 
+                                }
                             }
                         }
-                        if (Menu["lasthit"]["qaa"].Enabled && minion.Distance(Player) > 200)
-                        {
-                            if (Menu["lasthit"]["turret"].Enabled)
-                            {
-                                if (!minion.IsUnderEnemyTurret())
-                                {
-                                    Q.CastOnUnit(minion);
-                                }
 
-                            }
-                            if (!Menu["lasthit"]["turret"].Enabled)
-                            {
-
-                                Q.CastOnUnit(minion);
-
-
-                            }
-                        }
                     }
-
                 }
-            }
             }
         }
 
@@ -645,7 +648,7 @@ namespace Irelia_By_Kornis
             }
             if (Player.HasItem(ItemId.BladeoftheRuinedKing) || Player.HasItem(ItemId.BilgewaterCutlass))
             {
-                var items = new[] {ItemId.BladeoftheRuinedKing, ItemId.BilgewaterCutlass};
+                var items = new[] { ItemId.BladeoftheRuinedKing, ItemId.BilgewaterCutlass };
                 var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                 if (slot != null)
                 {
@@ -670,10 +673,10 @@ namespace Irelia_By_Kornis
             {
                 if (target.Distance(Player) > Q.Range)
                 {
-                    
+
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                     {
- 
+
                         if (minion.IsValidTarget(Q.Range) && minion != null)
                         {
                             if (Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 &&
@@ -791,7 +794,7 @@ namespace Irelia_By_Kornis
 
                                     R.Cast(target);
                                 }
-                                
+
 
                             }
                             break;
@@ -806,10 +809,58 @@ namespace Irelia_By_Kornis
             bool gapQ = Menu["harass"]["gapq"].Enabled;
             bool useW = Menu["harass"]["usew"].Enabled;
             bool useE = Menu["harass"]["usee"].Enabled;
-            var target = GetBestEnemyHeroTargetInRange(Q.Range*2);
+            var target = GetBestEnemyHeroTargetInRange(Q.Range * 2);
             float manapercent = Menu["harass"]["mana"].As<MenuSlider>().Value;
             if (manapercent < Player.ManaPercent())
             {
+                if (Menu["harass"]["lastq"].Enabled)
+                {
+
+                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
+                    {
+
+                        if (minion.Health <= GetQ(minion))
+                        {
+                            if (!Menu["lasthit"]["qaa"].Enabled)
+                            {
+                                if (Menu["lasthit"]["turret"].Enabled)
+                                {
+                                    if (!minion.IsUnderEnemyTurret())
+                                    {
+                                        Q.CastOnUnit(minion);
+                                    }
+
+                                }
+                                if (!Menu["lasthit"]["turret"].Enabled)
+                                {
+
+                                    Q.CastOnUnit(minion);
+
+
+                                }
+                            }
+                            if (Menu["lasthit"]["qaa"].Enabled && minion.Distance(Player) > 200)
+                            {
+                                if (Menu["lasthit"]["turret"].Enabled)
+                                {
+                                    if (!minion.IsUnderEnemyTurret())
+                                    {
+                                        Q.CastOnUnit(minion);
+                                    }
+
+                                }
+                                if (!Menu["lasthit"]["turret"].Enabled)
+                                {
+
+                                    Q.CastOnUnit(minion);
+
+
+                                }
+                            }
+                        }
+
+                    }
+                }
                 if (!target.IsValidTarget())
                 {
                     return;
@@ -851,7 +902,7 @@ namespace Irelia_By_Kornis
                         E.Cast(target);
                     }
                 }
-                if (W.Ready && useW && target.IsValidTarget(W.Range-100))
+                if (W.Ready && useW && target.IsValidTarget(W.Range - 100))
 
                 {
                     if (target != null)
@@ -859,6 +910,7 @@ namespace Irelia_By_Kornis
                         W.Cast();
                     }
                 }
+               
             }
         }
     }
