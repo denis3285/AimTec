@@ -656,337 +656,15 @@ namespace Gnar_By_Kornis
         private void OnCombo()
         {
 
-            var target = GetBestEnemyHeroTargetInRange(Q.Range);
-            if (!target.IsValidTarget())
-            {
-                return;
-            }
+
             if (!Menu["combo"]["block"].Enabled)
             {
                 if (Menu["combo"]["mega"]["user"].Enabled)
                 {
                     var targets = GetBestEnemyHeroTargetInRange(R.Range);
-                    if (!targets.IsValidTarget())
+                    if (targets.IsValidTarget())
                     {
-                        return;
-                    }
-                    switch (Menu["combo"]["mega"]["rmode"].As<MenuList>().Value)
-                    {
-                        case 0:
 
-                            if (targets.IsValidTarget(520))
-                            {
-                                if (targets.HealthPercent() <= Menu["combo"]["mega"]["hp"].As<MenuSlider>().Value)
-                                {
-                                    if (Player.Distance(targets) <= 490)
-                                    {
-
-                                        var pushdistance = 500;
-                                        var targetpos = targets.ServerPosition;
-                                        var pushidrection =
-                                            (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                            .Normalized();
-                                        var checkdistance = pushdistance / 40;
-                                        for (var i = 0; i <= 37; i++)
-                                        {
-
-                                            var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                            if (IsWall(finalpos, true))
-                                            {
-
-                                                hello = finalpos;
-
-                                            }
-                                            else hello = new Vector3(0, 0, 0);
-                                        }
-                                        var pushdistance2 = 500;
-                                        var targetpos2 = targets.ServerPosition;
-                                        var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                        var checkdistance2 = pushdistance2 / 40;
-                                        for (var i = 0; i <= 37; i++)
-                                        {
-
-                                            var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                            if (IsWall(finalpos2, true))
-                                            {
-                                                hello2 = finalpos2;
-
-                                            }
-                                            else hello2 = new Vector3(0, 0, 0);
-                                        }
-                                        if (!hello.IsZero && !hello2.IsZero)
-                                        {
-                                            if (hello.Distance(Player) > hello2.Distance(Player))
-                                            {
-                                                R.Cast(hello2);
-                                            }
-                                            if (hello.Distance(Player) < hello2.Distance(Player))
-                                            {
-                                                R.Cast(hello);
-                                            }
-                                        }
-                                        if (hello2.IsZero && !hello.IsZero)
-                                        {
-
-                                            R.Cast(hello);
-                                        }
-                                        if (hello.IsZero && !hello2.IsZero)
-                                        {
-
-                                            R.Cast(hello2);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                        case 1:
-                            if (targets.IsValidTarget(520))
-                            {
-                                if (targets.Health <= Player.GetSpellDamage(targets, SpellSlot.Q,
-                                        DamageStage.SecondForm) +
-                                    Player.GetSpellDamage(targets, SpellSlot.W, DamageStage.SecondForm) +
-                                    Player.GetSpellDamage(targets, SpellSlot.E, DamageStage.SecondForm) +
-                                    Player.GetSpellDamage(targets, SpellSlot.R, DamageStage.Collision))
-                                {
-                                    if (Player.Distance(targets) <= 490)
-                                    {
-
-                                        var pushdistance = 500;
-                                        var targetpos = targets.ServerPosition;
-                                        var pushidrection =
-                                            (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                            .Normalized();
-                                        var checkdistance = pushdistance / 40;
-                                        for (var i = 0; i <= 37; i++)
-                                        {
-
-                                            var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                            if (IsWall(finalpos, true))
-                                            {
-
-                                                hello = finalpos;
-
-                                            }
-                                            else hello = new Vector3(0, 0, 0);
-                                        }
-                                        var pushdistance2 = 500;
-                                        var targetpos2 = targets.ServerPosition;
-                                        var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                        var checkdistance2 = pushdistance2 / 40;
-                                        for (var i = 0; i <= 37; i++)
-                                        {
-
-                                            var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                            if (IsWall(finalpos2, true))
-                                            {
-                                                hello2 = finalpos2;
-
-                                            }
-                                            else hello2 = new Vector3(0, 0, 0);
-                                        }
-                                        if (!hello.IsZero && !hello2.IsZero)
-                                        {
-                                            if (hello.Distance(Player) > hello2.Distance(Player))
-                                            {
-                                                R.Cast(hello2);
-                                            }
-                                            if (hello.Distance(Player) < hello2.Distance(Player))
-                                            {
-                                                R.Cast(hello);
-                                            }
-                                        }
-                                        if (hello2.IsZero && !hello.IsZero)
-                                        {
-
-                                            R.Cast(hello);
-                                        }
-                                        if (hello.IsZero && !hello2.IsZero)
-                                        {
-
-                                            R.Cast(hello2);
-                                        }
-                                    }
-                                }
-                            }
-                            break;
-                    }
-                }
-                if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
-                {
-                    if (Menu["combo"]["mega"]["usee"].Enabled && target.IsValidTarget(E2.Range))
-                    {
-                       
-                        if (target != null)
-                        {
-                         
-                            if (Menu["misc"]["toggle"].Enabled)
-                            {
-                              
-                                E2.Cast(target);
-                            }
-                            if (!Menu["misc"]["toggle"].Enabled)
-                            {
-                                if (!target.IsUnderEnemyTurret())
-                                {
-                                    E2.Cast(target);
-                                }
-                            }
-                        }
-                    }
-                   
-                    if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled && target.IsValidTarget(W.Range))
-                    {
-                        if (target != null)
-                        {
-
-                            W.Cast(target);
-
-
-                        }
-                    }
-                    if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled && target.IsValidTarget(Q2.Range))
-                    {
-                        if (target != null)
-                        {
-                            var collisions =
-                                (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
-                            if (collisions.Any())
-                            {
-                                if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
-                                {
-                                    return;
-                                }
-                            }
-                            Q2.Cast(target);
-
-
-                        }
-                    }
-                }
-                if (!Player.HasBuff("gnartransform"))
-                {
-                    if (Q.Ready && Menu["combo"]["mini"]["useq"].Enabled && target.IsValidTarget(Q.Range))
-                    {
-                        if (target != null)
-                        {
-
-                            Q.Cast(target);
-
-
-                        }
-                    }
-
-                    if (E.Ready && Menu["combo"]["mini"]["usee"].Enabled && target.IsValidTarget(E.Range + 500))
-                    {
-                        if (target != null)
-                        {
-                            if (Menu["misc"]["toggle"].Enabled)
-                            {
-                                if (!Menu["combo"]["mini"]["usegap"].Enabled)
-                                {
-                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                    {
-                                        E.Cast(target.ServerPosition);
-
-                                    }
-                                }
-                                if (Menu["combo"]["mini"]["usegap"].Enabled)
-                                {
-                                    if (target.Health <=
-                                        Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
-                                    {
-                                        if (target.Distance(Player) > 500)
-                                        {
-                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                            {
-                                                E.Cast(target.ServerPosition);
-
-                                            }
-                                        }
-                                    }
-                                    if (target.Health <=
-                                        Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
-                                        target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
-                                        Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
-                                    {
-
-                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                        {
-                                            E.Cast(target.ServerPosition);
-
-                                        }
-
-                                    }
-                                }
-                            }
-                            if (!Menu["misc"]["toggle"].Enabled)
-                            {
-                                if (!Menu["combo"]["mini"]["usegap"].Enabled)
-                                {
-                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                    {
-                                        E.Cast(target.ServerPosition);
-
-                                    }
-                                }
-                                if (Menu["combo"]["mini"]["usegap"].Enabled)
-                                {
-                                    if (target.Health <=
-                                        Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
-                                    {
-                                        if (target.Distance(Player) > 500)
-                                        {
-                                            if (!target.IsUnderEnemyTurret())
-                                            {
-                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                                {
-                                                    E.Cast(target.ServerPosition);
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (target.Health <=
-                                        Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                        Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
-                                        target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
-                                        Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
-                                    {
-
-                                        if (!target.IsUnderEnemyTurret())
-                                        {
-                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                            {
-                                                E.Cast(target.ServerPosition);
-
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                }
-               
-            }
-            if (Menu["combo"]["block"].Enabled)
-            {
-                if (Player.Mana < 100)
-                {
-                    if (R.Ready && Menu["combo"]["mega"]["user"].Enabled)
-                    {
-                        var targets = GetBestEnemyHeroTargetInRange(R.Range);
-                        if (!targets.IsValidTarget())
-                        {
-                            return;
-                        }
                         switch (Menu["combo"]["mega"]["rmode"].As<MenuList>().Value)
                         {
                             case 0:
@@ -1128,136 +806,143 @@ namespace Gnar_By_Kornis
                                 break;
                         }
                     }
-                    if (Player.HasBuff("gnartransform"))
+                }
+                if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
+                {
+
+                    if (Menu["combo"]["mega"]["usee"].Enabled)
                     {
-                        if (E2.Ready && Menu["combo"]["mega"]["usee"].Enabled && target.IsValidTarget(E2.Range))
+
+                        var target = GetBestEnemyHeroTargetInRange(E2.Range);
+                        if (target.IsValidTarget())
                         {
-                            if (target != null)
+                            if (target.IsValidTarget(E2.Range))
                             {
-                                if (Menu["misc"]["toggle"].Enabled)
+
+
+                                if (target != null)
                                 {
-                                    E2.Cast(target);
-                                }
-                                if (!Menu["misc"]["toggle"].Enabled)
-                                {
-                                    if (!target.IsUnderEnemyTurret())
+
+                                    if (Menu["misc"]["toggle"].Enabled)
                                     {
+
                                         E2.Cast(target);
                                     }
-                                }
-                            }
-                        }
-                       
-                        if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled && target.IsValidTarget(W.Range))
-                        {
-                            if (target != null)
-                            {
-
-                                W.Cast(target);
-
-
-                            }
-                        }
-                        if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled && target.IsValidTarget(Q2.Range))
-                        {
-                            if (target != null)
-                            {
-
-                                var collisions =
-                                    (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
-                                if (collisions.Any())
-                                {
-                                    if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                    if (!Menu["misc"]["toggle"].Enabled)
                                     {
-                                        return;
+                                        if (!target.IsUnderEnemyTurret())
+                                        {
+                                            E2.Cast(target);
+                                        }
                                     }
                                 }
-                                Q2.Cast(target);
-
-
-
                             }
                         }
                     }
-                    if (!Player.HasBuff("gnartransform"))
+
+                    if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled)
                     {
-                        if (Q.Ready && Menu["combo"]["mini"]["useq"].Enabled && target.IsValidTarget(Q.Range))
+                        var target = GetBestEnemyHeroTargetInRange(W.Range);
+                        if (target.IsValidTarget())
                         {
-                            if (target != null)
+                            if (target.IsValidTarget(W.Range))
                             {
-                               
-                                Q.Cast(target);
 
 
+                                if (target != null)
+                                {
+
+
+                                    W.Cast(target);
+
+
+                                }
                             }
                         }
-
-                        if (E.Ready && Menu["combo"]["mini"]["usee"].Enabled && target.IsValidTarget(E.Range + 500))
+                    }
+                    if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled)
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(Q2.Range);
+                        if (target.IsValidTarget())
                         {
-                            if (target != null)
+                            if (target.IsValidTarget(Q2.Range))
                             {
-                                if (Menu["misc"]["toggle"].Enabled)
-                                {
-                                    if (!Menu["combo"]["mini"]["usegap"].Enabled)
-                                    {
-                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                        {
-                                            E.Cast(target.ServerPosition);
 
+
+                                if (target != null)
+                                {
+
+                                    var collisions =
+                                        (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
+                                    if (collisions.Any())
+                                    {
+                                        if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                        {
+                                            return;
                                         }
                                     }
-                                    if (Menu["combo"]["mini"]["usegap"].Enabled)
+                                    Q2.Cast(target);
+
+
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                if (!Player.HasBuff("gnartransform"))
+                {
+                    if (Q.Ready && Menu["combo"]["mini"]["useq"].Enabled)
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(Q.Range);
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(Q.Range))
+                            {
+
+
+                                if (target != null)
+                                {
+                                    Q.Cast(target);
+
+
+                                }
+                            }
+                        }
+                    }
+
+                    if (E.Ready && Menu["combo"]["mini"]["usee"].Enabled)
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(E.Range + 500);
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(E.Range + 500))
+                            {
+
+
+                                if (target != null)
+                                {
+
+                                    if (Menu["misc"]["toggle"].Enabled)
                                     {
-                                        if (target.Health <=
-                                            Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
+                                        if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
-                                            if (target.Distance(Player) > 500)
-                                            {
-                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
-                                                {
-                                                    E.Cast(target.ServerPosition);
-
-                                                }
-                                            }
-                                        }
-                                        if (target.Health <=
-                                            Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
-                                            target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
-                                            Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
-                                        {
-
                                             if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
                                             {
                                                 E.Cast(target.ServerPosition);
 
                                             }
-
                                         }
-                                    }
-                                }
-                                if (!Menu["misc"]["toggle"].Enabled)
-                                {
-                                    if (!Menu["combo"]["mini"]["usegap"].Enabled)
-                                    {
-                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                        if (Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
-                                            E.Cast(target.ServerPosition);
-
-                                        }
-                                    }
-                                    if (Menu["combo"]["mini"]["usegap"].Enabled)
-                                    {
-                                        if (target.Health <=
-                                            Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
-                                        {
-                                            if (target.Distance(Player) > 500)
+                                            if (target.Health <=
+                                                Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
                                             {
-                                                if (!target.IsUnderEnemyTurret())
+                                                if (target.Distance(Player) > 500)
                                                 {
                                                     if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
                                                     {
@@ -1266,15 +951,344 @@ namespace Gnar_By_Kornis
                                                     }
                                                 }
                                             }
-                                        }
-                                        if (target.Health <=
-                                            Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                            Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
-                                            target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
-                                            Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
-                                        {
+                                            if (target.Health <=
+                                                Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
+                                                Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
+                                            {
 
+                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                {
+                                                    E.Cast(target.ServerPosition);
+
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                    if (!Menu["misc"]["toggle"].Enabled)
+                                    {
+                                        if (!Menu["combo"]["mini"]["usegap"].Enabled)
+                                        {
+                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                            {
+                                                E.Cast(target.ServerPosition);
+
+                                            }
+                                        }
+                                        if (Menu["combo"]["mini"]["usegap"].Enabled)
+                                        {
+                                            if (target.Health <=
+                                                Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
+                                            {
+                                                if (target.Distance(Player) > 500)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        {
+                                                            E.Cast(target.ServerPosition);
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            if (target.Health <=
+                                                Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
+                                                Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
+                                            {
+
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                    {
+                                                        E.Cast(target.ServerPosition);
+
+                                                    }
+                                                }
+
+                                            }
+                                        }
+                                    }
+
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (Menu["combo"]["block"].Enabled)
+            {
+                if (Player.Mana < 100)
+                {
+                    if (R.Ready && Menu["combo"]["mega"]["user"].Enabled)
+                    {
+                        var targets = GetBestEnemyHeroTargetInRange(R.Range);
+                        if (targets.IsValidTarget())
+                        {
+
+                            switch (Menu["combo"]["mega"]["rmode"].As<MenuList>().Value)
+                            {
+                                case 0:
+
+                                    if (targets.IsValidTarget(520))
+                                    {
+                                        if (targets.HealthPercent() <= Menu["combo"]["mega"]["hp"].As<MenuSlider>().Value)
+                                        {
+                                            if (Player.Distance(targets) <= 490)
+                                            {
+
+                                                var pushdistance = 500;
+                                                var targetpos = targets.ServerPosition;
+                                                var pushidrection =
+                                                    (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
+                                                    .Normalized();
+                                                var checkdistance = pushdistance / 40;
+                                                for (var i = 0; i <= 37; i++)
+                                                {
+
+                                                    var finalpos = targetpos + (pushidrection * checkdistance * i);
+                                                    if (IsWall(finalpos, true))
+                                                    {
+
+                                                        hello = finalpos;
+
+                                                    }
+                                                    else hello = new Vector3(0, 0, 0);
+                                                }
+                                                var pushdistance2 = 500;
+                                                var targetpos2 = targets.ServerPosition;
+                                                var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
+                                                var checkdistance2 = pushdistance2 / 40;
+                                                for (var i = 0; i <= 37; i++)
+                                                {
+
+                                                    var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
+                                                    if (IsWall(finalpos2, true))
+                                                    {
+                                                        hello2 = finalpos2;
+
+                                                    }
+                                                    else hello2 = new Vector3(0, 0, 0);
+                                                }
+                                                if (!hello.IsZero && !hello2.IsZero)
+                                                {
+                                                    if (hello.Distance(Player) > hello2.Distance(Player))
+                                                    {
+                                                        R.Cast(hello2);
+                                                    }
+                                                    if (hello.Distance(Player) < hello2.Distance(Player))
+                                                    {
+                                                        R.Cast(hello);
+                                                    }
+                                                }
+                                                if (hello2.IsZero && !hello.IsZero)
+                                                {
+
+                                                    R.Cast(hello);
+                                                }
+                                                if (hello.IsZero && !hello2.IsZero)
+                                                {
+
+                                                    R.Cast(hello2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case 1:
+                                    if (targets.IsValidTarget(520))
+                                    {
+                                        if (targets.Health <= Player.GetSpellDamage(targets, SpellSlot.Q,
+                                                DamageStage.SecondForm) +
+                                            Player.GetSpellDamage(targets, SpellSlot.W, DamageStage.SecondForm) +
+                                            Player.GetSpellDamage(targets, SpellSlot.E, DamageStage.SecondForm) +
+                                            Player.GetSpellDamage(targets, SpellSlot.R, DamageStage.Collision))
+                                        {
+                                            if (Player.Distance(targets) <= 490)
+                                            {
+
+                                                var pushdistance = 500;
+                                                var targetpos = targets.ServerPosition;
+                                                var pushidrection =
+                                                    (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
+                                                    .Normalized();
+                                                var checkdistance = pushdistance / 40;
+                                                for (var i = 0; i <= 37; i++)
+                                                {
+
+                                                    var finalpos = targetpos + (pushidrection * checkdistance * i);
+                                                    if (IsWall(finalpos, true))
+                                                    {
+
+                                                        hello = finalpos;
+
+                                                    }
+                                                    else hello = new Vector3(0, 0, 0);
+                                                }
+                                                var pushdistance2 = 500;
+                                                var targetpos2 = targets.ServerPosition;
+                                                var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
+                                                var checkdistance2 = pushdistance2 / 40;
+                                                for (var i = 0; i <= 37; i++)
+                                                {
+
+                                                    var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
+                                                    if (IsWall(finalpos2, true))
+                                                    {
+                                                        hello2 = finalpos2;
+
+                                                    }
+                                                    else hello2 = new Vector3(0, 0, 0);
+                                                }
+                                                if (!hello.IsZero && !hello2.IsZero)
+                                                {
+                                                    if (hello.Distance(Player) > hello2.Distance(Player))
+                                                    {
+                                                        R.Cast(hello2);
+                                                    }
+                                                    if (hello.Distance(Player) < hello2.Distance(Player))
+                                                    {
+                                                        R.Cast(hello);
+                                                    }
+                                                }
+                                                if (hello2.IsZero && !hello.IsZero)
+                                                {
+
+                                                    R.Cast(hello);
+                                                }
+                                                if (hello.IsZero && !hello2.IsZero)
+                                                {
+
+                                                    R.Cast(hello2);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                    if (Player.HasBuff("gnartransform"))
+                    {
+                        if (E2.Ready && Menu["combo"]["mega"]["usee"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(E2.Range);
+                            if (target.IsValidTarget())
+                            {
+                                if (target.IsValidTarget(E2.Range))
+                                {
+
+
+                                    if (target != null)
+                                    {
+                                        if (Menu["misc"]["toggle"].Enabled)
+                                        {
+                                            E2.Cast(target);
+                                        }
+                                        if (!Menu["misc"]["toggle"].Enabled)
+                                        {
                                             if (!target.IsUnderEnemyTurret())
+                                            {
+                                                E2.Cast(target);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(W.Range);
+                            if (target.IsValidTarget())
+                            {
+                                if (target.IsValidTarget(W.Range))
+                                {
+
+
+                                    if (target != null)
+                                    {
+
+                                        W.Cast(target);
+
+
+                                    }
+                                }
+                            }
+                        }
+                        if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(Q2.Range);
+                            if (target.IsValidTarget())
+                            {
+                                if (target.IsValidTarget(Q2.Range))
+                                {
+
+
+                                    if (target != null)
+                                    {
+
+
+                                        var collisions =
+                                            (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
+                                        if (collisions.Any())
+                                        {
+                                            if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                            {
+                                                return;
+                                            }
+                                        }
+                                        Q2.Cast(target);
+
+
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!Player.HasBuff("gnartransform"))
+                    {
+                        if (Q.Ready && Menu["combo"]["mini"]["useq"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(Q.Range);
+                            if (target.IsValidTarget())
+                            {
+                                if (target.IsValidTarget(Q.Range))
+                                {
+
+
+                                    if (target != null)
+                                    {
+                                        Q.Cast(target);
+
+
+                                    }
+                                }
+                            }
+                        }
+
+                        if (E.Ready && Menu["combo"]["mini"]["usee"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(E.Range + 500);
+                            if (target.IsValidTarget())
+                            {
+                                if (target.IsValidTarget(E.Range + 50))
+                                {
+
+
+                                    if (target != null)
+                                    {
+                                        if (Menu["misc"]["toggle"].Enabled)
+                                        {
+                                            if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                             {
                                                 if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
                                                 {
@@ -1282,15 +1296,93 @@ namespace Gnar_By_Kornis
 
                                                 }
                                             }
+                                            if (Menu["combo"]["mini"]["usegap"].Enabled)
+                                            {
+                                                if (target.Health <=
+                                                    Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
+                                                {
+                                                    if (target.Distance(Player) > 500)
+                                                    {
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        {
+                                                            E.Cast(target.ServerPosition);
 
+                                                        }
+                                                    }
+                                                }
+                                                if (target.Health <=
+                                                    Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                    target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
+                                                    Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
+                                                {
+
+                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                    {
+                                                        E.Cast(target.ServerPosition);
+
+                                                    }
+
+                                                }
+                                            }
                                         }
+                                        if (!Menu["misc"]["toggle"].Enabled)
+                                        {
+                                            if (!Menu["combo"]["mini"]["usegap"].Enabled)
+                                            {
+                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                {
+                                                    E.Cast(target.ServerPosition);
+
+                                                }
+                                            }
+                                            if (Menu["combo"]["mini"]["usegap"].Enabled)
+                                            {
+                                                if (target.Health <=
+                                                    Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.R, DamageStage.Collision))
+                                                {
+                                                    if (target.Distance(Player) > 500)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                            {
+                                                                E.Cast(target.ServerPosition);
+
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                if (target.Health <=
+                                                    Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
+                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                    target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
+                                                    Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
+                                                {
+
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        {
+                                                            E.Cast(target.ServerPosition);
+
+                                                        }
+                                                    }
+
+                                                }
+                                            }
+                                        }
+
                                     }
                                 }
-
                             }
+
                         }
                     }
-                   
                 }
             }
         }
