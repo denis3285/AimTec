@@ -360,18 +360,6 @@ namespace Poppy_By_Kornis
             }
         }
 
-        private void Flee()
-        {
-            Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-            bool useQ = Menu["flee"]["useq"].Enabled;
-            if (useQ)
-            {
-
-                Q.Cast(Player.ServerPosition.Extend(Game.CursorPos, -500));
-            }
-
-        }
-
         public static Obj_AI_Hero GetBestKillableHero(Spell spell, DamageType damageType = DamageType.True,
             bool ignoreShields = false)
         {
