@@ -1352,38 +1352,42 @@ namespace Katarina_By_Kornis
 
                                 }
                             }
-                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            if (!SaveE)
                             {
-                                case 0:
-                                    if (mmm == null)
-                                    {
 
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                    }
-                                    break;
-                                case 1:
-                                    if (mmm == null)
-                                    {
-
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                    }
-                                    break;
-                                case 2:
-                                    if (mmm == null)
-                                    {
-                                     
-                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                {
+                                    case 0:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                         }
-                                        if (R.Ready)
+                                        break;
+                                    case 1:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
-                                    }
-                                    break;
-                            }
+                                        break;
+                                    case 2:
+                                        if (mmm == null)
+                                        {
 
+                                            if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
+                                            if (R.Ready)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        break;
+                                }
+
+                            }
                         }
                     }
                     if (W.Ready && useW)
@@ -1545,38 +1549,40 @@ namespace Katarina_By_Kornis
                                 }
 
                             }
-                            
-                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            if (!SaveE)
                             {
-                                
-                                case 0:
-                                    if (mmm == null)
-                                    {
+                                switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                {
 
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                    }
-                                    break;
-                                case 1:
-                                    if (mmm == null)
-                                    {
-
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                    }
-                                    break;
-                                case 2:
-                                    if (mmm == null)
-                                    {
-                                     
-                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                    case 0:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                         }
-                                        if (R.Ready)
+                                        break;
+                                    case 1:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
-                                    }
-                                    break;
+                                        break;
+                                    case 2:
+                                        if (mmm == null)
+                                        {
+
+                                            if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
+                                            if (R.Ready)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        break;
+                                }
                             }
                         }
                     }
@@ -1751,38 +1757,41 @@ namespace Katarina_By_Kornis
 
                                 }
                             }
-                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                            if (!SaveE)
                             {
-                                case 0:
-                                    if (mmm == null)
-                                    {
-
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                    }
-                                    break;
-                                case 1:
-                                    if (mmm == null)
-                                    {
-
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                    }
-                                    break;
-                                case 2:
-                                    if (mmm == null)
-                                    {
-                                        
-                                        if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                {
+                                    case 0:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                                         }
-                                        if (R.Ready)
+                                        break;
+                                    case 1:
+                                        if (mmm == null)
                                         {
+
                                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
-                                    }
-                                    break;
-                            }
+                                        break;
+                                    case 2:
+                                        if (mmm == null)
+                                        {
 
+                                            if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
+                                            if (R.Ready)
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        break;
+                                }
+
+                            }
                         }
                     }
                     if (W.Ready && useW)
