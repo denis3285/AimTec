@@ -40,13 +40,10 @@ namespace Master_Yi_By_Kornis
             W = new Spell(SpellSlot.W, 0);
             E = new Spell(SpellSlot.E, 300);
             R = new Spell(SpellSlot.R, 0);
-           
-            var smiteSlot = Player.SpellBook.Spells.FirstOrDefault(x => x.SpellData.Name.ToLower().Contains("smite"));
+            var smiteSlot = Player.SpellBook.Spells.Where(o => o != null && o.SpellData != null).FirstOrDefault(o => o.SpellData.Name.Contains("Smite"));
             if (smiteSlot != null)
             {
-
-                Smites = new Spell(smiteSlot.Slot, 700);
-
+                Smites = new Spell(smiteSlot.Slot, 500);
             }
         }
 
