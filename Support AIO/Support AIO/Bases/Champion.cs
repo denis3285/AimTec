@@ -68,7 +68,9 @@ namespace Support_AIO.Bases
                 case OrbwalkingMode.Laneclear:
                     this.Farming();
                     break;
-                case OrbwalkingMode.Lasthit: break;
+                case OrbwalkingMode.Lasthit:
+                    this.LastHit();
+                    break;
                 case OrbwalkingMode.Freeze: break;
                 case OrbwalkingMode.Custom: break;
             }
@@ -551,7 +553,7 @@ namespace Support_AIO.Bases
 
         protected abstract void SemiR();
         protected abstract void Farming();
-
+        protected abstract void LastHit();
 
         protected abstract void Drawings();
         protected abstract void Killsteal();

@@ -239,6 +239,11 @@ namespace Support_AIO.Champions
         {
         }
 
+        protected override void LastHit()
+        {
+            throw new NotImplementedException();
+        }
+
         public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
 
         public static int SxOffset(Obj_AI_Hero target)

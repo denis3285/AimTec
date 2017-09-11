@@ -287,6 +287,11 @@ namespace Support_AIO.Champions
             throw new NotImplementedException();
         }
 
+        protected override void LastHit()
+        {
+            throw new NotImplementedException();
+        }
+
         protected override void Drawings()
         {
 

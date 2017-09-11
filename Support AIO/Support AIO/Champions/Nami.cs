@@ -193,6 +193,11 @@ namespace Support_AIO.Champions
 
         }
 
+        protected override void LastHit()
+        {
+            throw new NotImplementedException();
+        }
+
         internal override void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
         {
             var attack = sender as Obj_AI_Hero;

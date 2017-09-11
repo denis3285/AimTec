@@ -411,7 +411,7 @@ namespace Support_AIO.Champions
             {
                 foreach (var minion in Support_AIO.Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(Q.Range))
                 {
-                    if (!minion.IsValidTarget() && minion != null)
+                    if (!minion.IsValidTarget())
                     {
                         return;
                     }
@@ -486,8 +486,10 @@ namespace Support_AIO.Champions
             }
         }
 
-
-
+        protected override void LastHit()
+        {
+            throw new NotImplementedException();
+        }
 
 
         public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
@@ -798,7 +800,7 @@ namespace Support_AIO.Champions
             {
                 JungleClear.Add(new MenuSlider("mana", "Mana Manager", 50));
                 JungleClear.Add(new MenuBool("useq", "Use Q to Farm"));
-                JungleClear.Add(new MenuBool("usew", "Use  to Farm"));
+                JungleClear.Add(new MenuBool("usew", "Use W to Farm"));
                 JungleClear.Add(new MenuBool("usee", "Use E to Farm"));
             }
             RootMenu.Add(FarmMenu);
