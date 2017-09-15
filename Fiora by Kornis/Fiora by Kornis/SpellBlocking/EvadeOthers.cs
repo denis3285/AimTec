@@ -172,7 +172,7 @@
                 Args.Target == null || string.IsNullOrEmpty(Args.SpellData.Name) ||
                 Args.SpellData.Name == "RenektonCleave" || Args.SpellData.Name == "AlistarE" ||
                 Args.SpellData.Name == "ChogathEAttack" ||
-                Args.SpellData.Name == "FerociousHowl" || Args.SpellData.Name == "NasusE" ||
+                Args.SpellData.Name == "FerociousHowl" || Args.SpellData.Name == "NasusE" || Args.SpellData.Name == "GarenQAttack" ||
                 Args.SpellData.Name.Contains("BasicAttack"))
             {
                 return;
