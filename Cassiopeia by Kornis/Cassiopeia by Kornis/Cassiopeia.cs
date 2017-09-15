@@ -2,6 +2,7 @@
 using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security.Authentication.ExtendedProtection;
+using Aimtec.SDK.Damage.JSON;
 using Aimtec.SDK.Events;
 using Cassiopeia_By_Kornis.RGap;
 
@@ -326,44 +327,19 @@ namespace Cassiopeia_By_Kornis
 
         static double GetE(Obj_AI_Base target)
         {
-            int meow = 0;
-            int hello = 48 + (4 * Player.Level);
+
             double test = 0;
-            if (Player.SpellBook.GetSpell(SpellSlot.E).Level == 1)
-            {
-                meow = 10;
-            }
-            if (Player.SpellBook.GetSpell(SpellSlot.E).Level == 2)
-            {
-                meow = 40;
-            }
-            if (Player.SpellBook.GetSpell(SpellSlot.E).Level == 3)
-            {
-                meow = 70;
-            }
-            if (Player.SpellBook.GetSpell(SpellSlot.E).Level == 4)
-            {
-                meow = 100;
-            }
-            if (Player.SpellBook.GetSpell(SpellSlot.E).Level == 5)
-            {
-                meow = 130;
-            }
+
 
             if (!target.HasBuffOfType(BuffType.Poison))
             {
-                double ap = Player.TotalAbilityDamage * 0.1;
-                double full = ap + hello;
-                double damage = Player.CalculateDamage(target, DamageType.Magical, full);
-                test = damage;
+
+                test = Player.GetSpellDamage(target, SpellSlot.E);
             }
             if (target.HasBuffOfType(BuffType.Poison))
             {
-                double ap = Player.TotalAbilityDamage * 0.1;
-                double ap2 = Player.TotalAbilityDamage * 0.35;
-                double full = ap + hello + meow + ap2;
-                double damage = Player.CalculateDamage(target, DamageType.Magical, full);
-                test = damage;
+                
+                test = test = Player.GetSpellDamage(target, SpellSlot.E, DamageStage.Empowered) ;
             }
             return test;
 
