@@ -711,22 +711,40 @@ namespace Darius_By_Kornis
         {
             if (Menu["combo"]["lockq"].Enabled)
             {
-                var target = GetBestEnemyHeroTargetInRange(Q.Range);
+                {
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range);
 
-                if (!target.IsValidTarget())
-                {
-                    return;
-                }
-                if (target.IsValidTarget(Q.Range) && target != null)
-                {
-                    if (target.ServerPosition.Distance(Player.ServerPosition) < 240)
+                    
+                    if (target.IsValidTarget(Q.Range) && target != null)
                     {
-                        if (Player.HasBuff("dariusqcast"))
+                        if (target.ServerPosition.Distance(Player.ServerPosition) < 240)
                         {
-                            Orbwalker.Move(target.ServerPosition.Extend(Player.ServerPosition, 350));
+                            if (Player.HasBuff("dariusqcast"))
+                            {
+                                Orbwalker.Move(target.ServerPosition.Extend(Player.ServerPosition, 350));
+                            }
+
+
                         }
 
 
+                    }
+                }
+                {
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range+200);
+
+
+                    if (target.IsValidTarget(Q.Range + 200) && target != null)
+                    {
+                        if (target.ServerPosition.Distance(Player.ServerPosition) > Q.Range-50)
+                        {
+                            if (Player.HasBuff("dariusqcast"))
+                            {
+                                Orbwalker.Move(target.ServerPosition);
+                            }
+
+
+                        }
                     }
 
                 }
