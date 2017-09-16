@@ -290,12 +290,12 @@ namespace Darius_By_Kornis
 
                 if (Menu["combo"]["toggle"].Enabled)
                 {
-                    Render.Text(xaOffset - 60, yaOffset + 30, Color.GreenYellow, "R: ON",
+                    Render.Text(xaOffset - 60, yaOffset + 30, Color.GreenYellow, "R Usage: ON",
                         RenderTextFlags.VerticalCenter);
                 }
                 if (!Menu["combo"]["toggle"].Enabled)
                 {
-                    Render.Text(xaOffset - 60, yaOffset + 30, Color.Red, "R: OFF",
+                    Render.Text(xaOffset - 60, yaOffset + 30, Color.Red, "R Usage: OFF",
                         RenderTextFlags.VerticalCenter);
                 }
 
@@ -648,7 +648,7 @@ namespace Darius_By_Kornis
             }
 
             if (R.Ready &&
-                Menu["killsteal"]["ksq"].Enabled)
+                Menu["killsteal"]["ksr"].Enabled)
             {
                 var bestTarget = GetBestKillableHero(R, DamageType.Magical, false);
                 if (bestTarget != null &&
