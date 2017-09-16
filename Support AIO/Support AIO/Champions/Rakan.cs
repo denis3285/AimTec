@@ -26,6 +26,8 @@ namespace Support_AIO.Champions
     {
         private int delayyyyyyyyy;
         private int meowdelay;
+        private int meowmeowmeow;
+        private bool hmm;
 
         protected override void Combo()
         {
@@ -168,6 +170,41 @@ namespace Support_AIO.Champions
 
         protected override void SemiR()
         {
+            if (RootMenu["combo"]["anim"].Enabled)
+            {
+                if (meowmeowmeow < Game.TickCount && hmm)
+                {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
+
+                    if (target.IsValidTarget() && target != null && target.IsValidTarget(Q.Range))
+                    {
+
+                        DelayAction.Queue(300, () =>
+                        {
+
+                            if (Q.Cast(target))
+                            {
+                                hmm = false;
+                            }
+
+                        });
+
+                    }
+                }
+            }
+            if (RootMenu["combo"]["aa"].Enabled)
+            {
+                if (Player.HasBuff("RakanR"))
+                {
+                    Orbwalker.Implementation.AttackingEnabled = false;
+                }
+                else Orbwalker.Implementation.AttackingEnabled = true;
+            }
+            if (!Player.HasBuff("RakanR"))
+            {
+                Orbwalker.Implementation.AttackingEnabled = true;
+            }
+      
             if (RootMenu["combo"]["wflash"].Enabled)
             {
 
@@ -184,7 +221,18 @@ namespace Support_AIO.Champions
                             {
                                 if (Flash.Cast(target.ServerPosition))
                                 {
-                                    W.Cast(ummm.CastPosition);
+
+                                    if (!RootMenu["combo"]["wf"].Enabled)
+                                    {
+                                        W.Cast(ummm.CastPosition);
+                                    }
+                                    if (RootMenu["combo"]["wf"].Enabled)
+                                    {
+                                        if (W.Cast(ummm.CastPosition))
+                                        {
+                                            R.Cast();
+                                        }
+                                    }
                                 }
 
 
@@ -329,8 +377,17 @@ namespace Support_AIO.Champions
 
         }
 
+
         internal override void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs e)
         {
+            if (RootMenu["combo"]["anim"].Enabled)
+            {
+                if (e.Slot == SpellSlot.W && Q.Ready)
+                {
+                    hmm = true;
+                    meowmeowmeow = Game.TickCount + 50;
+                }
+            }
             if (e.Slot == SpellSlot.E)
             {
                 delayyyyyyyyy = Game.TickCount + 300;
@@ -439,10 +496,14 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
+
+                ComboMenu.Add(new MenuBool("aa", "^- Block Auto Attacks while in R"));
                 ComboMenu.Add(new MenuSlider("hitr", "If X Near Enemies", 2, 1, 5));
                 ComboMenu.Add(new MenuSlider("hp", "If Enemy X Health", 50, 1, 100));
                 ComboMenu.Add(new MenuKeyBind("engage", "Engage E - W Combo", KeyCode.T, KeybindType.Press));
                 ComboMenu.Add(new MenuKeyBind("wflash", "W - Flash", KeyCode.Z, KeybindType.Press));
+                ComboMenu.Add(new MenuBool("wf", "^- Use R Meanwhile in W"));
+                ComboMenu.Add(new MenuBool("anim", "Cancel W Animation with Q"));
 
             }
             RootMenu.Add(ComboMenu);
