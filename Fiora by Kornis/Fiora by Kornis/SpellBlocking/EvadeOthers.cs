@@ -145,11 +145,14 @@
                         }
                         break;
                     case "Riven":
+                      
                         if (Menu["Blockriven"]["BlockSpellQ"] != null && Menu["Blockriven"]["BlockSpellQ"].Enabled)
                         {
+                            
                             if (Utils.GameTimeTickCount - RivenQTime <= 100 && RivenDashPos.IsValid() &&
                                 ObjectManager.GetLocalPlayer().Distance(target) <= RivenQRange)
                             {
+                               
                                 CastW();
                             }
                         }
@@ -443,16 +446,6 @@
                                 }
                             }
                             break;
-                        case "Riven":
-                            if (x.SpellSlot == SpellSlot.W)
-                            {
-                                if (ObjectManager.GetLocalPlayer().Position.Distance(target.Position) <=
-                                    125f + ObjectManager.GetLocalPlayer().BoundingRadius + target.BoundingRadius)
-                                {
-                                    CastW("Riven", x.SpellSlot);
-                                }
-                            }
-                            break;
                         case "Ryze":
                             if (x.SpellSlot == SpellSlot.W)
                             {
@@ -591,7 +584,7 @@
                 if (Args.Animation.ToLower() == "spell1c")
                 {
                     RivenQTime = Utils.GameTimeTickCount;
-                    RivenQRange = riven.HasBuff("RivenFengShuiEngine") ? 225f : 150f;
+                    RivenQRange = riven.HasBuff("RivenFengShuiEngine") ? 250f : 200f;
                 }
             }
         }

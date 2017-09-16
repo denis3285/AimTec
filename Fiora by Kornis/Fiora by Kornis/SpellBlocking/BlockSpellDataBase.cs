@@ -377,14 +377,6 @@
                     ChampionName = "Riven",
                     SpellSlot = SpellSlot.Q
                 });
-
-            Spells.Add(
-                new BlockSpellData
-                {
-                    ChampionName = "Riven",
-                    SpellSlot = SpellSlot.W
-                });
-
             #endregion Riven
 
             #region Ryze
