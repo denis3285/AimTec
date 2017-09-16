@@ -47,6 +47,18 @@ namespace Support_AIO.Champions
                     W.CastOnUnit(target);
                 }
             }
+            if (RootMenu["combo"]["wtog"].Enabled)
+            {
+                if (W.Ready && useW && target.IsValidTarget(W.Range))
+                {
+
+                    if (target != null)
+                    {
+                        W.CastOnUnit(target);
+                    }
+                }
+
+            }
             if (target.IsValidTarget(Q.Range)  && useQ)
             {
 
@@ -81,11 +93,22 @@ namespace Support_AIO.Champions
 
         protected override void SemiR()
         {
+            if (RootMenu["combo"]["wait"].Enabled)
+            {
+                Console.WriteLine(Player.GetRealBuffCount("AlistarE"));
+                if (Player.HasBuff("AlistarE") && Player.GetRealBuffCount("AlistarE") < 5) 
+                {
+                    Orbwalker.Implementation.AttackingEnabled = false;
+                }
+                
+                else Orbwalker.Implementation.AttackingEnabled = true;
+                
+            }
             if (RootMenu["combo"]["autor"].Enabled)
             {
                 if (Player.HasBuffOfType(BuffType.Charm) || Player.HasBuffOfType(BuffType.Stun) ||
                     Player.HasBuffOfType(BuffType.Fear) || Player.HasBuffOfType(BuffType.Snare) ||
-                    Player.HasBuffOfType(BuffType.Taunt) || Player.HasBuffOfType(BuffType.Knockback) ||
+                    Player.HasBuffOfType(BuffType.Taunt) ||
                     Player.HasBuffOfType(BuffType.Suppression))
                 {
                     R.Cast();
@@ -173,7 +196,22 @@ namespace Support_AIO.Champions
 
         protected override void Drawings()
         {
-
+            Vector2 maybeworks;
+            var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
+            var xaOffset = (int)maybeworks.X;
+            var yaOffset = (int)maybeworks.Y;
+       
+                if (RootMenu["combo"]["wtog"].Enabled)
+                {
+                    Render.Text(xaOffset - 50, yaOffset + 10, Color.GreenYellow, "W Without Q: ON",
+                        RenderTextFlags.VerticalCenter);
+                }
+                if (!RootMenu["combo"]["wtog"].Enabled)
+                {
+                Render.Text(xaOffset - 50, yaOffset + 10, Color.Red, "W Without Q: OFF",
+                 RenderTextFlags.VerticalCenter);
+                }
+            
             if (RootMenu["drawings"]["drawq"].Enabled)
             {
                 Render.Circle(Player.Position, Q.Range, 40, Color.Crimson);
@@ -237,7 +275,9 @@ namespace Support_AIO.Champions
             {
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
+                ComboMenu.Add(new MenuKeyBind("wtog", "Toggle for W without Q", KeyCode.T, KeybindType.Toggle));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
+                ComboMenu.Add(new MenuBool("wait", "^- Block Auto Attacks if not Stacked", false));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
                 ComboMenu.Add(new MenuBool("autor", "Auto R on CC"));
                 ComboMenu.Add(new MenuSlider("hp", "Use R if HP <=", 25, 10, 100));
