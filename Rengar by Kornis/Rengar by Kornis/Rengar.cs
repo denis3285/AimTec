@@ -732,6 +732,8 @@ namespace Rengar_By_Kornis
                         if (target.IsValidTarget(E.Range) && target != null)
                         {
                             E.Cast(target);
+
+
                         }
                     }
                 }
@@ -759,7 +761,24 @@ namespace Rengar_By_Kornis
 
                         if (target.IsValidTarget(E.Range - 100) && target != null)
                         {
-                            E.Cast(target);
+                            if (E.Cast(target))
+                            {
+                                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                    Player.HasItem(ItemId.RavenousHydra))
+                                {
+                                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                    if (slot != null && target.Distance(Player) < 400)
+                                    {
+                                        var spellslot = slot.SpellSlot;
+                                        if (spellslot != SpellSlot.Unknown &&
+                                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                        {
+                                            Player.SpellBook.CastSpell(spellslot);
+                                        }
+                                    }
+                                }
+                            }
                         }
 
                         break;
@@ -771,7 +790,24 @@ namespace Rengar_By_Kornis
                 {
                     if (target != null)
                     {
-                        E.Cast(target);
+                        if (E.Cast(target))
+                        {
+                            if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                Player.HasItem(ItemId.RavenousHydra))
+                            {
+                                var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                if (slot != null && target.Distance(Player) < 400)
+                                {
+                                    var spellslot = slot.SpellSlot;
+                                    if (spellslot != SpellSlot.Unknown &&
+                                        Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                    {
+                                        Player.SpellBook.CastSpell(spellslot);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 if (W.Ready && useW && target.IsValidTarget(W.Range - 100))
