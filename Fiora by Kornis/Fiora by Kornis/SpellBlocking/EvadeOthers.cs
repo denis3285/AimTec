@@ -230,6 +230,15 @@
                                 }
                             }
                             break;
+                        case "Vladimir":
+                            if (x.SpellSlot == SpellSlot.Q && Args.SpellData.Name != "VladimirHemoplague")
+                            {
+                                if (Args.Target.IsMe)
+                                {
+                                    CastW("Vladimir", x.SpellSlot);
+                                }
+                            }
+                            break;
                         case "Darius":
                             if (x.SpellSlot == SpellSlot.R)
                             {

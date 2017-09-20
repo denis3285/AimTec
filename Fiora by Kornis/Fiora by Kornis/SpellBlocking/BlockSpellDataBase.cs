@@ -315,8 +315,14 @@
                     ChampionName = "Vladimir",
                     SpellSlot = SpellSlot.R
                 });
-
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Vladimir",
+                    SpellSlot = SpellSlot.Q
+                });
             #endregion Vladimir
+
             #region Jax
 
             Spells.Add(
