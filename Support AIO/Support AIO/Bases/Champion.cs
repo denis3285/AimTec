@@ -190,10 +190,16 @@ namespace Support_AIO.Bases
             Game.OnUpdate += this.OnGameUpdate;
             Render.OnPresent += Drawing;
             Orbwalker.Implementation.PreAttack += OnPreAttack;
+            Orbwalker.Implementation.PostAttack += PostAttack;
             SpellBook.OnCastSpell += OnCastSpell;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             ZLib.OnPredictDamage += ZLib_OnPredictDamage;
             Gapcloser.OnGapcloser += OnGapcloser;
+        }
+
+        internal virtual void PostAttack(object sender, PostAttackEventArgs e)
+        {
+            
         }
 
         internal virtual void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)

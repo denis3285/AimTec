@@ -75,6 +75,7 @@
     <Compile Include="Champions\Annie.cs" />
     <Compile Include="Champions\Bard.cs" />
     <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\Trundle.cs" />
     <Compile Include="Champions\Braum.cs" />
     <Compile Include="Champions\Ivern.cs" />
     <Compile Include="Champions\Malzahar.cs" />
