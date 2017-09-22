@@ -27,6 +27,7 @@ namespace Support_AIO.Champions
 {
     class Trundle : Champion
     {
+        private int meowmeow;
 
         protected override void Combo()
         {
@@ -448,10 +449,15 @@ namespace Support_AIO.Champions
                 }
                 if (RootMenu["combo"]["qaa"].Enabled)
                 {
-                    Q.Cast();
+                    if (Q.Ready)
+                    {
+                        Q.Cast();
+
+                    }
                 }
-                if (!Q.Ready)
+                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
                 {
+                    Console.WriteLine("test");
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
                     {
@@ -481,9 +487,13 @@ namespace Support_AIO.Champions
                 }
                 if (RootMenu["harass"]["qaa"].Enabled)
                 {
-                    Q.Cast();
+                    if (Q.Ready)
+                    {
+                        Q.Cast();
+
+                    }
                 }
-                if (!Q.Ready)
+                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
                 {
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
@@ -519,12 +529,13 @@ namespace Support_AIO.Champions
                         {
                             if (jungleTarget.IsValidTarget() && !jungleTarget.UnitSkinName.Contains("Plant"))
                             {
+                                if (Q.Ready)
+                                {
+                                    Q.Cast();
 
+                                }
 
-                                Q.Cast();
-
-
-                                if (!Q.Ready)
+                                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
                                 {
                                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                                         Player.HasItem(ItemId.RavenousHydra))
@@ -546,22 +557,25 @@ namespace Support_AIO.Champions
                         }
                     }
                 }
+
                 if (RootMenu["farming"]["lane"]["qaa"].Enabled)
                 {
                     if (RootMenu["farming"]["lane"]["mana"].As<MenuSlider>().Value < Player.ManaPercent())
                     {
                         foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
                         {
+                            if (Q.Ready)
+                            {
+                                Q.Cast();
 
+                            }
 
-                            Q.Cast();
-
-                            if (!Q.Ready)
+                            if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
                             {
                                 if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                                     Player.HasItem(ItemId.RavenousHydra))
                                 {
-                                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                    var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                                     var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                                     if (slot != null)
                                     {
@@ -579,6 +593,7 @@ namespace Support_AIO.Champions
                 }
             }
         }
+
 
         protected override void SetSpells()
         {
