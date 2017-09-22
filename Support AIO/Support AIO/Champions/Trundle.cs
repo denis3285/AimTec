@@ -455,9 +455,9 @@ namespace Support_AIO.Champions
 
                     }
                 }
-                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
+                if (Player.HasBuff("TrundleTrollSmash"))
                 {
-                    Console.WriteLine("test");
+                    
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
                     {
@@ -493,7 +493,7 @@ namespace Support_AIO.Champions
 
                     }
                 }
-                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
+                if (Player.HasBuff("TrundleTrollSmash"))
                 {
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
@@ -535,7 +535,7 @@ namespace Support_AIO.Champions
 
                                 }
 
-                                if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
+                                if (Player.HasBuff("TrundleTrollSmash"))
                                 {
                                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                                         Player.HasItem(ItemId.RavenousHydra))
@@ -570,7 +570,7 @@ namespace Support_AIO.Champions
 
                             }
 
-                            if (!Q.Ready && !Player.HasBuff("TrundleTrollSmash"))
+                            if (Player.HasBuff("TrundleTrollSmash"))
                             {
                                 if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                                     Player.HasItem(ItemId.RavenousHydra))
