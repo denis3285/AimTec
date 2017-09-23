@@ -285,6 +285,15 @@
                                 }
                             }
                             break;
+                        case "Skarner":
+                            if (x.SpellSlot == SpellSlot.R)
+                            {
+                                if (Args.Target.IsMe)
+                                {
+                                    CastW("Skarner", x.SpellSlot);
+                                }
+                            }
+                            break;
                         case "Hecarim":
                             if (x.SpellSlot == SpellSlot.E)
                             {

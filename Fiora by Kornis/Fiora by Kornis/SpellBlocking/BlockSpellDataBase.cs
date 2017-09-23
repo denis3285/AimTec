@@ -394,7 +394,17 @@
                     SpellSlot = SpellSlot.W
                 });
 
-            #endregion Ryze
+            #endregion Ryze        
+            #region Skarner
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Skarner",
+                    SpellSlot = SpellSlot.R
+                });
+
+            #endregion Skarner
 
             #region Singed
 
