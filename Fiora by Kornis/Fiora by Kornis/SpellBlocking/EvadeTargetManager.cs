@@ -180,7 +180,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                     Slot = SpellSlot.Q
                 });
             Spells.Add(
-                new SpellData { ChampionName = "Vayne", SpellNames = new[] { "vaynecondemn" }, Slot = SpellSlot.E });
+                new SpellData { ChampionName = "Vayne", SpellNames = new[] { "vaynecondemnmissile" }, Slot = SpellSlot.E });
             Spells.Add(
                 new SpellData
                 { ChampionName = "Veigar", SpellNames = new[] { "veigarprimordialburst" }, Slot = SpellSlot.R });
@@ -202,7 +202,6 @@ namespace Fiora_By_Kornis.SpellBlocking
             {
                 return;
             }
-
             var hero = missile.SpellCaster as Obj_AI_Hero;
             if (hero == null)
             {
@@ -220,7 +219,6 @@ namespace Fiora_By_Kornis.SpellBlocking
             {
                 return;
             }
-
             DetectedTargets.Add(new Targets { Start = hero.ServerPosition, Obj = missile });
         }
 
