@@ -40,7 +40,7 @@ namespace Katarina_By_Kornis
         public void LoadSpells()
         {
             Q = new Spell(SpellSlot.Q, 625);
-            W = new Spell(SpellSlot.W, 350);
+            W = new Spell(SpellSlot.W, 400);
             E = new Spell(SpellSlot.E, 725);
             R = new Spell(SpellSlot.R, 550);
 
@@ -129,9 +129,24 @@ namespace Katarina_By_Kornis
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+            BuffManager.OnRemoveBuff += uh;
             SpellBook.OnCastSpell += OnCastSpell;
+
             LoadSpells();
             Console.WriteLine("Katarina by Kornis - Loaded");
+        }
+
+        private void uh(Obj_AI_Base sender, Buff buff)
+        {
+            if (sender.IsMe)
+            {
+                if (buff.Name == "katarinarsound")
+                {
+                  
+                    Orbwalker.MovingEnabled = true;
+                    Orbwalker.AttackingEnabled = true;
+                }
+            }
         }
 
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
@@ -150,6 +165,7 @@ namespace Katarina_By_Kornis
         private bool meowmeowRthing = false;
         private int meowwwwwwwwwww;
         private GameObject mmm;
+        private int ahhhhhhhhhhh;
 
         public void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs args)
         {
@@ -604,14 +620,11 @@ namespace Katarina_By_Kornis
             }
             if (Player.HasBuff("katarinarsound"))
             {
+               
                 Orbwalker.MovingEnabled = false;
                 Orbwalker.AttackingEnabled = false;
             }
-            if (!Player.HasBuff("katarinarsound"))
-            {
-                Orbwalker.MovingEnabled = true;
-                Orbwalker.AttackingEnabled = true;
-            }
+       
             if (Player.IsDead || MenuGUI.IsChatOpen())
             {
                 return;
@@ -1084,7 +1097,7 @@ namespace Katarina_By_Kornis
                 {
                     if (Player.CountEnemyHeroesInRange(R.Range + 10) == 0)
                     {
-
+                      
                         Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
                     }
                 }
@@ -1411,11 +1424,11 @@ namespace Katarina_By_Kornis
                                         {
                                             if (!W.Ready)
                                             {
-                                                R.Cast();
-                                            }
-                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
-                                            {
-                                                R.Cast();
+                                                if (R.Cast())
+                                                {
+                                                    Orbwalker.AttackingEnabled = false;
+                                                    Orbwalker.MovingEnabled = false;
+                                                }
                                             }
 
                                         }
@@ -1434,11 +1447,11 @@ namespace Katarina_By_Kornis
                                         {
                                             if (!W.Ready)
                                             {
-                                                R.Cast();
-                                            }
-                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
-                                            {
-                                                R.Cast();
+                                                if (R.Cast())
+                                                {
+                                                    Orbwalker.AttackingEnabled = false;
+                                                    Orbwalker.MovingEnabled = false;
+                                                }
                                             }
 
                                         }
@@ -1614,11 +1627,11 @@ namespace Katarina_By_Kornis
                                         {
                                             if (!W.Ready)
                                             {
-                                                R.Cast();
-                                            }
-                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
-                                            {
-                                                R.Cast();
+                                                if (R.Cast())
+                                                {
+                                                    Orbwalker.AttackingEnabled = false;
+                                                    Orbwalker.MovingEnabled = false;
+                                                }
                                             }
                                         }
                                     }
@@ -1636,12 +1649,13 @@ namespace Katarina_By_Kornis
                                         {
                                             if (!W.Ready)
                                             {
-                                                R.Cast();
+                                                if (R.Cast())
+                                                {
+                                                    Orbwalker.AttackingEnabled = false;
+                                                    Orbwalker.MovingEnabled = false;
+                                                }
                                             }
-                                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
-                                            {
-                                                R.Cast();
-                                            }
+
                                         }
                                     }
                                 }
@@ -1807,22 +1821,19 @@ namespace Katarina_By_Kornis
 
                         if (R.Ready && target.IsValidTarget(R.Range - 50))
                         {
+
                             if (!W.Ready)
                             {
                                 if (R.Cast())
                                 {
-
+                                    Orbwalker.AttackingEnabled = false;
+                                    Orbwalker.MovingEnabled = false;
                                     meowwwwwwwwwww = Game.TickCount + 1000;
+                                   
                                 }
                             }
-                            if (W.Ready && Player.CountEnemyHeroesInRange(W.Range) == 0)
-                            {
-                                if (R.Cast())
-                                {
-
-                                    meowwwwwwwwwww = Game.TickCount + 1000;
-                                }
-                            }
+                            
+                            
                         }
                     }
                     break;
