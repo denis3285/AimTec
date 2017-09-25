@@ -57,6 +57,7 @@ namespace Kassadin_By_Kornis
                 ComboMenu.Add(new MenuBool("user", "Use R"));
                 ComboMenu.Add(new MenuBool("turret", "Don't R Under the Turret"));
                 ComboMenu.Add(new MenuSlider("hp", "Don't use R if my HP lower than", 20));
+                ComboMenu.Add(new MenuSlider("dontr", "Don't R in X Enemies", 3, 1, 5));
             }
             Menu.Add(ComboMenu);
             var HarassMenu = new Menu("harass", "Harass");
@@ -75,8 +76,9 @@ namespace Kassadin_By_Kornis
                 FarmMenu.Add(new MenuBool("useq", "Use Q"));
                 FarmMenu.Add(new MenuBool("usew", "Use W"));
                 FarmMenu.Add(new MenuBool("usee", "Use E"));
- 
-         
+                FarmMenu.Add(new MenuSlider("hite", "^- if Hits X Minions", 2, 1, 6));
+
+
             }
             Menu.Add(FarmMenu);
             var LastMenu = new Menu("lasthit", "Last Hit");
@@ -145,20 +147,20 @@ namespace Kassadin_By_Kornis
 
             if (Menu["drawings"]["drawq"].Enabled)
             {
-                Render.Circle(Player.Position, Q.Range, 50, Color.Crimson);
+                Render.Circle(Player.Position, Q.Range, 40, Color.Crimson);
             }
 
             if (Menu["drawings"]["drawe"].Enabled)
             {
-                Render.Circle(Player.Position, E.Range, 50, Color.LightGreen);
+                Render.Circle(Player.Position, E.Range, 40, Color.LightGreen);
             }
             if (Menu["drawings"]["drawr"].Enabled)
             {
-                Render.Circle(Player.Position, R.Range, 50, Color.Crimson);
+                Render.Circle(Player.Position, R.Range, 40, Color.Crimson);
             }
             if (Menu["drawings"]["drawburst"].Enabled)
             {
-                Render.Circle(Player.Position, R.Range + 500, 50, Color.LightGreen);
+                Render.Circle(Player.Position, R.Range + 500, 40, Color.LightGreen);
             }
             if (Menu["drawings"]["drawDamage"].Enabled)
             {
@@ -315,10 +317,14 @@ namespace Kassadin_By_Kornis
                 {
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                     {
-
-                        if (minion.IsValidTarget(E.Range) && minion != null)
+                        if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(250, false, false,
+                                minion.ServerPosition)) >=
+                            Menu["farming"]["hite"].As<MenuSlider>().Value)
                         {
-                            E.Cast(minion);
+                            if (minion.IsValidTarget(E.Range) && minion != null)
+                            {
+                                E.Cast(minion);
+                            }
                         }
                     }
                 }
@@ -338,9 +344,8 @@ namespace Kassadin_By_Kornis
         private void Jungle()
         {
             foreach (var jungleTarget in GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range)).ToList())
-            { 
-                if (!jungleTarget.IsValidTarget() ||
-                    !GetGenericJungleMinionsTargets().Contains(jungleTarget))
+            {
+                if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
                 {
                     return;
                 }
@@ -573,7 +578,7 @@ namespace Kassadin_By_Kornis
 
             if (R.Ready && useR && target.IsValidTarget(R.Range) && Player.HealthPercent() > HP)
             {
-                if (target != null)
+                if (target != null && target.CountEnemyHeroesInRange(R.Range) < Menu["combo"]["dontr"].As<MenuSlider>().Value)
                 {
                     if (!Turret)
                     {
