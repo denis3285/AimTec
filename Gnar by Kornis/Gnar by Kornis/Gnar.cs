@@ -271,7 +271,7 @@ namespace Gnar_By_Kornis
                     .ToList()
                     .ForEach(
                         unit =>
-                        {
+                        { 
                             if (!Player.HasBuff("gnartransform"))
                             {
                                 QDamage = Player.GetSpellDamage(unit, SpellSlot.Q);
@@ -557,7 +557,94 @@ namespace Gnar_By_Kornis
                         if (Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
                             bestTarget.IsValidTarget(Q.Range))
                         {
+                            var pred = Q.GetPrediction(bestTarget);
                             Q.Cast(bestTarget);
+                            if (bestTarget.Health <= Player.GetSpellDamage(bestTarget, SpellSlot.Q) / 2)
+                            {
+
+                                for (var i = 0; i < 17; i++)
+                                {
+                                    ;
+
+                                    var colliding = pred.CollisionObjects.OrderBy(o => o.Distance(Player)).ToList();
+                                    var test = bestTarget.ServerPosition.Extend(Player.ServerPosition,
+                                        bestTarget.Distance(Player) - 60 * i);
+
+                                    if (colliding.Count > 0)
+                                    {
+
+                                        if (bestTarget.Distance(Player) > 700 && bestTarget.Distance(Player) < 1000)
+                                        {
+
+
+
+                                            foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + bestTarget.BoundingRadius &&
+                                                        m.Distance(bestTarget) < 310 &&
+                                                        colliding[0].Distance(bestTarget) < 310)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+                                            }
+                                            foreach (var m in GameObjects.Jungle.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + bestTarget.BoundingRadius &&
+                                                        m.Distance(bestTarget) < 310 &&
+                                                        colliding[0].Distance(bestTarget) < 310)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        if (bestTarget.Distance(Player) < 700 && bestTarget.Distance(Player) < 1000)
+                                        {
+                                            foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + bestTarget.BoundingRadius &&
+                                                        m.Distance(bestTarget) < 350 &&
+                                                        colliding[0].Distance(bestTarget) < 350)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+
+                                            }
+                                            foreach (var m in GameObjects.Jungle.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + bestTarget.BoundingRadius &&
+                                                        m.Distance(bestTarget) < 350 &&
+                                                        colliding[0].Distance(bestTarget) < 350)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -908,6 +995,82 @@ namespace Gnar_By_Kornis
                                     Q.Cast(target);
 
 
+                                }
+                                var pred = Q.GetPrediction(target);
+
+
+                                for (var i = 0; i < 17; i++)
+                                {
+
+                                    var colliding = pred.CollisionObjects.OrderBy(o => o.Distance(Player)).ToList();
+                                    var test = target.ServerPosition.Extend(Player.ServerPosition,
+                                        target.Distance(Player) - 60 * i);
+                             
+                                    if (colliding.Count > 0)
+                                        {
+
+                                        if (target.Distance(Player) > 700 && target.Distance(Player) < 1000)
+                                        {
+
+
+
+                                            foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+                                            }
+                                            foreach (var m in GameObjects.Jungle.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+                                            }
+
+                                        }
+                                        if (target.Distance(Player) < 700 && target.Distance(Player) < 1000)
+                                        {
+                                            foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                               x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+
+                                            }
+                                            foreach (var m in GameObjects.Jungle.Where(x =>
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                            {
+                                                if (m != null)
+                                                {
+
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                                    {
+                                                        Q.Cast(pred.CastPosition);
+                                                    }
+                                                }
+
+                                            }
+                                        }
+
+                                    }
                                 }
                             }
                         }
@@ -1450,6 +1613,86 @@ namespace Gnar_By_Kornis
                         if (target != null)
                         {
                             Q.Cast(target);
+                        }
+                         var pred = Q.GetPrediction(target);
+
+
+                        for (var i = 0; i < 17; i++)
+                        {
+
+                            var colliding = pred.CollisionObjects.OrderBy(o => o.Distance(Player)).ToList();
+                            var test = target.ServerPosition.Extend(Player.ServerPosition,
+                                target.Distance(Player) - 60 * i);
+
+                            if (colliding.Count > 0)
+                            {
+
+                                if (target.Distance(Player) > 700 && target.Distance(Player) < 1000)
+                                {
+
+
+
+                                    foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                    {
+                                        if (m != null)
+                                        {
+
+                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                            {
+                                                Q.Cast(pred.CastPosition);
+                                            }
+                                        }
+                                    }
+                                    foreach (var m in GameObjects.Jungle.Where(x =>
+                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                    {
+                                        if (m != null)
+                                        {
+
+                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                            {
+                                                Q.Cast(pred.CastPosition);
+                                            }
+                                        }
+                                    }
+
+                                }
+                                if (target.Distance(Player) < 700 && target.Distance(Player) < 1000)
+                                {
+                                    foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                    {
+                                        if (m != null)
+                                        {
+
+                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                            {
+                                                Q.Cast(pred.CastPosition);
+                                            }
+                                        }
+
+                                    }
+                                    foreach (var m in GameObjects.Jungle.Where(x =>
+                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                    {
+                                        if (m != null)
+                                        {
+
+                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                            {
+                                                Q.Cast(pred.CastPosition);
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                            }
                         }
                     }
                     if (E.Ready && Menu["harass"]["mini"]["usee"].Enabled && target.IsValidTarget(Q.Range))
