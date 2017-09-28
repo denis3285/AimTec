@@ -55,6 +55,7 @@ namespace Katarina_By_Kornis
                 ComboMenu.Add(new MenuBool("useq", "Use Q"));
                 ComboMenu.Add(new MenuBool("usew", "Use W"));
                 ComboMenu.Add(new MenuBool("usee", "Use E "));
+                ComboMenu.Add(new MenuBool("eturret", "^- Don't E Under the Turret", false));
                 ComboMenu.Add(new MenuBool("savee", "^- Save E if no Daggers", false));
                 ComboMenu.Add(new MenuList("emode", "E Mode:", new[] {"Infront", "Behind", "Logic"}, 0));
             }
@@ -142,7 +143,7 @@ namespace Katarina_By_Kornis
             {
                 if (buff.Name == "katarinarsound")
                 {
-                  
+           
                     Orbwalker.MovingEnabled = true;
                     Orbwalker.AttackingEnabled = true;
                 }
@@ -1123,20 +1124,53 @@ namespace Katarina_By_Kornis
                                         target.IsValidTarget(E.Range) && E.Ready)
 
                                     {
-
-                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!dagger.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            
+                                        }
 
 
                                     }
 
                                     if (dagger.Distance(Player) > E.Range)
                                     {
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!target.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
                                     }
                                     if (dagger.Distance(target) > 450)
                                     {
 
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!target.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
                                     }
                                     break;
 
@@ -1145,7 +1179,19 @@ namespace Katarina_By_Kornis
                             if (mmm == null && E.Ready)
                             {
 
-                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+
+                                if (Menu["combo"]["eturret"].Enabled)
+                                {
+                                    if (!target.IsUnderEnemyTurret())
+                                    {
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                }
+                                if (!Menu["combo"]["eturret"].Enabled)
+                                {
+
+                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                }
                             }
                         }
 
@@ -1166,25 +1212,70 @@ namespace Katarina_By_Kornis
 
                                     {
 
-                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!dagger.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                        }
 
 
                                     }
                                     if (dagger.Distance(Player) > E.Range)
                                     {
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!target.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
                                     }
                                     if (dagger.Distance(target) > 450)
                                     {
 
-                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!target.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
                                     }
                                 }
                             }
                             if (mmm == null && E.Ready)
                             {
 
-                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                if (Menu["combo"]["eturret"].Enabled)
+                                {
+                                    if (!target.IsUnderEnemyTurret())
+                                    {
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                }
+                                if (!Menu["combo"]["eturret"].Enabled)
+                                {
+
+                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                }
                             }
 
                             if (target.IsValidTarget(Q.Range) && Q.Ready)
@@ -1290,7 +1381,19 @@ namespace Katarina_By_Kornis
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                            }
 
 
                                         }
@@ -1299,23 +1402,67 @@ namespace Katarina_By_Kornis
                                             case 0:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 break;
                                             case 1:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 break;
                                             case 2:
@@ -1323,26 +1470,68 @@ namespace Katarina_By_Kornis
                                                 {
                                                     if (dagger.Distance(Player) > E.Range)
                                                     {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                 }
                                                 if (R.Ready)
                                                 {
                                                     if (dagger.Distance(Player) > E.Range)
                                                     {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
                                                     }
                                                 }
                                                 break;
@@ -1358,7 +1547,19 @@ namespace Katarina_By_Kornis
                                         target.IsValidTarget(E.Range))
                                     {
 
-                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!dagger.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                        }
 
 
                                     }
@@ -1374,14 +1575,36 @@ namespace Katarina_By_Kornis
                                         if (mmm == null)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
                                         }
                                         break;
                                     case 1:
                                         if (mmm == null)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
                                         }
                                         break;
                                     case 2:
@@ -1390,11 +1613,33 @@ namespace Katarina_By_Kornis
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
                                             }
                                             if (R.Ready)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
                                             }
                                         }
                                         break;
@@ -1488,7 +1733,19 @@ namespace Katarina_By_Kornis
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                            }
 
 
                                         }
@@ -1497,23 +1754,67 @@ namespace Katarina_By_Kornis
                                             case 0:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 break;
                                             case 1:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 break;
                                             case 2:
@@ -1521,26 +1822,68 @@ namespace Katarina_By_Kornis
                                                 {
                                                     if (dagger.Distance(Player) > E.Range)
                                                     {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                 }
                                                 if (R.Ready)
                                                 {
                                                     if (dagger.Distance(Player) > E.Range)
                                                     {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
                                                     }
                                                 }
                                                 break;
@@ -1554,7 +1897,19 @@ namespace Katarina_By_Kornis
                                         target.IsValidTarget(E.Range))
                                     {
 
-                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!dagger.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                        }
 
 
                                     }
@@ -1571,14 +1926,35 @@ namespace Katarina_By_Kornis
                                         if (mmm == null)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
                                         }
                                         break;
                                     case 1:
                                         if (mmm == null)
                                         {
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
                                         }
                                         break;
                                     case 2:
@@ -1587,11 +1963,33 @@ namespace Katarina_By_Kornis
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
                                             }
                                             if (R.Ready)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
                                             }
                                         }
                                         break;
@@ -1696,7 +2094,19 @@ namespace Katarina_By_Kornis
                                             target.IsValidTarget(E.Range))
                                         {
 
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                            }
 
 
                                         }
@@ -1705,23 +2115,67 @@ namespace Katarina_By_Kornis
                                             case 0:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
                                                 }
                                                 break;
                                             case 1:
                                                 if (dagger.Distance(Player) > E.Range)
                                                 {
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 if (dagger.Distance(target) > 450)
                                                 {
 
-                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    if (Menu["combo"]["eturret"].Enabled)
+                                                    {
+                                                        if (!target.IsUnderEnemyTurret())
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
+                                                    }
+                                                    if (!Menu["combo"]["eturret"].Enabled)
+                                                    {
+
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
                                                 }
                                                 break;
                                             case 2:
@@ -1729,12 +2183,34 @@ namespace Katarina_By_Kornis
                                                 {
                                                     if (dagger.Distance(Player) > E.Range)
                                                     {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                        }
                                                     }
                                                 }
                                                 if (R.Ready)
@@ -1746,9 +2222,18 @@ namespace Katarina_By_Kornis
                                                     }
                                                     if (dagger.Distance(target) > 450)
                                                     {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
 
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                        }
                                                     }
                                                 }
                                                 break;
@@ -1764,7 +2249,19 @@ namespace Katarina_By_Kornis
                                         target.IsValidTarget(E.Range))
                                     {
 
-                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        if (Menu["combo"]["eturret"].Enabled)
+                                        {
+                                            if (!dagger.IsUnderEnemyTurret())
+                                            {
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                            }
+                                        }
+                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        {
+
+                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                        }
 
 
                                     }
@@ -1779,14 +2276,36 @@ namespace Katarina_By_Kornis
                                         if (mmm == null)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                            }
                                         }
                                         break;
                                     case 1:
                                         if (mmm == null)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
+                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                            }
                                         }
                                         break;
                                     case 2:
@@ -1795,11 +2314,33 @@ namespace Katarina_By_Kornis
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                                }
                                             }
                                             if (R.Ready)
                                             {
-                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!target.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
                                             }
                                         }
                                         break;
