@@ -260,7 +260,7 @@ namespace Support_AIO.Champions
 
         protected override void SetSpells()
         {
-            Q = new Aimtec.SDK.Spell(SpellSlot.Q, 830);
+            Q = new Aimtec.SDK.Spell(SpellSlot.Q, 1000);
             W = new Aimtec.SDK.Spell(SpellSlot.W, 600);
             E = new Aimtec.SDK.Spell(SpellSlot.E, 800);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 725);
