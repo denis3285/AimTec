@@ -197,8 +197,12 @@ namespace Support_AIO.NautilusSelfShield
 
         private static void OnCreate(GameObject sender)
         {
-
-            var missile = sender as MissileClient;
+            if (!EvadeTargetManager.Menu["Brian.EvadeTargetMenu.EvadeTargetW"].Enabled)
+            {
+              
+                return;
+            }
+                var missile = sender as MissileClient;
             if (missile == null)
             {
                 return;

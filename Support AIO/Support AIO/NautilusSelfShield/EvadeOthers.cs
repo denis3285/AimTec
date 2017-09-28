@@ -160,6 +160,11 @@ namespace Support_AIO.NautilusSelfShield
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs Args)
         {
+            if (!EvadeTargetManager.Menu["Brian.EvadeTargetMenu.EvadeTargetW"].Enabled)
+            {
+
+                return;
+            }
 
             if (ObjectManager.GetLocalPlayer().IsDead)
             {
