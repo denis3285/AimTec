@@ -60,7 +60,22 @@ namespace Support_AIO.Champions
 
                 if (t != null)
                 {
-                    E.Cast();
+                    if (!RootMenu["combo"]["cce"].Enabled)
+                    {
+                        E.Cast();
+                    }
+                    if (RootMenu["combo"]["cee"].Enabled)
+                    {
+
+                        if (!t.HasBuffOfType(BuffType.Charm) || !t.HasBuffOfType(BuffType.Stun) ||
+                            !t.HasBuffOfType(BuffType.Fear) || !t.HasBuffOfType(BuffType.Snare) ||
+                            !t.HasBuffOfType(BuffType.Taunt) || !t.HasBuffOfType(BuffType.Knockback) ||
+                            !t.HasBuffOfType(BuffType.Suppression))
+                        {
+
+                            E.Cast();
+                        }
+                    }
                 }
             }
             if (t.IsValidTarget(R.Range) && RootMenu["combo"]["user"].Enabled)
@@ -188,6 +203,7 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("waa", "Use W for Auto Attack Reset"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
+                ComboMenu.Add(new MenuBool("cce", "E Only if Enemy not CC'd"));
                 ComboMenu.Add(new MenuSlider("maxe", "^- Max Range", 500, 0, 600));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
                 ComboMenu.Add(new MenuSlider("hpr", "^- If Below X Health", 50));
