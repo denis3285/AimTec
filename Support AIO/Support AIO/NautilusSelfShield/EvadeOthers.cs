@@ -207,21 +207,21 @@ namespace Support_AIO.NautilusSelfShield
                 if (Args.Sender.IsMinion)
                 {
 
-                    if (ally.IsHero && ally.IsMe)
+
+                    if (
+                        EvadeTargetManager
+                            .AttackMenu["Brian.EvadeTargetMenu.Minion"]
+                            .Enabled && ally.HealthPercent() <=
+                        EvadeTargetManager
+                            .AttackMenu["Brian.EvadeTargetMenu.HP"]
+                            .Value)
                     {
-                        Support_AIO.Bases.Champion.W.Cast();
-                    }
-                }
-                if (Args.SpellData.Name.Contains("crit") && Args.Sender.IsHero &&
-                    EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.CAttack"].Enabled
-                    && ally.HealthPercent() <= EvadeTargetManager
-                        .AttackMenu["Brian.EvadeTargetMenu.CAttackHpU"].Value)
-                {
-                    if (ally.IsHero && ally.IsMe)
-                    {
-                        Support_AIO.Bases.Champion.W.Cast();
+                        if (ally.IsHero && ally.IsMe)
+                        {
+                            Support_AIO.Bases.Champion.W.Cast();
 
 
+                        }
                     }
                 }
             }
@@ -233,7 +233,6 @@ namespace Support_AIO.NautilusSelfShield
 
                 return;
             }
-
             var spellData =
                 EvadeTargetManager.Spells.FirstOrDefault(
                     i =>
