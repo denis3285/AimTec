@@ -296,6 +296,87 @@ namespace Support_AIO.Bases
                     }
                 }
             }
+            if (Player.ChampionName == "Taric")
+            {
+
+                if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
+                {
+                    if (hero.Instance.IsEnemy)
+                    {
+                        return;
+                    }
+                    if (hero.Attacker.IsAlly)
+                    {
+                        return;
+                    }
+                    if (hero.MinionDamage > 0)
+                    {
+                        if (hero.AbilityDamage == 0 && hero.BuffDamage == 0 && hero.ItemDamage == 0 &&
+                            hero.TowerDamage == 0 && hero.TroyDamage == 0)
+                        {
+                            return;
+                        }
+                    }
+                    if (hero.IncomeDamage < 0)
+                    {
+
+                        Helpers.ResetIncomeDamage(hero);
+                    }
+
+
+                    if (!hero.Instance.IsValidTarget(float.MaxValue, true))
+                    {
+                        Helpers.ResetIncomeDamage(hero);
+                    }
+
+                    if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Instance.HasBuffOfType(BuffType.PhysicalImmunity)
+                        && args.HpInstance.EventType == EventType.AutoAttack)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Instance.HasBuffOfType(BuffType.SpellImmunity)
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Instance.HasBuff("sivire")
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    if (hero.Instance.HasBuff("bansheesviel")
+                        && args.HpInstance.EventType == EventType.Spell)
+                    {
+                        args.NoProcess = true;
+                    }
+
+                    var objShop = ObjectManager.Get<GameObject>()
+                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
+
+                    if (objShop != null
+                        && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
+                    {
+                        args.NoProcess = true;
+                    }
+
+
+
+                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled)
+                    {
+
+                        W.CastOnUnit(hero.Instance);
+                    }
+
+                }
+            }
             if (Player.ChampionName == "Janna" || Player.ChampionName == "Lulu" || Player.ChampionName == "Rakan" ||
                 Player.ChampionName == "Karma" || ObjectManager.GetLocalPlayer().ChampionName == "Ivern")
             {

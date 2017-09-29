@@ -107,6 +107,19 @@ namespace Support_AIO.SpellBlocking
                 });
             }
 
+            if (ObjectManager.GetLocalPlayer().ChampionName == "Taric")
+            {
+
+                Spells.Add(new EvadeSpellData
+                {
+                    Name = "TaricE",
+                    Slot = SpellSlot.W,
+                    Range = 600,
+                    Delay = 250,
+                    Speed = int.MaxValue,
+                    _dangerLevel = 1
+                });
+            }
         }
     }
 }

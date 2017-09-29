@@ -15,6 +15,7 @@ using Aimtec.SDK.Prediction.Skillshots;
 using Aimtec.SDK.TargetSelector;
 using Aimtec.SDK.Util;
 using Support_AIO;
+using Support_AIO.Base;
 using Support_AIO.Bases;
 using GameObjects = Aimtec.SDK.Util.Cache.GameObjects;
 
@@ -39,7 +40,7 @@ namespace Support_AIO.Champions
             if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
             {
 
-                if (target != null && !RootMenu["black"][target.ChampionName.ToLower()].Enabled)
+                if (target != null && !RootMenu["black"][target.ChampionName.ToLower()].Enabled && target.Distance(Player) < RootMenu["qset"]["maxq"].As<MenuSlider>().Value)
                 {
                     Q.Cast(target);
                 }
@@ -76,31 +77,7 @@ namespace Support_AIO.Champions
         protected override void SemiR()
         {
 
-            if (RootMenu["qset"]["autoq"].Enabled)
-            {
-                var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
-
-                if (!target.IsValidTarget())
-                {
-                    return;
-                }
-
-                if (Q.Ready && target.IsValidTarget(Q.Range))
-                {
-
-                    if (target != null)
-                    {
-                        var pred = Q.GetPrediction(target);
-                        if (pred.HitChance == HitChance.Impossible)
-                        {
-
-                            Q.Cast(pred.CastPosition);
-
-
-                        }
-                    }
-                }
-            }
+   
             if (RootMenu["qset"]["grabq"].Enabled)
             {
                 var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
@@ -113,7 +90,7 @@ namespace Support_AIO.Champions
                 if (Q.Ready && target.IsValidTarget(Q.Range))
                 {
 
-                    if (target != null)
+                    if (target != null && target.Distance(Player) < RootMenu["qset"]["maxq"].As<MenuSlider>().Value)
                     {
                         Q.Cast(target);
                     }
@@ -159,7 +136,10 @@ namespace Support_AIO.Champions
                     !bestTarget.IsValidTarget(Player.GetFullAttackRange(bestTarget)) &&
                     Player.GetSpellDamage(bestTarget, SpellSlot.Q) > bestTarget.Health)
                 {
-                    Q.Cast(bestTarget);
+                    if (bestTarget.Distance(Player) < RootMenu["qset"]["maxq"].As<MenuSlider>().Value)
+                    {
+                        Q.Cast(bestTarget);
+                    }
                 }
             }
 
@@ -226,9 +206,20 @@ namespace Support_AIO.Champions
                 KillstealMenu.Add(new MenuBool("ksr", "Killsteal with R"));
             }
             RootMenu.Add(KillstealMenu);
-        
-
+            AutoQ.Attach(RootMenu, "Auto Q on Dashes");
+            AutoQ.DashQ += OnDash;
             RootMenu.Attach();
+        }
+        private void OnDash(Obj_AI_Hero target, Support_AIO.Base.GapcloserArgs Args)
+        {
+            if (RootMenu["qset"]["autoq"].Enabled)
+            {
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range && Q.Ready)
+                {
+
+                    Q.Cast(Args.EndPosition);
+                }
+            }
         }
 
         protected override void SetSpells()

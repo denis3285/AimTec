@@ -69,12 +69,14 @@
     <Compile Include="Bases\GameObjects.cs" />
     <Compile Include="Bases\Gapcloser.cs" />
     <Compile Include="Bases\Geometry.cs" />
+    <Compile Include="Base\OnDash.cs" />
     <Compile Include="Base\Unit.cs" />
     <Compile Include="Base\Gametroy.cs" />
     <Compile Include="Base\Helpers.cs" />
     <Compile Include="Champions\Annie.cs" />
     <Compile Include="Champions\Bard.cs" />
     <Compile Include="Champions\Brand.cs" />
+    <Compile Include="Champions\Taric.cs" />
     <Compile Include="Champions\Trundle.cs" />
     <Compile Include="Champions\Braum.cs" />
     <Compile Include="Champions\Ivern.cs" />

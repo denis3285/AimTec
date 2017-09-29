@@ -208,6 +208,11 @@ namespace Support_AIO.SpellBlocking
 
         private static void OnCreate(GameObject sender)
         {
+            if (!Menu["Brian.EvadeTargetMenu.EvadeTargetW"].Enabled)
+            {
+
+                return;
+            }
             if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 0)
             {
                 var missile = sender as MissileClient;
