@@ -482,6 +482,17 @@
                 });
 
             #endregion Veigar
+            #region Kayn
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Kayn",
+                    SpellSlot = SpellSlot.R
+                });
+    
+
+            #endregion Kayn
 
             #region Vi
 

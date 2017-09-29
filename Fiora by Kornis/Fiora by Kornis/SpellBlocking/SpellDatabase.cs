@@ -219,7 +219,25 @@ namespace Fiora_By_Kornis.SpellBlocking
                 });
 
             #endregion Akali
+            #region Kayn
 
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Kayn",
+                    SpellName = "KaynW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 550,
+                    Range = 700,
+                    Radius = 150,
+                    MissileSpeed = 5000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true
+                });
+            #endregion
             #region Alistar
 
             Spells.Add(

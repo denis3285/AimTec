@@ -1,4 +1,6 @@
-﻿namespace Fiora_By_Kornis.SpellBlocking
+﻿using Aimtec.SDK.Util;
+
+namespace Fiora_By_Kornis.SpellBlocking
 {
     #region
 
@@ -77,7 +79,13 @@
                     CastW();
                 }
             }
-
+            if (ObjectManager.GetLocalPlayer().HasBuff("kaynrhost"))
+            {
+                if ((ObjectManager.GetLocalPlayer().GetBuff("kaynrhost").EndTime - Game.ClockTime) * 1000 <= 100)
+                {
+                    CastW();
+                }
+            }
             if (ObjectManager.GetLocalPlayer().HasBuff("vladimirhemoplaguedebuff"))
             {
                 if ((ObjectManager.GetLocalPlayer().GetBuff("vladimirhemoplaguedebuff").EndTime - Game.ClockTime) *
@@ -86,6 +94,7 @@
                     CastW();
                 }
             }
+
             if (ObjectManager.GetLocalPlayer().HasBuff("nautilusgrandlinetarget"))
             {
                 if ((ObjectManager.GetLocalPlayer().GetBuff("nautilusgrandlinetarget").EndTime - Game.ClockTime) *
@@ -171,6 +180,51 @@
 
             var target = sender as Obj_AI_Hero;
 
+            if (target != null && target.Team != ObjectManager.GetLocalPlayer().Team &&
+                !string.IsNullOrEmpty(Args.SpellData.Name) &&
+                Args.SpellData.Name != "RenektonCleave" && Args.SpellData.Name != "AlistarE" &&
+                Args.SpellData.Name != "ChogathEAttack" &&
+                Args.SpellData.Name != "FerociousHowl" && Args.SpellData.Name != "NasusE" &&
+                Args.SpellData.Name != "GarenQAttack" &&
+                !Args.SpellData.Name.Contains("BasicAttack"))
+            {
+                if (target.ChampionName == "Kayn")
+                {
+                    var spell =
+                        BlockSpellDataBase.Spells.Where(
+                            x =>
+                                string.Equals(x.ChampionName, target.ChampionName,
+                                    StringComparison.CurrentCultureIgnoreCase) &&
+                                Menu["Block" + target.ChampionName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()] !=
+                                null &&
+                                Menu["Block" + target.ChampionName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()]
+                                    .Enabled).ToArray();
+
+                    if (spell.Any())
+                    {
+                        foreach (var x in spell)
+                        {
+                            switch (x.ChampionName)
+                            {
+                                case "Kayn":
+                                    if (x.SpellSlot == SpellSlot.R)
+                                    {
+                                        if (ObjectManager.GetLocalPlayer().HasBuff("kaynrhost"))
+                                        {
+
+                                            DelayAction.Queue(300, () =>
+                                            {
+                                                CastW("Kayn", x.SpellSlot);
+                                            });
+                                        }
+
+                                    }
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
             if (target == null || target.Team == ObjectManager.GetLocalPlayer().Team || !target.IsValid ||
                 Args.Target == null || string.IsNullOrEmpty(Args.SpellData.Name) ||
                 Args.SpellData.Name == "RenektonCleave" || Args.SpellData.Name == "AlistarE" ||
@@ -195,6 +249,8 @@
                 {
                     switch (x.ChampionName)
                     {
+
+
                         case "Alistar":
                             if (x.SpellSlot == SpellSlot.Q)
                             {
