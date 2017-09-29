@@ -54,7 +54,8 @@ namespace Support_AIO.Champions
                     }
                 }
             }
-            if (t.IsValidTarget(E.Range) && useE)
+            if (t.IsValidTarget(E.Range) && useE &&
+                t.Distance(Player) < RootMenu["combo"]["maxe"].As<MenuSlider>().Value)
             {
 
                 if (t != null)
@@ -67,7 +68,9 @@ namespace Support_AIO.Champions
 
                 if (t != null)
                 {
-                    if (!RootMenu["black"][t.ChampionName.ToLower()].Enabled)
+                    if (!RootMenu["black"][t.ChampionName.ToLower()].Enabled &&
+                        t.HealthPercent() < RootMenu["combo"]["hpr"].As<MenuSlider>().Value &&
+                        t.Distance(Player) > RootMenu["combo"]["ranger"].As<MenuSlider>().Value)
                     {
                         R.CastOnUnit(t);
                     }
@@ -123,7 +126,7 @@ namespace Support_AIO.Champions
             }
             if (RootMenu["drawings"]["drawe"].Enabled)
             {
-                Render.Circle(Player.Position, E.Range, 40, Color.Crimson);
+                Render.Circle(Player.Position, RootMenu["combo"]["maxe"].As<MenuSlider>().Value, 40, Color.Crimson);
             }
             if (RootMenu["drawings"]["drawr"].Enabled)
             {
@@ -162,7 +165,7 @@ namespace Support_AIO.Champions
                         }
                     }
                 }
-                if (t.IsValidTarget(E.Range) && RootMenu["harass"]["usee"].Enabled)
+                if (t.IsValidTarget(E.Range) && RootMenu["harass"]["usee"].Enabled && t.Distance(Player) < RootMenu["combo"]["maxe"].As<MenuSlider>().Value)
                 {
 
                     if (t != null)
@@ -183,9 +186,12 @@ namespace Support_AIO.Champions
             ComboMenu = new Menu("combo", "Combo");
             {
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
-  
+                ComboMenu.Add(new MenuBool("waa", "Use W for Auto Attack Reset"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
+                ComboMenu.Add(new MenuSlider("maxe", "^- Max Range", 500, 0, 600));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
+                ComboMenu.Add(new MenuSlider("hpr", "^- If Below X Health", 50));
+                ComboMenu.Add(new MenuSlider("ranger", "^- Min. R Range", 300, 0, 500));
                 WhiteList = new Menu("black", "R Black List");
                 {
                     foreach (var target in GameObjects.EnemyHeroes)
@@ -193,7 +199,7 @@ namespace Support_AIO.Champions
                         WhiteList.Add(new MenuBool(target.ChampionName.ToLower(), "Block: " + target.ChampionName, false));
                     }
                 }
-
+                
                 ComboMenu.Add(WhiteList);
             }
             RootMenu.Add(ComboMenu);
@@ -230,6 +236,29 @@ namespace Support_AIO.Champions
             }
             RootMenu.Add(DrawMenu);
             RootMenu.Attach();
+        }
+
+        internal override void PostAttack(object sender, PostAttackEventArgs e)
+        {
+
+            var heroTarget = e.Target as Obj_AI_Hero;
+            if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Combo))
+            {
+                Obj_AI_Hero hero = e.Target as Obj_AI_Hero;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+                if (RootMenu["combo"]["waa"].Enabled)
+                {
+                    if (W.Ready)
+                    {
+                        W.Cast();
+
+                    }
+                }
+            }
+            
         }
 
         protected override void SetSpells()
