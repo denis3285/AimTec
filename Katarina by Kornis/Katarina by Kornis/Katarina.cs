@@ -788,7 +788,10 @@ namespace Katarina_By_Kornis
             {
                 bool useQ = Menu["farming"]["useq"].Enabled;
                 bool useW = Menu["farming"]["usew"].Enabled;
-
+                if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                {
+                    return;
+                }
                 if (useQ && jungleTarget.IsValidTarget(Q.Range))
                 {
                     Q.CastOnUnit(jungleTarget);
