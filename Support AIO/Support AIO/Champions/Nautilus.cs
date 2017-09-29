@@ -67,9 +67,9 @@ namespace Support_AIO.Champions
                     if (RootMenu["combo"]["cee"].Enabled)
                     {
 
-                        if (!t.HasBuffOfType(BuffType.Charm) || !t.HasBuffOfType(BuffType.Stun) ||
-                            !t.HasBuffOfType(BuffType.Fear) || !t.HasBuffOfType(BuffType.Snare) ||
-                            !t.HasBuffOfType(BuffType.Taunt) || !t.HasBuffOfType(BuffType.Knockback) ||
+                        if (!t.HasBuffOfType(BuffType.Charm) && !t.HasBuffOfType(BuffType.Stun) &&
+                            !t.HasBuffOfType(BuffType.Fear) && !t.HasBuffOfType(BuffType.Snare) &&
+                            !t.HasBuffOfType(BuffType.Taunt) && !t.HasBuffOfType(BuffType.Knockback) &&
                             !t.HasBuffOfType(BuffType.Suppression))
                         {
 
