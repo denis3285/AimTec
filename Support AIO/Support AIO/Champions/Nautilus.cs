@@ -131,7 +131,17 @@ namespace Support_AIO.Champions
         {
             throw new NotImplementedException();
         }
+        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
 
+        public static int SxOffset(Obj_AI_Hero target)
+        {
+            return SpecialChampions.Contains(target.ChampionName) ? 1 : 10;
+        }
+
+        public static int SyOffset(Obj_AI_Hero target)
+        {
+            return SpecialChampions.Contains(target.ChampionName) ? 3 : 20;
+        }
         protected override void Drawings()
         {
 
@@ -147,7 +157,42 @@ namespace Support_AIO.Champions
             {
                 Render.Circle(Player.Position, R.Range, 40, Color.Wheat);
             }
+            if (RootMenu["drawings"]["drawdamage"].Enabled)
+            {
 
+                ObjectManager.Get<Obj_AI_Base>()
+                    .Where(h => h is Obj_AI_Hero && h.IsValidTarget() && h.IsValidTarget(Q.Range * 2))
+                    .ToList()
+                    .ForEach(
+                        unit =>
+                        {
+
+                            var heroUnit = unit as Obj_AI_Hero;
+                            int width = 103;
+
+                            int xOffset = SxOffset(heroUnit);
+                            int yOffset = SyOffset(heroUnit);
+                            var barPos = unit.FloatingHealthBarPosition;
+                            barPos.X += xOffset;
+                            barPos.Y += yOffset;
+                            var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
+                            var drawStartXPos =
+                                (float)(barPos.X + (unit.Health >
+                                                    Player.GetSpellDamage(unit, SpellSlot.Q) + Player.GetSpellDamage(unit, SpellSlot.E) +
+                                                    Player.GetSpellDamage(unit, SpellSlot.R)
+                                            ? width * ((unit.Health - (Player.GetSpellDamage(unit, SpellSlot.Q) + Player.GetSpellDamage(unit, SpellSlot.E) +
+                                                                       Player.GetSpellDamage(unit, SpellSlot.R))) /
+                                                       unit.MaxHealth * 100 / 100)
+                                            : 0));
+
+                            Render.Line(drawStartXPos, barPos.Y, drawEndXPos, barPos.Y, 8, true,
+                                unit.Health < Player.GetSpellDamage(unit, SpellSlot.Q) + Player.GetSpellDamage(unit, SpellSlot.E) +
+                                Player.GetSpellDamage(unit, SpellSlot.R)
+                                    ? Color.GreenYellow
+                                    : Color.Orange);
+
+                        });
+            }
         }
 
         protected override void Killsteal()
@@ -248,7 +293,7 @@ namespace Support_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
                 DrawMenu.Add(new MenuBool("drawe", "Draw E Range"));
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
-
+                DrawMenu.Add(new MenuBool("drawdamage", "Draw Damage"));
             }
             RootMenu.Add(DrawMenu);
             RootMenu.Attach();
