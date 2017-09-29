@@ -64,9 +64,9 @@ namespace Support_AIO.Champions
                     {
                         E.Cast();
                     }
-                    if (RootMenu["combo"]["cee"].Enabled)
+                    if (RootMenu["combo"]["cce"].Enabled)
                     {
-
+                        
                         if (!t.HasBuffOfType(BuffType.Charm) && !t.HasBuffOfType(BuffType.Stun) &&
                             !t.HasBuffOfType(BuffType.Fear) && !t.HasBuffOfType(BuffType.Snare) &&
                             !t.HasBuffOfType(BuffType.Taunt) && !t.HasBuffOfType(BuffType.Knockback) &&
@@ -116,7 +116,7 @@ namespace Support_AIO.Champions
 
                     if (minion.IsValidTarget(E.Range) && minion != null && useW)
                     {
-                        Console.WriteLine("2");
+                      
                         if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(E.Range, false, false,
                                 Player.ServerPosition)) >= RootMenu["farming"]["hitw"].As<MenuSlider>().Value)
                         {
