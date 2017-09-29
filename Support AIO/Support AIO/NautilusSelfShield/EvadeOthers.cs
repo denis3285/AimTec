@@ -176,7 +176,7 @@ namespace Support_AIO.NautilusSelfShield
 
                 if (EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.Turret"].Enabled)
                 {
-                    if (ally.IsHero && ally.IsMe)
+                    if (ally.IsHero && ally.IsMe && sender.IsTurret)
                     {
                         Support_AIO.Bases.Champion.W.Cast();
                     }
