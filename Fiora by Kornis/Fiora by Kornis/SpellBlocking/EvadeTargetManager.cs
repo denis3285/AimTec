@@ -38,8 +38,28 @@ namespace Fiora_By_Kornis.SpellBlocking
             {
                 foreach (var spell in Spells.Where(i => Fiora_By_Kornis.GameObjects.EnemyHeroes.Any(a => a.ChampionName == i.ChampionName)))
                 {
-                    SpellMenu.Add(new MenuBool("Brian.EvadeTargetMenu." + spell.MissileName,
-                        spell.ChampionName + "(" + spell.Slot + ")"));
+                    if (spell.MissileName == "bluecardattack")
+                    {
+                        
+                        SpellMenu.Add(new MenuBool("Brian.EvadeTargetMenu." + spell.MissileName,
+                            spell.ChampionName + "( Blue Card )"));
+                    }
+                    if (spell.MissileName == "redcardattack")
+                    {
+                        SpellMenu.Add(new MenuBool("Brian.EvadeTargetMenu." + spell.MissileName,
+                            spell.ChampionName + "( Red Card )"));
+                    }
+                    if (spell.MissileName == "goldcardattack")
+                    {
+                        SpellMenu.Add(new MenuBool("Brian.EvadeTargetMenu." + spell.MissileName,
+                            spell.ChampionName + "( Gold Card )"));
+                    }
+                    if (spell.MissileName != "bluecardattack" || spell.MissileName != "goldcardattack" || spell.MissileName != "redcardattack")
+                    {
+                        SpellMenu.Add(new MenuBool("Brian.EvadeTargetMenu." + spell.MissileName,
+                            spell.ChampionName + "(" + spell.Slot + ")"));
+                    }
+
                 }
             }
             Menu.Add(SpellMenu);
