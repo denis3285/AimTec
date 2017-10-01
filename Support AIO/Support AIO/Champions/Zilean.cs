@@ -24,6 +24,7 @@ namespace Support_AIO.Champions
 {
     class Zilean : Champion
     {
+        private int delayyyyyyyyyyyy;
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
         {
@@ -56,33 +57,70 @@ namespace Support_AIO.Champions
 
                 return;
             }
-
-            if (target.IsValidTarget(E.Range) && useE)
+            if (RootMenu["combo"]["prioritye"].Enabled)
             {
-
-                if (target != null)
+                if (target.IsValidTarget(E.Range) && useE)
                 {
-                    E.CastOnUnit(target);
+
+                    if (target != null)
+                    {
+                        if (E.CastOnUnit(target))
+                        {
+                            delayyyyyyyyyyyy = 300 + Game.TickCount;
+                        }
+                    }
+                }
+                if (delayyyyyyyyyyyy < Game.TickCount)
+                {
+                    if (target.IsValidTarget(Q.Range) && useQ)
+                    {
+
+                        if (target != null)
+                        {
+                            Q.Cast(target);
+                        }
+                    }
+                    if (useW && target.IsValidTarget(Q.Range) && !Q.Ready && Player.Mana >=
+                        Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.W).Cost)
+                    {
+                        if (target != null)
+                        {
+                            W.Cast();
+                            Q.Cast(target);
+                        }
+                    }
+
                 }
             }
-            if (target.IsValidTarget(Q.Range) && useQ)
+            if (!RootMenu["combo"]["prioritye"].Enabled)
             {
-
-                if (target != null)
+                if (target.IsValidTarget(E.Range) && useE)
                 {
-                    Q.Cast(target);
+
+                    if (target != null)
+                    {
+                        E.CastOnUnit(target);
+                    }
                 }
-            }
-            if (useW && target.IsValidTarget(Q.Range) && !Q.Ready && Player.Mana >= Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.W).Cost)
-            {
-                if (target != null)
+                if (target.IsValidTarget(Q.Range) && useQ)
                 {
-                    W.Cast();
-                    Q.Cast(target);
+
+                    if (target != null)
+                    {
+                        Q.Cast(target);
+                    }
                 }
+                if (useW && target.IsValidTarget(Q.Range) && !Q.Ready && Player.Mana >=
+                    Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.W).Cost)
+                {
+                    if (target != null)
+                    {
+                        W.Cast();
+                        Q.Cast(target);
+                    }
+                }
+
             }
-
-
         }
 
         protected override void SemiR()
@@ -95,7 +133,7 @@ namespace Support_AIO.Champions
                     {
                         if(ZLib.Menu["whitelist"][en.ChampionName.ToLower()].Enabled)
                         {
-                            if (en.HealthPercent() <= RootMenu["combo"]["hitr"].As<MenuSlider>().Value && !en.IsRecalling() && !Player.IsRecalling() && en.CountEnemyHeroesInRange(R.Range) > 0)
+                            if (en.HealthPercent() <= RootMenu["combo"]["hitr"].As<MenuSlider>().Value && !en.IsRecalling() && !Player.IsRecalling() && en.CountEnemyHeroesInRange(R.Range*2) > 0)
                             {
                                 R.CastOnUnit(en);
                             }
@@ -269,6 +307,7 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W for Q Reset"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
+                ComboMenu.Add(new MenuBool("prioritye", "Priority E Usage First", false));
                 ComboMenu.Add(new MenuBool("slow", "Use Auto E on Slowed Ally"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
                 ComboMenu.Add(new MenuList("rusage", "R Usage", new[] { "If Incoming Damage Kills", "At X Health" }, 0));

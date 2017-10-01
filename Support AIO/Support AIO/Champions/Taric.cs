@@ -120,7 +120,21 @@ namespace Support_AIO.Champions
 
         protected override void SemiR()
         {
-
+            if (RootMenu["combo"]["semir"].Enabled)
+            {
+                foreach (var ally in GameObjects.AllyHeroes.Where(
+                    x => x.Distance(Player) <= W.Range && x.IsAlly).OrderByDescending(b => GameObjects.AllyHeroes.Count(x=> x.IsValidTarget(R.Range, true, false, b.ServerPosition))))
+                {
+                    if (ally != null && R.Ready && !ally.IsMe)
+                    {
+                       
+                        if (W.Cast(ally))
+                        {
+                            R.Cast();
+                        }
+                    }
+                }
+            }
             if (RootMenu["heal"]["autow"].Enabled)
             {
                 if (RootMenu["heal"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent())
@@ -250,7 +264,7 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("fromally", "^- Use from Ally"));
                 ComboMenu.Add(new MenuBool("epriority", "^- Priority E from Me"));
-
+                ComboMenu.Add(new MenuKeyBind("semir", "Semi-R", KeyCode.R, KeybindType.Press).SetToolTip("On Press finds the best Position to Ult the most with W"));
             }
 
             RootMenu.Add(ComboMenu);
