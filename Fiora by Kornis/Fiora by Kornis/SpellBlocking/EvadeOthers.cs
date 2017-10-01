@@ -79,6 +79,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                     CastW();
                 }
             }
+
             if (ObjectManager.GetLocalPlayer().HasBuff("kaynrhost"))
             {
                 if ((ObjectManager.GetLocalPlayer().GetBuff("kaynrhost").EndTime - Game.ClockTime) * 1000 <= 100)
@@ -134,8 +135,24 @@ namespace Fiora_By_Kornis.SpellBlocking
 
             foreach (var target in GameObjects.EnemyHeroes.Where(x => !x.IsDead && x.IsValidTarget()))
             {
+
                 switch (target.ChampionName)
                 {
+                    case "Rammus":
+                        if (Menu["Blockrammus"]["BlockSpellQ"] != null && Menu["Blockrammus"]["BlockSpellQ"].Enabled)
+                        {
+                            if (target.HasBuff("PowerBall"))
+                            {
+                         
+                                if (target.Distance(ObjectManager.GetLocalPlayer()) <= 300)
+                                {
+                                    
+                                    CastW();
+                                }
+                                
+                            }
+                        }
+                        break;
                     case "Jax":
                         if (Menu["Blockjax"]["BlockSpellE"] != null && Menu["Blockjax"]["BlockSpellE"].Enabled)
                         {
@@ -276,6 +293,8 @@ namespace Fiora_By_Kornis.SpellBlocking
                                     CastW("Blitzcrank", x.SpellSlot);
                                 }
                             }
+                            
+     
                             break;
                         case "Chogath":
                             if (x.SpellSlot == SpellSlot.R)
@@ -323,6 +342,17 @@ namespace Fiora_By_Kornis.SpellBlocking
                                 }
                             }
                             break;
+                        case "Rammus":
+                            if (x.SpellSlot == SpellSlot.E)
+                            {
+                                if (Args.Target.IsMe)
+                                {
+                                    CastW("Rammus", x.SpellSlot);
+                                }
+                            }
+                            break;
+
+
                         case "Gangplank":
                             if (x.SpellSlot == SpellSlot.Q && Args.SpellData.Name == "Parley")
                             {

@@ -545,6 +545,22 @@
                 });
 
             #endregion XinZhao
+            #region Rammus
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Rammus",
+                    SpellSlot = SpellSlot.E
+                });
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Rammus",
+                    SpellSlot = SpellSlot.Q
+                });
+
+            #endregion Rammus
 
             #region Zed
 
