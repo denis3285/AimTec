@@ -517,8 +517,9 @@ namespace Fiora_By_Kornis.SpellBlocking
                         case "Pantheon":
                             if (x.SpellSlot == SpellSlot.Q)
                             {
-                                if (Args.Target.IsMe)
+                                if (Args.Target.IsMe && Args.SpellData.Name == "PantheonQ")
                                 {
+                                    
                                     CastW("Pantheon", x.SpellSlot);
                                 }
                             }
@@ -526,7 +527,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                             if (x.SpellSlot == SpellSlot.W)
                             {
                                 if (Args.Target.IsMe)
-                                {
+                                {                                 
                                     CastW("Pantheon", x.SpellSlot);
                                 }
                             }
