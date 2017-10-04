@@ -1908,27 +1908,31 @@ namespace Support_AIO.NautilusSelfShield
                 });
 
             #endregion Ivern
-
             #region Janna
 
-            Spells.Add(
-            new SpellData
+            for (int i = 1; i <= 16; i++)
             {
-                ChampionName = "Janna",
-                SpellName = "JannaQ",
-                Slot = SpellSlot.Q,
-                Type = SkillShotType.SkillshotMissileLine,
-                Delay = 250,
-                Range = 1700,
-                Radius = 120,
-                MissileSpeed = 900,
-                FixedRange = false,
-                AddHitbox = true,
-                DangerValue = 2,
-                IsDangerous = false,
-                MissileSpellName = "HowlingGaleSpell",
-                CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
-            });
+                Spells.Add(
+                    new SpellData
+                    {
+
+                        ChampionName = "Janna",
+                        SpellName = "HowlingGale",
+                        Slot = SpellSlot.Q,
+                        Type = SkillShotType.SkillshotMissileLine,
+                        Delay = 250,
+                        Range = 1700,
+                        Radius = 120,
+                        MissileSpeed = 1400,
+                        FixedRange = false,
+                        AddHitbox = true,
+                        DangerValue = 2,
+                        MissileSpellName = "HowlingGaleSpell" + i,
+                        IsDangerous = false,
+
+                        CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+                    });
+            }
 
             #endregion Janna
 
