@@ -395,7 +395,7 @@ namespace Syndra_By_Kornis
 
                 Q.SetSkillshot(0.6f, 120, float.MaxValue, false, SkillshotType.Circle, false, HitChance.None);
 
-                W.SetSkillshot(0.25f, 60, 1600, false, SkillshotType.Circle, false, HitChance.None);
+                W.SetSkillshot(0.25f, 50, 1600, false, SkillshotType.Circle, false, HitChance.None);
                 E.SetSkillshot(0.25f, (float) (45 * 0.5), 2500, false, SkillshotType.Circle);
                 EQ.SetSkillshot(float.MaxValue, 55, 2000, false, SkillshotType.Circle);
 
@@ -414,10 +414,7 @@ namespace Syndra_By_Kornis
             {
                 return;
             }
-            if (Objects() != null)
-            {
-                W.From = Objects().ServerPosition;
-            }
+
             Killsteal();
             if (Menu["harass"]["qtoggle"].Enabled)
             {
@@ -938,7 +935,7 @@ namespace Syndra_By_Kornis
                             {
                                 if (Menu["preds"].As<MenuList>().Value == 1)
                                 {
-                                    W.Cast(TimbelPred.PredEx(bestTarget, 0.4f));
+                                    W.Cast(TimbelPred.PredEx(bestTarget, 0.5f));
                                 }
                                 if (Menu["preds"].As<MenuList>().Value == 0)
                                 {
@@ -1066,7 +1063,7 @@ namespace Syndra_By_Kornis
                                     {
                                         if (Menu["preds"].As<MenuList>().Value == 1)
                                         {
-                                            W.Cast(TimbelPred.PredEx(target, 0.4f));
+                                            W.Cast(TimbelPred.PredEx(target, 0.5f));
                                         }
                                         if (Menu["preds"].As<MenuList>().Value == 0)
                                         {
@@ -1300,7 +1297,7 @@ namespace Syndra_By_Kornis
                                     {
                                         if (Menu["preds"].As<MenuList>().Value == 1)
                                         {
-                                            W.Cast(TimbelPred.PredEx(target, 0.4f));
+                                            W.Cast(TimbelPred.PredEx(target, 0.5f));
                                         }
                                         if (Menu["preds"].As<MenuList>().Value == 0)
                                         {
