@@ -158,7 +158,14 @@ namespace Support_AIO.Champions
             if (RootMenu["flee"].Enabled)
             {
                 Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
-                E.CastOnUnit(Player);
+                if (E.CastOnUnit(Player))
+                {
+                    meowwwwww = 500 + Game.TickCount;
+                }
+                if (!E.Ready && !Player.HasBuff("TimeWarp") && meowwwwww < Game.TickCount)
+                {
+                    W.Cast();
+                }
             }
             if (RootMenu["qwq"].Enabled)
             {
