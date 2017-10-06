@@ -97,7 +97,7 @@ namespace Rengar_By_Kornis
             FarmMenu.Add(JungleClear);
             var KSMenu = new Menu("killsteal", "Killsteal");
             {
-                KSMenu.Add(new MenuBool("ksq", "Killsteal witkh Q"));
+                KSMenu.Add(new MenuBool("ksq", "Killsteal with Q"));
             
             }
             Menu.Add(KSMenu);
