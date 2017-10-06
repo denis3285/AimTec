@@ -25,6 +25,7 @@ namespace Support_AIO.Champions
     class Zilean : Champion
     {
         private int delayyyyyyyyyyyy;
+        private int meowwwwww;
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
         {
@@ -353,6 +354,7 @@ namespace Support_AIO.Champions
             Support_AIO.ZLib.Attach(RootMenu);
             RootMenu.Add(new MenuKeyBind("qwq", "Q-W-Q to Mouse", KeyCode.T, KeybindType.Press));
             RootMenu.Add(new MenuKeyBind("flee", "Flee Key", KeyCode.G, KeybindType.Press));
+            RootMenu.Add(new MenuBool("fleew", "^- Use W for E Reset"));
             RootMenu.Attach();
         }
 

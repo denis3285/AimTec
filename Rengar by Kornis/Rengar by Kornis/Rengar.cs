@@ -97,8 +97,8 @@ namespace Rengar_By_Kornis
             FarmMenu.Add(JungleClear);
             var KSMenu = new Menu("killsteal", "Killsteal");
             {
-                KSMenu.Add(new MenuBool("ksq", "Killsteal with Q"));
-                KSMenu.Add(new MenuBool("kse", "Killsteal with E"));
+                KSMenu.Add(new MenuBool("ksq", "Killsteal witkh Q"));
+            
             }
             Menu.Add(KSMenu);
             var DrawMenu = new Menu("drawings", "Drawings");
@@ -640,17 +640,7 @@ namespace Rengar_By_Kornis
                     Q.Cast(bestTarget);
                 }
             }
-            if (E.Ready &&
-                Menu["killsteal"]["kse"].Enabled)
-            {
-                var bestTarget = GetBestKillableHero(E, DamageType.Physical, false);
-                if (bestTarget != null &&
-                    Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
-                    bestTarget.IsValidTarget(E.Range) && !Player.HasBuff("RengarR"))
-                {
-                    E.Cast(bestTarget);
-                }
-            }
+           
 
 
 
