@@ -26,6 +26,8 @@ namespace Support_AIO.Champions
 {
     class TahmKench : Champion
     {
+        private int uhhhhhhh;
+
         public static List<Obj_AI_Base> GetAllGenericUnitTargets()
         {
             return GetAllGenericUnitTargetsInRange(float.MaxValue);
@@ -91,7 +93,7 @@ namespace Support_AIO.Champions
             if (target.IsValidTarget(Q.Range) && useQ)
             {
 
-                if (target != null)
+                if (target != null && uhhhhhhh < Game.TickCount)
                 {
 
                     if (!RootMenu["combo"]["stuns"].Enabled)
@@ -113,6 +115,18 @@ namespace Support_AIO.Champions
                 if (target != null && target.HasBuff("tahmkenchpdevourable"))
                 {
                     W.CastOnUnit(target);
+                }
+            }
+        }
+
+        internal override void uh(Obj_AI_Base sender, Buff buff)
+        {
+            if (sender.IsMe)
+            {
+                if (buff.Name == "tahmkenchwhasdevouredtarget")
+                {
+
+                    uhhhhhhh = 300 + Game.TickCount;
                 }
             }
         }
@@ -263,25 +277,27 @@ namespace Support_AIO.Champions
 
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
-
-            if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
+            if (uhhhhhhh < Game.TickCount)
             {
-                Q.Cast(Args.EndPosition);
-            }
-
-
-            if (target != null)
-            {
-                foreach (var ally in GameObjects.AllyHeroes.Where(x => x.Distance(Player) < W.Range && x != null))
+                if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
                 {
-                    if (ally.Distance(Args.EndPosition) < 300 && ally.Distance(Player) < W.Range && !ally.IsMe)
-                    {
-                        W.CastOnUnit(ally);
-                    }
+                    Q.Cast(Args.EndPosition);
                 }
 
+
+                if (target != null)
+                {
+                    foreach (var ally in GameObjects.AllyHeroes.Where(x => x.Distance(Player) < W.Range && x != null))
+                    {
+                        if (ally.Distance(Args.EndPosition) < 300 && ally.Distance(Player) < W.Range && !ally.IsMe)
+                        {
+                            W.CastOnUnit(ally);
+                        }
+                    }
+                }
             }
         }
+
 
 
 
@@ -322,15 +338,13 @@ namespace Support_AIO.Champions
 
             EvadeMenu = new Menu("wset", "Shielding/Eating");
             {
-                EvadeMenu.Add(new MenuList("modes", "Shielding Mode", new[] {"Spells Detector", "ZLib"}, 1));
+                
                 var First = new Menu("first", "Spells Detector");
                 TahmShielding.EvadeManager.Attach(First);
                 TahmShielding.EvadeOthers.Attach(First);
                 TahmShielding.EvadeTargetManager.Attach(First);
                 EvadeMenu.Add(First);
-                var zlib = new Menu("zlib", "ZLib");
-
-                Support_AIO.ZLib.Attach(EvadeMenu);
+                
 
 
             }

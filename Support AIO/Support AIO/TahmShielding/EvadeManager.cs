@@ -148,8 +148,7 @@ namespace Support_AIO.TahmShielding
 
         private static void TryToEvade(List<Skillshot> HitBy, Vector2 Pos)
         {
-            if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 0)
-            {
+            
                 var dangerLevel = 0;
                 var spellList = HitBy.ToArray();
 
@@ -238,7 +237,7 @@ namespace Support_AIO.TahmShielding
                         }
                     }
                 }
-            }
+            
         }
 
 

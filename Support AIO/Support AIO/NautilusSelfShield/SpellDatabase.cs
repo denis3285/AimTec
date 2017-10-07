@@ -197,7 +197,24 @@ namespace Support_AIO.NautilusSelfShield
                 });
 
             #endregion Ahri
-
+            #region Kayn		
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Kayn",
+                    SpellName = "KaynW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 550,
+                    Range = 700,
+                    Radius = 150,
+                    MissileSpeed = 5000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true
+                });
+            #endregion
             #region Akali
 
             Spells.Add(
@@ -564,6 +581,7 @@ namespace Support_AIO.NautilusSelfShield
                     Range = 1100,
                     Radius = 60,
                     MissileSpeed = 1550,
+
                     FixedRange = true,
                     AddHitbox = true,
                     DangerValue = 3,
@@ -1908,6 +1926,7 @@ namespace Support_AIO.NautilusSelfShield
                 });
 
             #endregion Ivern
+
             #region Janna
 
             for (int i = 1; i <= 16; i++)
@@ -3577,7 +3596,7 @@ namespace Support_AIO.NautilusSelfShield
                     Delay = 0,
                     Range = 650,
                     Radius = 50,
-                    MissileSpeed = 1600,
+                    MissileSpeed = 3000,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 3,
@@ -4140,7 +4159,7 @@ namespace Support_AIO.NautilusSelfShield
 
             #region Urgot
 
-           
+
 
             Spells.Add(
                 new SpellData
@@ -4180,7 +4199,7 @@ namespace Support_AIO.NautilusSelfShield
                     MissileSpellName = "UrgotR",
                 });
 
-          
+
 
             #endregion
 

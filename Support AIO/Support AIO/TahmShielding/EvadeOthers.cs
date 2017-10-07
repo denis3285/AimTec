@@ -359,79 +359,112 @@ namespace Support_AIO.TahmShielding
 
         private static void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs Args)
         {
-            if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 0)
-            {
+            
                 if (ObjectManager.GetLocalPlayer().IsDead)
                 {
                     return;
                 }
                 var ally = Args.Target as Obj_AI_Hero;
-                if (ally != null)
-                {
+            if (ally != null)
+            {
 
-                    if (EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.Turret"].Enabled)
+                if (EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.Turret"].Enabled)
+                {
+                    if (ally.IsHero && ally.IsAlly)
                     {
-                        if (ally.IsHero && ally.IsAlly)
+                        if (sender.IsTurret && Args.Target.IsMe)
                         {
-                            if (sender.IsTurret && Args.Target.IsMe)
+                            Bases.Champion.E.Cast();
+                        }
+                        if (sender.IsTurret && !Args.Target.IsMe &&
+                            ally.Distance(ObjectManager.GetLocalPlayer()) < Bases.Champion.W.Range)
+                        {
+                            if (EvadeTargetManager.Menu["whitelist"][
+                                    ally.ChampionName.ToLower()]
+                                .As<MenuBool>().Enabled)
                             {
-                                Bases.Champion.E.Cast();
+                                Bases.Champion.W.Cast(ally);
                             }
                         }
                     }
                 }
+            }
 
-           
 
-                if (ally != null)
+
+            if (ally != null)
+            {
+                if (ally.IsHero && ally.IsAlly)
                 {
-                    if (ally.IsHero && ally.IsAlly)
+                    if (Args.SpellData.Name.Contains("BasicAttack") && Args.Sender.IsHero &&
+                        EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttack"]
+                            .Enabled &&
+                        ally.HealthPercent() <=
+                        EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttackHpU"]
+                            .Value)
                     {
-                        if (Args.SpellData.Name.Contains("BasicAttack") && Args.Sender.IsHero &&
-                            EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttack"]
-                                .Enabled &&
-                            ally.HealthPercent() <=
-                            EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttackHpU"]
-                                .Value)
+                        if (ally.IsMe)
+                        {
+                            Bases.Champion.E.Cast();
+                        }
+                        if (!ally.IsMe && ally.Distance(ObjectManager.GetLocalPlayer()) < Bases.Champion.W.Range)
+                        {
+                            if (EvadeTargetManager.Menu["whitelist"][
+                                    ally.ChampionName.ToLower()]
+                                .As<MenuBool>().Enabled)
+                            {
+                                Bases.Champion.W.Cast(ally);
+                            }
+                        }
+                    }
+                }
+            }
+            if (ally != null)
+            {
+                if (Args.Sender.IsMinion)
+                {
+                    if (
+                        EvadeTargetManager
+                            .AttackMenu["Brian.EvadeTargetMenu.Minion"]
+                            .Enabled && ally.HealthPercent() <=
+                        EvadeTargetManager
+                            .AttackMenu["Brian.EvadeTargetMenu.HP"]
+                            .Value)
+                    {
+                        if (ally.IsHero && ally.IsAlly)
                         {
                             Bases.Champion.E.Cast();
                         }
                     }
                 }
-                if (ally != null)
+                if (Args.SpellData.Name.Contains("crit") && Args.Sender.IsHero &&
+                    EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.CAttack"].Enabled
+                    && ally.HealthPercent() <= EvadeTargetManager
+                        .AttackMenu["Brian.EvadeTargetMenu.CAttackHpU"].Value)
                 {
-                    if (Args.Sender.IsMinion)
+                    if (ally.IsHero)
                     {
-                        if (
-                            EvadeTargetManager
-                                .AttackMenu["Brian.EvadeTargetMenu.Minion"]
-                                .Enabled && ally.HealthPercent() <=
-                            EvadeTargetManager
-                                .AttackMenu["Brian.EvadeTargetMenu.HP"]
-                                .Value)
+
+                        if (ally.IsMe)
                         {
-                            if (ally.IsHero && ally.IsAlly)
+                            Bases.Champion.E.Cast();
+                        }
+                        if (!ally.IsMe && ally.Distance(ObjectManager.GetLocalPlayer()) < Bases.Champion.W.Range)
+                        {
+                            if (EvadeTargetManager.Menu["whitelist"][
+                                    ally.ChampionName.ToLower()]
+                                .As<MenuBool>().Enabled)
                             {
-                                Bases.Champion.E.Cast();
+                                Bases.Champion.W.Cast(ally);
                             }
                         }
-                    }
-                    if (Args.SpellData.Name.Contains("crit") && Args.Sender.IsHero &&
-                        EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.CAttack"].Enabled
-                        && ally.HealthPercent() <= EvadeTargetManager
-                            .AttackMenu["Brian.EvadeTargetMenu.CAttackHpU"].Value)
-                    {
-                        if (ally.IsHero)
-                        {
-                            
-                                Bases.Champion.E.Cast();
-                            
-                        }
+
                     }
                 }
+            }
 
 
-                var target = sender as Obj_AI_Hero;
+            var target = sender as Obj_AI_Hero;
                 if (target == null || target.Team == ObjectManager.GetLocalPlayer().Team || !target.IsValid ||
                     Args.Target == null || string.IsNullOrEmpty(Args.SpellData.Name) || !target.IsHero ||
                     Args.SpellData.Name.Contains("BasicAttack"))
@@ -473,7 +506,7 @@ namespace Support_AIO.TahmShielding
                         }
                     }
                 }
-            }
+            
 
         }
 

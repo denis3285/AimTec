@@ -37,6 +37,7 @@ namespace Support_AIO.MorganaSpellBlocking
             //Add spells to the database 
 
 
+
             #region Aatrox
 
             Spells.Add(
@@ -56,9 +57,32 @@ namespace Support_AIO.MorganaSpellBlocking
                     IsDangerous = true,
                     MissileSpellName = ""
                 });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Aatrox",
+                    SpellName = "AatroxE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1075,
+                    Radius = 60,
+                    MissileSpeed = 1250,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    MissileSpellName = "AatroxEConeMissile",
+                });
+
             #endregion Aatrox
 
             #region Ahri
+
+ 
+
+       
 
             Spells.Add(
                 new SpellData
@@ -83,6 +107,25 @@ namespace Support_AIO.MorganaSpellBlocking
                 });
 
             #endregion Ahri
+            #region Kayn		
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Kayn",
+                    SpellName = "KaynW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 550,
+                    Range = 700,
+                    Radius = 150,
+                    MissileSpeed = 5000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true
+                });
+            #endregion
+      
 
             #region Alistar
 
@@ -413,8 +456,9 @@ namespace Support_AIO.MorganaSpellBlocking
                     MissileSpellName = "",
                 });
 
-            #endregion Blatzcrink
+            #endregion Blatzcrank
 
+    
 
             #region Braum
 
@@ -462,6 +506,8 @@ namespace Support_AIO.MorganaSpellBlocking
             #endregion Braum
 
             #region Caitlyn
+
+ 
 
             Spells.Add(
                 new SpellData
@@ -696,6 +742,8 @@ namespace Support_AIO.MorganaSpellBlocking
             #endregion Corki
 
             #region Darius
+
+
             Spells.Add(
                 new SpellData
                 {
@@ -991,8 +1039,8 @@ namespace Support_AIO.MorganaSpellBlocking
                     Id = 229,
                 });
 
-  
-        
+      
+
             Spells.Add(
                 new SpellData
                 {
@@ -1691,6 +1739,7 @@ namespace Support_AIO.MorganaSpellBlocking
                 });
 
             #endregion Ivern
+
             #region Janna
 
             for (int i = 1; i <= 16; i++)
@@ -3360,7 +3409,7 @@ namespace Support_AIO.MorganaSpellBlocking
                     Delay = 0,
                     Range = 650,
                     Radius = 50,
-                    MissileSpeed = 1600,
+                    MissileSpeed = 3000,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 3,
@@ -3923,7 +3972,7 @@ namespace Support_AIO.MorganaSpellBlocking
 
             #region Urgot
 
-           
+
 
             Spells.Add(
                 new SpellData
@@ -3963,7 +4012,7 @@ namespace Support_AIO.MorganaSpellBlocking
                     MissileSpellName = "UrgotR",
                 });
 
-          
+
 
             #endregion
 

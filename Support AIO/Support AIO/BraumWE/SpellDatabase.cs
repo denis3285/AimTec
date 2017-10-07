@@ -36,6 +36,52 @@ namespace Support_AIO.BraumWE
         {
             //Add spells to the database 
 
+            #region ball
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "AllChampions",
+                    SpellName = "SummonerSnowball",
+                    Slot = SpellSlot.Summoner1,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 0,
+                    Range = 1600,
+                    Radius = 50,
+                    MissileSpeed = 1200,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    CollisionObjects =
+                        new[]
+                        {
+                            CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall
+                        }
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "AllChampions",
+                    SpellName = "SummonerPoroThrow",
+                    Slot = SpellSlot.Summoner1,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 0,
+                    Range = 1200,
+                    Radius = 50,
+                    MissileSpeed = 1200,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    CollisionObjects =
+                        new[]
+                        {
+                            CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall
+                        }
+                });
+            #endregion
 
             #region Aatrox
 
@@ -56,9 +102,77 @@ namespace Support_AIO.BraumWE
                     IsDangerous = true,
                     MissileSpellName = ""
                 });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Aatrox",
+                    SpellName = "AatroxE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1075,
+                    Radius = 60,
+                    MissileSpeed = 1250,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    MissileSpellName = "AatroxEConeMissile",
+                });
+
             #endregion Aatrox
 
             #region Ahri
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Ahri",
+                    SpellName = "AhriOrbofDeception",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1000,
+                    Radius = 100,
+                    MissileSpeed = 2500,
+                    MissileAccel = -3200,
+                    MissileMaxSpeed = 2500,
+                    MissileMinSpeed = 400,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "AhriOrbMissile",
+                    CanBeRemoved = true,
+                    ForceRemove = true,
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+                });
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Ahri",
+                    SpellName = "AhriOrbReturn",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 200,
+                    Range = 1000,
+                    Radius = 100,
+                    MissileSpeed = 60,
+                    MissileAccel = 1900,
+                    MissileMinSpeed = 60,
+                    MissileMaxSpeed = 2600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileFollowsUnit = true,
+                    CanBeRemoved = true,
+                    ForceRemove = true,
+                    MissileSpellName = "AhriOrbReturn",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+                });
 
             Spells.Add(
                 new SpellData
@@ -83,6 +197,45 @@ namespace Support_AIO.BraumWE
                 });
 
             #endregion Ahri
+            #region Kayn		
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Kayn",
+                    SpellName = "KaynW",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 550,
+                    Range = 700,
+                    Radius = 150,
+                    MissileSpeed = 5000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true
+                });
+            #endregion
+            #region Akali
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Akali",
+                    SpellName = "AkaliShadowSwipe",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 250,
+                    Range = 10,//Fix Range, maybe 0 better~
+                    Radius = 325,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = false,
+                    AddHitbox = false,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "",
+                });
+
+            #endregion Akali
 
             #region Alistar
 
@@ -415,6 +568,31 @@ namespace Support_AIO.BraumWE
 
             #endregion Blatzcrink
 
+            #region Brand
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Brand",
+                    SpellName = "BrandQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1100,
+                    Radius = 60,
+                    MissileSpeed = 1550,
+
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "BrandQMissile",
+                    CanBeRemoved = true,
+                    CollisionObjects =
+                        new[]
+                        {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall}
+                });
+            #endregion Brand
 
             #region Braum
 
@@ -462,6 +640,25 @@ namespace Support_AIO.BraumWE
             #endregion Braum
 
             #region Caitlyn
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Caitlyn",
+                    SpellName = "CaitlynPiltoverPeacemaker",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 400,
+                    Range = 1250,
+                    Radius = 90,
+                    MissileSpeed = 2200,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "CaitlynPiltoverPeacemaker",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall }
+                });
 
             Spells.Add(
                 new SpellData
@@ -696,6 +893,27 @@ namespace Support_AIO.BraumWE
             #endregion Corki
 
             #region Darius
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Darius",
+                    SpellName = "DariusCleave",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotCircle,
+                    Delay = 750,
+                    Range = 0,
+                    Radius = 375,
+                    MissileSpeed = int.MaxValue,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    MissileSpellName = "DariusCleave",
+                    FollowCaster = true,
+                    DisabledByDefault = true,
+                });
+
             Spells.Add(
                 new SpellData
                 {
@@ -991,8 +1209,25 @@ namespace Support_AIO.BraumWE
                     Id = 229,
                 });
 
-  
-        
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Ezreal",
+                    SpellName = "EzrealEssenceFlux",
+                    Slot = SpellSlot.W,
+                    Type = SkillShotType.SkillshotMissileLine,
+                    Delay = 250,
+                    Range = 1050,
+                    Radius = 80,
+                    MissileSpeed = 1600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 2,
+                    IsDangerous = false,
+                    MissileSpellName = "EzrealEssenceFluxMissile",
+                    CollisionObjects = new[] { CollisionObjectTypes.YasuoWall },
+                });
+
             Spells.Add(
                 new SpellData
                 {
@@ -3361,7 +3596,7 @@ namespace Support_AIO.BraumWE
                     Delay = 0,
                     Range = 650,
                     Radius = 50,
-                    MissileSpeed = 1600,
+                    MissileSpeed = 3000,
                     FixedRange = false,
                     AddHitbox = true,
                     DangerValue = 3,
@@ -3924,7 +4159,7 @@ namespace Support_AIO.BraumWE
 
             #region Urgot
 
-           
+
 
             Spells.Add(
                 new SpellData
@@ -3964,7 +4199,7 @@ namespace Support_AIO.BraumWE
                     MissileSpellName = "UrgotR",
                 });
 
-          
+
 
             #endregion
 

@@ -208,18 +208,18 @@ namespace Support_AIO.TahmShielding
 
         private static void OnCreate(GameObject sender)
         {
-            if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 0)
-            {
+          
                 var missile = sender as MissileClient;
                 if (missile == null)
                 {
                     return;
                 }
+               
                 if (!missile.SpellCaster.IsValid ||
                     missile.SpellCaster.Team == ObjectManager.GetLocalPlayer().Team)
                 {
                     return;
-                }
+                } 
 
                 bestAllies = GameObjects.AllyHeroes
                     .Where(t =>
@@ -233,7 +233,8 @@ namespace Support_AIO.TahmShielding
                 {
                     return;
                 }
-                var aaa = missile.Target as Obj_AI_Hero;
+         
+            var aaa = missile.Target as Obj_AI_Hero;
                 var spellData =
                     Spells.FirstOrDefault(
                         i =>
@@ -245,37 +246,45 @@ namespace Support_AIO.TahmShielding
                 }
 
 
-
-                foreach (var ally in bestAllies)
+      
+            foreach (var ally in bestAllies)
+            {
+                if (ally != null)
                 {
+                    
                     if (aaa == ally)
                     {
+                       
                         if (!ally.IsMe)
                         {
-                            if (Support_AIO.SpellBlocking.EvadeTargetManager.Menu["whitelist"][
+                            Console.WriteLine("z");
+                            if (Support_AIO.TahmShielding.EvadeTargetManager.Menu["whitelist"][
                                         ally.ChampionName.ToLower()]
                                     .As<MenuBool>().Enabled &&
                                 aaa.Distance(ObjectManager.GetLocalPlayer()) < Support_AIO.Bases.Champion.W.Range)
                             {
+                                Console.WriteLine("zbbbbb");
                                 Support_AIO.Bases.Champion.W.CastOnUnit(aaa);
                             }
                         }
                         if (ally.IsMe)
                         {
-                            if (Support_AIO.SpellBlocking.EvadeTargetManager.Menu["whitelist"][
+                          
+                            if (Support_AIO.TahmShielding.EvadeTargetManager.Menu["whitelist"][
                                         ally.ChampionName.ToLower()]
                                     .As<MenuBool>().Enabled &&
                                 aaa.Distance(ObjectManager.GetLocalPlayer()) < Support_AIO.Bases.Champion.W.Range)
                             {
+                                
                                 Support_AIO.Bases.Champion.E.Cast();
                             }
                         }
                     }
                 }
 
-
             }
         }
+        
 
         private static void OnDestroy(GameObject sender)
         {
