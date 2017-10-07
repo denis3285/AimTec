@@ -195,6 +195,13 @@ namespace Support_AIO.Bases
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             ZLib.OnPredictDamage += ZLib_OnPredictDamage;
             Gapcloser.OnGapcloser += OnGapcloser;
+            BuffManager.OnRemoveBuff += uh;
+           
+        }
+
+        public virtual void uh(Obj_AI_Base sender, Buff buff)
+        {
+
         }
 
         internal virtual void PostAttack(object sender, PostAttackEventArgs e)
@@ -206,7 +213,7 @@ namespace Support_AIO.Bases
         {
 
         }
-
+        
         private static void ZLib_OnPredictDamage(Base.Unit hero, PredictDamageEventArgs args)
         {
             if (Player.ChampionName == "Lulu")
@@ -529,89 +536,7 @@ namespace Support_AIO.Bases
 
                 }
             }
-            if (Player.ChampionName == "TahmKench")
-            {
-
-                if (Bases.Champion.RootMenu["wset"]["modes"].As<MenuList>().Value == 1)
-                {
-                    if (hero.Instance.IsEnemy)
-                    {
-                        return;
-                    }
-                    if (hero.IncomeDamage < 0)
-                    {
-
-                        Helpers.ResetIncomeDamage(hero);
-                    }
-
-
-                    if (!hero.Instance.IsValidTarget(float.MaxValue, true))
-                    {
-                        Helpers.ResetIncomeDamage(hero);
-                    }
-
-                    if (hero.Instance.HasBuffOfType(BuffType.Invulnerability))
-                    {
-                        args.NoProcess = true;
-                    }
-
-                    if (hero.Instance.HasBuffOfType(BuffType.PhysicalImmunity)
-                        && args.HpInstance.EventType == EventType.AutoAttack)
-                    {
-                        args.NoProcess = true;
-                    }
-
-                    if (hero.Instance.HasBuffOfType(BuffType.SpellImmunity)
-                        && args.HpInstance.EventType == EventType.Spell)
-                    {
-                        args.NoProcess = true;
-                    }
-
-                    if (hero.Instance.HasBuff("sivire")
-                        && args.HpInstance.EventType == EventType.Spell)
-                    {
-                        args.NoProcess = true;
-                    }
-
-                    if (hero.Instance.HasBuff("bansheesviel")
-                        && args.HpInstance.EventType == EventType.Spell)
-                    {
-                        args.NoProcess = true;
-                    }
-
-                    var objShop = ObjectManager.Get<GameObject>()
-                        .FirstOrDefault(x => x.Type == GameObjectType.obj_Shop && x.Team == hero.Instance.Team);
-
-                    if (objShop != null
-                        && objShop.Distance(hero.Instance.ServerPosition) <= 1250)
-                    {
-                        args.NoProcess = true;
-                    }
-
-
-                    if (args.HpInstance.EventType == EventType.AutoAttack)
-                    {
-                        return;
-                    }
-                    if (args.HpInstance.EventType == EventType.MinionAttack)
-                    {
-                        return;
-                    }
-                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled &&
-                        hero.Instance.Distance(Player) < 400)
-                    {
-
-                        W.CastOnUnit(hero.Instance);
-                    }
-                    if (ZLib.Menu["whitelist"][hero.Instance.ChampionName.ToLower()].Enabled &&
-                        hero.Instance.Distance(Player) < 400)
-                    {
-
-                        E.Cast();
-                    }
-
-                }
-            }
+           
         }
 
         internal virtual void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs e)

@@ -119,7 +119,7 @@ namespace Support_AIO.Champions
             }
         }
 
-        internal override void uh(Obj_AI_Base sender, Buff buff)
+        public override void uh(Obj_AI_Base sender, Buff buff)
         {
             if (sender.IsMe)
             {
