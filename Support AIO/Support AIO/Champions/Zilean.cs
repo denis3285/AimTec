@@ -84,10 +84,18 @@ namespace Support_AIO.Champions
                     if (useW && target.IsValidTarget(Q.Range) && !Q.Ready && Player.Mana >=
                         Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.W).Cost)
                     {
-                        if (target != null)
+                        if (target != null && !RootMenu["combo"]["whit"].Enabled)
                         {
                             W.Cast();
                             Q.Cast(target);
+                        }
+                        if (target != null && RootMenu["combo"]["whit"].Enabled)
+                        {
+                            if (target.HasBuff("ZileanQEnemyBomb"))
+                            {
+                                W.Cast();
+                                Q.Cast(target);
+                            }
                         }
                     }
 
@@ -314,6 +322,7 @@ namespace Support_AIO.Champions
             {
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W for Q Reset"));
+                ComboMenu.Add(new MenuBool("whit", "^- Only if Q Hits", false));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("prioritye", "Priority E Usage First", false));
                 ComboMenu.Add(new MenuBool("slow", "Use Auto E on Slowed Ally"));
