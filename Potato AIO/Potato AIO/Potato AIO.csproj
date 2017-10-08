@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7BC604C7-93DC-4361-9A76-7874CC432CAD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>Potato_AIO</RootNamespace>
+    <AssemblyName>Potato AIO</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Aimtec">
+      <HintPath>C:\Users\Meow\AppData\Local\AimtecLoader\Data\System\Aimtec.dll</HintPath>
+    </Reference>
+    <Reference Include="Aimtec.SDK">
+      <HintPath>C:\Users\Meow\AppData\Local\AimtecLoader\Data\System\Aimtec.SDK.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Bases\Champion.cs" />
+    <Compile Include="Bases\Extensions.cs" />
+    <Compile Include="Bases\GameObjects.cs" />
+    <Compile Include="Bases\Gapcloser.cs" />
+    <Compile Include="Bases\Geometry.cs" />
+    <Compile Include="Base\Gametroy.cs" />
+    <Compile Include="Base\Helpers.cs" />
+    <Compile Include="Base\OnDash.cs" />
+    <Compile Include="Base\Unit.cs" />
+    <Compile Include="Champions\Malphite.cs" />
+    <Compile Include="Champions\Shyvana.cs" />
+    <Compile Include="Champions\Nocturne.cs" />
+    <Compile Include="Champions\Warwick.cs" />
+    <Compile Include="Champions\FiddleSticks.cs" />
+    <Compile Include="Champions\Amumu.cs" />
+    <Compile Include="Champions\Aatrox.cs" />
+    <Compile Include="Champions\DrMundo.cs" />
+    <Compile Include="Champions\Hecarim.cs" />
+    <Compile Include="Champions\Nunu.cs" />
+    <Compile Include="Champions\Chogath.cs" />
+    <Compile Include="Champions\Swain.cs" />
+    <Compile Include="Champions\Teemo.cs" />
+    <Compile Include="Champions\XinZhao.cs" />
+    <Compile Include="Champions\Skarner.cs" />
+    <Compile Include="Champions\Tryndamere.cs" />
+    <Compile Include="Champions\Garen.cs" />
+    <Compile Include="Champions\Udyr.cs" />
+    <Compile Include="Champions\Nasus.cs" />
+    <Compile Include="Champions\Mordekaiser.cs" />
+    <Compile Include="Champions\Volibear.cs" />
+    <Compile Include="Champions\MonkeyKing.cs" />
+    <Compile Include="Data\Auradata.cs" />
+    <Compile Include="Data\Gamedata.cs" />
+    <Compile Include="Data\Troydata.cs" />
+    <Compile Include="Handlers\Buffs.cs" />
+    <Compile Include="Handlers\Drawings.cs" />
+    <Compile Include="Handlers\Gametroys.cs" />
+    <Compile Include="Handlers\Projections.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WShield\BlockSpellData.cs" />
+    <Compile Include="WShield\BlockSpellDataBase.cs" />
+    <Compile Include="WShield\Collision.cs" />
+    <Compile Include="WShield\CollisionObjectTypes.cs" />
+    <Compile Include="WShield\DetectedCollision.cs" />
+    <Compile Include="WShield\DetectionType.cs" />
+    <Compile Include="WShield\EvadeManager.cs" />
+    <Compile Include="WShield\EvadeOthers.cs" />
+    <Compile Include="WShield\EvadeSpellData.cs" />
+    <Compile Include="WShield\EvadeSpellDatabase.cs" />
+    <Compile Include="WShield\EvadeTargetManager.cs" />
+    <Compile Include="WShield\FastPredResult.cs" />
+    <Compile Include="WShield\FoundIntersection.cs" />
+    <Compile Include="WShield\Geometry.cs" />
+    <Compile Include="WShield\IsSafeResult.cs" />
+    <Compile Include="WShield\SafePathResult.cs" />
+    <Compile Include="WShield\Skillshot.cs" />
+    <Compile Include="WShield\SkillshotDetector.cs" />
+    <Compile Include="WShield\SkillShotType.cs" />
+    <Compile Include="WShield\SpellData.cs" />
+    <Compile Include="WShield\SpellDatabase.cs" />
+    <Compile Include="WShield\Utils.cs" />
+    <Compile Include="ZLib.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
