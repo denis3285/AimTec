@@ -576,7 +576,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("qaa", "^- Only for AA Reset"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuSlider("erange", "^- Min. E Range", 200, 0, 400));
-                ComboMenu.Add(new MenuKeyBind("turret", "E Uner Turret Toggle", KeyCode.T, KeybindType.Toggle));
+                ComboMenu.Add(new MenuKeyBind("turret", "E Under Turret Toggle", KeyCode.T, KeybindType.Toggle));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
                 ComboMenu.Add(new MenuSlider("hitsr", "If Hits X Enemies", 3, 0, 5));
                 ComboMenu.Add(new MenuBool("kill", "Use R in 1v1 if Killable"));

@@ -390,14 +390,14 @@ namespace Potato_AIO.Champions
             {
                 var qset = new Menu("qset", "Q Settings");
                 qset.Add(new MenuBool("useq", "Use Q"));
-                qset.Add(new MenuSlider("minf", "Min. Furry", 60, 0, 100));
+                qset.Add(new MenuSlider("minf", "Min. Fury", 60, 0, 100));
                 qset.Add(new MenuSlider("minhp", "Min. HP", 50, 1, 100));
                 ComboMenu.Add(qset);
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo", true));
                 ComboMenu.Add(new MenuBool("wface", "^- Only if Facing", false));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuSlider("mine", "Min. E Range", 300, 0, 500));
-                ComboMenu.Add(new MenuKeyBind("turret", "E Uner Turret Toggle", KeyCode.T, KeybindType.Toggle));
+                ComboMenu.Add(new MenuKeyBind("turret", "E Under Turret Toggle", KeyCode.T, KeybindType.Toggle));
                 var rset = new Menu("rset", "R Settings");
                 rset.Add(new MenuBool("user", "Use R"));
                 rset.Add(new MenuList("rusage", "R Usage", new[] {"If Incoming Damage Kills", "At X Health"}, 0));

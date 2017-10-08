@@ -403,7 +403,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuSlider("edelay", "^- E Delay", 1000, 0, 2500));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
-                ComboMenu.Add(new MenuKeyBind("turret", "R Uner Turret Toggle", KeyCode.T, KeybindType.Toggle));
+                ComboMenu.Add(new MenuKeyBind("turret", "R Under Turret Toggle", KeyCode.T, KeybindType.Toggle));
                 ComboMenu.Add(new MenuKeyBind("semir", "Semi-R Key", KeyCode.G, KeybindType.Press));
                 ComboMenu.Add(new MenuBool("items", "Use Items"));
             }

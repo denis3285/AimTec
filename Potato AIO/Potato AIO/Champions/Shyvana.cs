@@ -98,8 +98,7 @@ namespace Potato_AIO.Champions
         protected override void Farming()
         {
 
-            if (RootMenu["farming"]["lane"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent())
-            {
+            
                 foreach (var minion in Potato_AIO.Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
                 {
                     if (!minion.IsValidTarget())
@@ -140,9 +139,8 @@ namespace Potato_AIO.Champions
                         }
                     }
                 }
-            }
-            if (RootMenu["farming"]["jungle"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent())
-            {
+            
+     
                 foreach (var jungleTarget in Potato_AIO.Bases.GameObjects.Jungle
                     .Where(m => m.IsValidTarget(E.Range)).ToList())
                 {
@@ -178,7 +176,7 @@ namespace Potato_AIO.Champions
                         }
                     }
                 }
-            }
+            
 
         }
 
@@ -424,7 +422,6 @@ namespace Potato_AIO.Champions
             FarmMenu = new Menu("farming", "Farming");
             var LaneClear = new Menu("lane", "Lane Clear");
             {
-                LaneClear.Add(new MenuSlider("mana", "Mana Manager", 50));
                 LaneClear.Add(new MenuBool("useq", "Use Q to Farm"));
                 LaneClear.Add(new MenuBool("qaa", "^- Only for AA Reset"));
                 LaneClear.Add(new MenuBool("usew", "Use W to Farm"));
@@ -433,7 +430,6 @@ namespace Potato_AIO.Champions
             }
             var JungleClear = new Menu("jungle", "Jungle Clear");
             {
-                JungleClear.Add(new MenuSlider("mana", "Mana Manager", 50));
                 JungleClear.Add(new MenuBool("useq", "Use Q to Farm"));
                 JungleClear.Add(new MenuBool("qaa", "^- Only for AA Reset"));
                 JungleClear.Add(new MenuBool("usew", "Use W to Farm"));

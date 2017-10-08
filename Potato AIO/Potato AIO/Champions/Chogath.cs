@@ -506,7 +506,6 @@ namespace Potato_AIO.Champions
             {
                 HarassMenu.Add(new MenuSlider("mana", "Mana Manager", 50, 0, 100));
                 HarassMenu.Add(new MenuBool("useq", "Use Q in Harass"));
-                HarassMenu.Add(new MenuBool("autoq", " ^- Auto Q on CC"));
                 HarassMenu.Add(new MenuBool("usew", "Use W in Harass"));
                 HarassMenu.Add(new MenuBool("usee", "Use E in Harass"));
                 HarassMenu.Add(new MenuBool("eaa", " ^- Only for AA Reset"));
