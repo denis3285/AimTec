@@ -93,10 +93,11 @@ namespace Potato_AIO.Champions
 
                 if (RootMenu["farming"]["lane"]["useW"].Enabled)
                 {
-                    foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(W.Range))
+                    foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(W.Range)
+                        .OrderByDescending(x => x.MaxHealth).ThenByDescending(x => x.Health))
                     {
 
-                        if (minion.IsValidTarget(W.Range) && minion != null)
+                        if (minion.IsValidTarget(W.Range) && minion != null && !E.Ready)
                         {
                             W.Cast(minion);
                         }
@@ -120,37 +121,113 @@ namespace Potato_AIO.Champions
                         }
                     }
                 }
-            }
 
-            foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(E.Range)).ToList())
-            {
-                if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                foreach (var jungleTarget in Bases.GameObjects.JungleLarge.Where(m => m.IsValidTarget(W.Range))
+                    .ToList())
                 {
-                    return;
-                }
-
-                bool useQs = RootMenu["farming"]["jungle"]["useQ"].Enabled;
-                bool useEs = RootMenu["farming"]["jungle"]["useE"].Enabled;
-                bool useWs = RootMenu["farming"]["jungle"]["useW"].Enabled;
-                if (!Player.HasBuff("fearmonger_marker"))
-                {
-                    if (useQs && Q.Ready && jungleTarget.IsValidTarget(Q.Range))
+                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
                     {
-                        Q.Cast(jungleTarget);
-                    }
-                    if (useWs && W.Ready && jungleTarget.IsValidTarget(W.Range))
-                    {
-                        W.Cast(jungleTarget);
+                        return;
                     }
 
-                    if (useEs && E.Ready && jungleTarget.IsValidTarget(E.Range))
+                    bool useWs = RootMenu["farming"]["jungle"]["useW"].Enabled;
+                    if (!Player.HasBuff("fearmonger_marker"))
                     {
-                        E.Cast(jungleTarget);
+
+
+                        if (useWs && W.Ready && jungleTarget.IsValidTarget(W.Range) && !E.Ready)
+                        {
+                            W.Cast(jungleTarget);
+                        }
+
                     }
                 }
+                foreach (var jungleTarget in Bases.GameObjects.JungleLegendary.Where(m => m.IsValidTarget(Q.Range))
+                    .ToList())
+                {
+                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                    {
+                        return;
+                    }
+
+                    bool useWs = RootMenu["farming"]["jungle"]["useQ"].Enabled;
+                    if (!Player.HasBuff("fearmonger_marker"))
+                    {
+
+
+                        if (useWs && Q.Ready && jungleTarget.IsValidTarget(Q.Range))
+                        {
+                           Q.Cast(jungleTarget);
+                        }
+
+                    }
+                }
+
+                foreach (var jungleTarget in Bases.GameObjects.JungleLarge.Where(m => m.IsValidTarget(Q.Range))
+                    .ToList())
+                {
+                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                    {
+                        return;
+                    }
+
+                    bool useWs = RootMenu["farming"]["jungle"]["useQ"].Enabled;
+                    if (!Player.HasBuff("fearmonger_marker"))
+                    {
+
+
+                        if (useWs && Q.Ready && jungleTarget.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(jungleTarget);
+                        }
+
+                    }
+                }
+                foreach (var jungleTarget in Bases.GameObjects.JungleLegendary.Where(m => m.IsValidTarget(W.Range))
+                    .ToList())
+                {
+                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                    {
+                        return;
+                    }
+
+                    bool useWs = RootMenu["farming"]["jungle"]["useW"].Enabled;
+                    if (!Player.HasBuff("fearmonger_marker"))
+                    {
+
+
+                        if (useWs && W.Ready && jungleTarget.IsValidTarget(W.Range) && !E.Ready)
+                        {
+                            W.Cast(jungleTarget);
+                        }
+
+                    }
+                }
+
+                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(E.Range)).ToList())
+                {
+                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                    {
+                        return;
+                    }
+
+                    bool useQs = RootMenu["farming"]["jungle"]["useQ"].Enabled;
+                    bool useEs = RootMenu["farming"]["jungle"]["useE"].Enabled;
+                    bool useWs = RootMenu["farming"]["jungle"]["useW"].Enabled;
+                    if (!Player.HasBuff("fearmonger_marker"))
+                    {
+
+
+
+                        if (useEs && E.Ready && jungleTarget.IsValidTarget(E.Range))
+                        {
+                            E.Cast(jungleTarget);
+                        }
+                    }
+                }
             }
+
         }
-
 
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
         private int hmmm;
@@ -242,7 +319,7 @@ var bestTarget = Bases.Extensions.GetBestKillableHero(E, DamageType.Magical, fal
             var LaneClear = new Menu("lane", "Lane Clear");
             {
                        
-                LaneClear.Add(new MenuBool("useW", "Use W in Combo"));
+                LaneClear.Add(new MenuBool("useW", "Use W to Farm"));
                 LaneClear.Add(new MenuBool("useE", "Use E to Farm"));
                 LaneClear.Add(new MenuSlider("hitE", "^- if Hits X Minions", 3, 1, 6));
             }

@@ -109,8 +109,19 @@ namespace Potato_AIO.Champions
                     if (target != null)
                     {
 
-
-                        W.Cast(target);
+                        if (RootMenu["combo"]["priorE"].Enabled)
+                        {
+                            if (!E.Ready)
+                            {
+                                W.Cast(target);
+                            }
+                        }
+                        if (!RootMenu["combo"]["priorE"].Enabled)
+                        {
+                            
+                                W.Cast(target);
+                            
+                        }
 
                     }
                 }
@@ -504,6 +515,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("useQA", "Use Q in Combo", true));
                 ComboMenu.Add(new MenuBool("useQAA", "^- Only for AA Reset", false));
                 ComboMenu.Add(new MenuBool("useW", "Use W in Combo"));
+                ComboMenu.Add(new MenuBool("priorE", "^- Priority E"));
                 ComboMenu.Add(new MenuBool("useE", "Use E in Combo"));
                 ComboMenu.Add(new MenuSlider("minE", "Min. E Range", 250, 0, 400));
                 ComboMenu.Add(new MenuBool("useR", "Use R in Combo"));

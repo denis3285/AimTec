@@ -29,7 +29,7 @@ namespace Potato_AIO.Champions
         {
 
             bool useQ = RootMenu["combo"]["useq"].Enabled;
-           
+
 
             bool useR = RootMenu["combo"]["user"].Enabled;
             bool useW = RootMenu["combo"]["usew"].Enabled;
@@ -140,7 +140,7 @@ namespace Potato_AIO.Champions
             }
 
             if (useR)
-            { 
+            {
                 var target = Extensions.GetBestEnemyHeroTargetInRange(R.Range);
 
                 if (target.IsValidTarget() && target != null)
@@ -149,10 +149,13 @@ namespace Potato_AIO.Champions
                     if (target.IsValidTarget(R.Range))
                     {
 
-  
+
                         if (target.HealthPercent() <= RootMenu["combo"]["rhp"].As<MenuSlider>().Value)
                         {
-                            R.CastOnUnit(target);
+                            if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                            {
+                                R.CastOnUnit(target);
+                            }
                         }
                     }
 
@@ -165,82 +168,82 @@ namespace Potato_AIO.Champions
         protected override void Farming()
         {
 
-            
-                foreach (var minion in Potato_AIO.Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+
+            foreach (var minion in Potato_AIO.Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+            {
+                if (!minion.IsValidTarget())
                 {
-                    if (!minion.IsValidTarget())
+                    return;
+                }
+
+                if (RootMenu["farming"]["lane"]["useq"].Enabled && minion != null)
+                {
+
+
+                    if (minion.IsValidTarget(W.Range) && !RootMenu["farming"]["lane"]["lastq"].Enabled)
                     {
-                        return;
+                        Q.Cast();
                     }
-
-                    if (RootMenu["farming"]["lane"]["useq"].Enabled && minion != null)
+                    if (minion.IsValidTarget(W.Range) && RootMenu["farming"]["lane"]["lastq"].Enabled)
                     {
+                        if (!Player.HasBuff("MordekaiserMaceOfSpades15") && !Player.HasBuff("MordekaiserMaceOfSpades2"))
 
-
-                        if (minion.IsValidTarget(W.Range) && !RootMenu["farming"]["lane"]["lastq"].Enabled)
                         {
-                            Q.Cast();
-                        }
-                        if (minion.IsValidTarget(W.Range) && RootMenu["farming"]["lane"]["lastq"].Enabled)
-                        {
-                            if (!Player.HasBuff("MordekaiserMaceOfSpades15") && !Player.HasBuff("MordekaiserMaceOfSpades2"))
-
+                            if (Player.GetSpellDamage(minion, SpellSlot.Q) + Player.GetAutoAttackDamage(minion) >
+                                minion.Health)
                             {
-                                if (Player.GetSpellDamage(minion, SpellSlot.Q) + Player.GetAutoAttackDamage(minion) >
-                                    minion.Health)
+                                if (Q.Cast())
                                 {
-                                    if (Q.Cast())
-                                    {
-                                        Player.IssueOrder(OrderType.AttackUnit, minion);
-                                    }
+                                    Player.IssueOrder(OrderType.AttackUnit, minion);
                                 }
                             }
-                            
                         }
-                    }
-                    if (RootMenu["farming"]["lane"]["usee"].Enabled)
-                    {
-                        if (minion.IsValidTarget(E.Range) && minion != null)
-                        {
-                            if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(200, false, false,
-                                    minion.ServerPosition)) >=
-                                RootMenu["farming"]["lane"]["hite"].As<MenuSlider>().Value)
-                            {
-                                E.Cast(minion);
-                            }
-                        }
+
                     }
                 }
-            
-           
-                foreach (var jungleTarget in Potato_AIO.Bases.GameObjects.Jungle
-                    .Where(m => m.IsValidTarget(E.Range)).ToList())
+                if (RootMenu["farming"]["lane"]["usee"].Enabled)
                 {
-                    if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                    if (minion.IsValidTarget(E.Range) && minion != null)
                     {
-                        return;
-                    }
-                    bool useQ = RootMenu["farming"]["jungle"]["useq"].Enabled;
-
-                    bool useW = RootMenu["farming"]["jungle"]["usee"].Enabled;
-
-
-                    if (useQ)
-                    {
-                        if (jungleTarget != null && jungleTarget.IsValidTarget(Q.Range))
+                        if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(200, false, false,
+                                minion.ServerPosition)) >=
+                            RootMenu["farming"]["lane"]["hite"].As<MenuSlider>().Value)
                         {
-                            Q.Cast();
-                        }
-                    }
-                    if (useW)
-                    {
-                        if (jungleTarget != null && jungleTarget.IsValidTarget(E.Range))
-                        {
-                            E.Cast(jungleTarget);
+                            E.Cast(minion);
                         }
                     }
                 }
-            
+            }
+
+
+            foreach (var jungleTarget in Potato_AIO.Bases.GameObjects.Jungle
+                .Where(m => m.IsValidTarget(E.Range)).ToList())
+            {
+                if (!jungleTarget.IsValidTarget() || jungleTarget.UnitSkinName.Contains("Plant"))
+                {
+                    return;
+                }
+                bool useQ = RootMenu["farming"]["jungle"]["useq"].Enabled;
+
+                bool useW = RootMenu["farming"]["jungle"]["usee"].Enabled;
+
+
+                if (useQ)
+                {
+                    if (jungleTarget != null && jungleTarget.IsValidTarget(Q.Range))
+                    {
+                        Q.Cast();
+                    }
+                }
+                if (useW)
+                {
+                    if (jungleTarget != null && jungleTarget.IsValidTarget(E.Range))
+                    {
+                        E.Cast(jungleTarget);
+                    }
+                }
+            }
+
 
         }
 
@@ -289,7 +292,9 @@ namespace Potato_AIO.Champions
                         {
 
                             double Rdamage;
-
+                            Console.WriteLine(((Player.GetSpellDamage(unit, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond) * 10) - (unit.HPRegenRate * 10) +
+                                               (Player.GetSpellDamage(unit, SpellSlot.R))));
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
 
@@ -300,17 +305,20 @@ namespace Potato_AIO.Champions
                             barPos.Y += yOffset;
                             var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                             var drawStartXPos =
-                                (float)(barPos.X + (unit.Health >
-                                                    Player.GetSpellDamage(unit, SpellSlot.R) +
-                                                    Player.GetSpellDamage(unit, SpellSlot.R, DamageStage.DamagePerSecond) * 7
-                                             ? width * ((unit.Health - (Player.GetSpellDamage(unit, SpellSlot.R) +
-                                                                        Player.GetSpellDamage(unit, SpellSlot.R, DamageStage.DamagePerSecond) * 7)) /
+                                (float) (barPos.X + (unit.Health >
+                                                     (Player.GetSpellDamage(unit, SpellSlot.R,
+                                                          DamageStage.DamagePerSecond) * 10) - (unit.HPRegenRate * 10) +
+                                                     (Player.GetSpellDamage(unit, SpellSlot.R))
+                                             ? width * ((unit.Health - ((Player.GetSpellDamage(unit, SpellSlot.R,
+                                                                             DamageStage.DamagePerSecond) * 10) - (unit.HPRegenRate * 10) +
+                                                                        (Player.GetSpellDamage(unit, SpellSlot.R)))) /
                                                         unit.MaxHealth * 100 / 100)
                                              : 0));
 
                             Render.Line(drawStartXPos, barPos.Y, drawEndXPos, barPos.Y, 8, true,
-                                unit.Health < Player.GetSpellDamage(unit, SpellSlot.R) +
-                                Player.GetSpellDamage(unit, SpellSlot.R, DamageStage.DamagePerSecond) * 7
+                                unit.Health < ((Player.GetSpellDamage(unit, SpellSlot.R,
+                                                   DamageStage.DamagePerSecond) * 10) - (unit.HPRegenRate * 10) +
+                                (Player.GetSpellDamage(unit, SpellSlot.R)))
                                     ? Color.GreenYellow
                                     : Color.Orange);
 
@@ -322,13 +330,13 @@ namespace Potato_AIO.Champions
 
         protected override void Killsteal()
         {
-          
- 
+
+
         }
 
         internal override void PostAttack(object sender, PostAttackEventArgs e)
         {
-           
+
             var heroTarget = e.Target as Obj_AI_Hero;
             if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Combo))
             {
@@ -368,7 +376,7 @@ namespace Potato_AIO.Champions
 
             }
 
-            
+
         }
 
         protected override void Harass()
@@ -390,7 +398,7 @@ namespace Potato_AIO.Champions
 
                     if (target.IsValidTarget(E.Range))
                     {
-                        
+
 
                         if (target != null)
                         {
@@ -506,6 +514,14 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("autor", "Auto R if Can Kill"));
             }
             RootMenu.Add(ComboMenu);
+            var BlackList = new Menu("blacklist", "R Blacklist");
+            {
+                foreach (var target in GameObjects.EnemyHeroes)
+                {
+                    BlackList.Add(new MenuBool(target.ChampionName.ToLower(), "Block: " + target.ChampionName, false));
+                }
+            }
+            RootMenu.Add(BlackList);
             HarassMenu = new Menu("harass", "Harass");
             {
                 HarassMenu.Add(new MenuBool("useq", "Use Q in Harass"));
@@ -517,22 +533,22 @@ namespace Potato_AIO.Champions
             FarmMenu = new Menu("farming", "Farming");
             var LaneClear = new Menu("lane", "Lane Clear");
             {
-             
+
                 LaneClear.Add(new MenuBool("useq", "Use Q to Farm"));
-                 LaneClear.Add(new MenuBool("lastq", "^- Only to Last Hit"));
+                LaneClear.Add(new MenuBool("lastq", "^- Only to Last Hit"));
                 LaneClear.Add(new MenuBool("usee", "Use E to Farm"));
                 LaneClear.Add(new MenuSlider("hite", "^- if Hits X", 3, 0, 6));
             }
             var JungleClear = new Menu("jungle", "Jungle Clear");
             {
-               
+
                 JungleClear.Add(new MenuBool("useq", "Use Q to Farm"));
                 JungleClear.Add(new MenuBool("usee", "Use E to Farm"));
             }
             RootMenu.Add(FarmMenu);
             FarmMenu.Add(LaneClear);
             FarmMenu.Add(JungleClear);
-     
+
             DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("draww", "Draw W Range"));
@@ -540,11 +556,11 @@ namespace Potato_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
                 DrawMenu.Add(new MenuBool("drawrdamage", "Draw R Damage"));
             }
-         
+
             RootMenu.Add(DrawMenu);
             RootMenu.Attach();
         }
-    
+
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 300);
@@ -552,97 +568,64 @@ namespace Potato_AIO.Champions
             E = new Aimtec.SDK.Spell(SpellSlot.E, 675);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 650);
 
-            E.SetSkillshot(0.25f, 12f * 2 * (float)Math.PI / 180, 2000f, false, SkillshotType.Cone);
+            E.SetSkillshot(0.25f, 12f * 2 * (float) Math.PI / 180, 2000f, false, SkillshotType.Cone);
         }
 
         protected override void SemiR()
         {
 
-            var dragon = ObjectManager.Get<GameObject>()
-                .Where(d => d.IsValid && !d.IsDead && d.Name == "Mordekaiser_Base_R_tar_Dragon.troy");
-            foreach (var Dragon in dragon)
+
+
+            if (Player.HasBuff("mordekaisercotgself"))
             {
-            
-                if (Dragon.CountEnemyHeroesInRange(2000) == 0)
-                {
-                    if (rdelayyyyyy < Game.TickCount)
-                    {
-                        if (R.Cast(Player.ServerPosition.Extend(Dragon.ServerPosition, -300)))
-                        {
-                            rdelayyyyyy = 500 + Game.TickCount;
-                        }
-                    }
-                }
-                foreach (var enemies in GameObjects.EnemyHeroes)
-                {
-                    if (enemies != null && enemies.IsValidTarget(2000, false, false, Dragon.ServerPosition))
-                    {
-                        if (rdelayyyyyy < Game.TickCount)
-                        {
-                            
-                            if (R.Cast(enemies.ServerPosition))
-                            {
-                                rdelayyyyyy = 1000 + Game.TickCount;
-                            }
-                        }
-                    }
-                }
                 var target = Extensions.GetBestEnemyHeroTargetInRange(2000);
 
-                if (target.IsValidTarget() && target != null)
+                if (target.IsValidTarget() && target != null && !target.IsDead)
                 {
 
-                    if (target.IsValidTarget(2000) && rdelayyyyyy < Game.TickCount && Dragon.Distance(Player) < 2400)
+                    if (target.IsValidTarget(2000) && rdelayyyyyy < Game.TickCount)
                     {
-                        
                         if (R.Cast(target.ServerPosition))
                         {
                             rdelayyyyyy = 1000 + Game.TickCount;
                         }
                     }
                 }
-
             }
-            if (dragon.Count() == 0)
+            if (Player.HasBuff("mordekaisercotgself"))
             {
-                
-                if (Player.HasBuff("mordekaisercotgself"))
+                if (Player.CountEnemyHeroesInRange(2000) == 0)
                 {
-                    var target = Extensions.GetBestEnemyHeroTargetInRange(2000);
-
-                    if (target.IsValidTarget() && target != null)
+                    if ( rdelayyyyyy < Game.TickCount)
                     {
-
-                        if (target.IsValidTarget(2000) && rdelayyyyyy < Game.TickCount)
+                        if (R.Cast(Player.ServerPosition))
                         {
-                            if (R.Cast(target.ServerPosition))
-                            {
-                                rdelayyyyyy = 1000 + Game.TickCount;
-                            }
+                            rdelayyyyyy = 1000 + Game.TickCount;
                         }
                     }
                 }
-                if (RootMenu["combo"]["autor"].Enabled)
+            }
+            if (RootMenu["combo"]["autor"].Enabled)
+            {
+                var bestTarget = Bases.Extensions.GetBestKillableHero(R, DamageType.Magical, false);
+
+
+                if (bestTarget.IsValidTarget())
                 {
-                    var bestTarget = Bases.Extensions.GetBestKillableHero(R, DamageType.Magical, false);
-
-
-                    if (bestTarget.IsValidTarget())
+                    if ((Player.GetSpellDamage(bestTarget, SpellSlot.R, DamageStage.DamagePerSecond) * 10) -
+                        (bestTarget.HPRegenRate * 10) + (Player.GetSpellDamage(bestTarget, SpellSlot.R)) >
+                        bestTarget.Health)
                     {
-                        if (Player.GetSpellDamage(bestTarget, SpellSlot.R) +
-                            Player.GetSpellDamage(bestTarget, SpellSlot.R, DamageStage.DamagePerSecond) * 7 >
-                            bestTarget.Health)
-                        {
-                            R.CastOnUnit(bestTarget);
-                        }
+                        R.CastOnUnit(bestTarget);
                     }
                 }
             }
         }
 
+
         protected override void LastHit()
         {
-   
+
         }
     }
 }

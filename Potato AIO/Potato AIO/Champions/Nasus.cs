@@ -418,9 +418,9 @@ namespace Potato_AIO.Champions
             HarassMenu = new Menu("harass", "Harass");
             {
                 HarassMenu.Add(new MenuSlider("mana", "Mana Manager", 50));
-                HarassMenu.Add(new MenuBool("useQA", "Use Q in Combo", true));
+                HarassMenu.Add(new MenuBool("useQA", "Use Q in Harass", true));
                 HarassMenu.Add(new MenuBool("useQAA", "^- Only for AA Reset", false));
-                HarassMenu.Add(new MenuBool("useW", "Use W in Combo"));
+                HarassMenu.Add(new MenuBool("useW", "Use W in Harass"));
                 HarassMenu.Add(new MenuBool("WAA", "^- Only if out of AA Range"));
                 HarassMenu.Add(new MenuBool("useE", "Use E"));
             }
@@ -468,6 +468,21 @@ namespace Potato_AIO.Champions
             RootMenu.Add(DrawMenu);
             RootMenu.Attach();
         }
+
+        internal override void OnPreAttack(object sender, PreAttackEventArgs e)
+        {
+            if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Lasthit))
+            {
+
+                if (e.Target.IsMinion)
+                {
+                    Q.Cast();
+                }
+
+
+            }
+        }
+
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
 
