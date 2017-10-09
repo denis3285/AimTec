@@ -586,29 +586,33 @@ namespace Potato_AIO.Champions
                         }
                     }
                 }
+
             }
             if (RootMenu["farming"]["jungle"]["autoq"].Enabled)
             {
                 foreach (var monsters in Bases.GameObjects.Jungle)
                 {
-                    if (monsters.Name.Contains("Dragon") || monsters.Name.Contains("Baron") ||
-                        monsters.Name.Contains("Red") || monsters.Name.Contains("Blue"))
+                    if (monsters != null)
                     {
-                        if (monsters.IsValidTarget() && monsters.Distance(Player) < 300)
+                        if (monsters.Name.Contains("Dragon") || monsters.Name.Contains("Baron") ||
+                            monsters.Name.Contains("Red") || monsters.Name.Contains("Blue"))
                         {
-                            if (!Player.HasBuff("visionary"))
+                            if (monsters.IsValidTarget() && monsters.Distance(Player) < 300)
                             {
-                                if (monsters.Health < Player.GetSpellDamage(monsters, SpellSlot.Q))
+                                if (!Player.HasBuff("visionary"))
                                 {
-                                    Q.Cast(monsters);
+                                    if (monsters.Health < Player.GetSpellDamage(monsters, SpellSlot.Q))
+                                    {
+                                        Q.Cast(monsters);
+                                    }
                                 }
-                            }
-                            if (Player.HasBuff("visionary"))
-                            {
-                                if (monsters.Health <
-                                    Player.GetSpellDamage(monsters, SpellSlot.Q, DamageStage.Empowered))
+                                if (Player.HasBuff("visionary"))
                                 {
-                                    Q.Cast(monsters);
+                                    if (monsters.Health <
+                                        Player.GetSpellDamage(monsters, SpellSlot.Q, DamageStage.Empowered))
+                                    {
+                                        Q.Cast(monsters);
+                                    }
                                 }
                             }
                         }

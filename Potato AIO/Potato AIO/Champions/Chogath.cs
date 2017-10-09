@@ -527,7 +527,7 @@ namespace Potato_AIO.Champions
                 JungleClear.Add(new MenuBool("useq", "Use Q to Farm"));
                 JungleClear.Add(new MenuBool("usew", "Use W to Farm"));
                 JungleClear.Add(new MenuBool("usee", "Use E to Farm"));
-                JungleClear.Add(new MenuBool("autor", "Auto Steal Q Baron / Dragon"));
+                JungleClear.Add(new MenuBool("autor", "Auto Steal R Baron / Dragon"));
 
             }
             RootMenu.Add(FarmMenu);
@@ -595,21 +595,25 @@ namespace Potato_AIO.Champions
             {
                 foreach (var monsters in Bases.GameObjects.Jungle)
                 {
-                    if (monsters.Name.Contains("Dragon") || monsters.Name.Contains("Baron") || monsters.Name.Contains("Herald"))
+                    if (monsters != null)
                     {
-                        if (monsters.IsValidTarget() && monsters.Distance(Player) < 400)
+                        if (monsters.Name.Contains("Dragon") || monsters.Name.Contains("Baron") ||
+                            monsters.Name.Contains("Herald"))
                         {
+                            if (monsters.IsValidTarget() && monsters.Distance(Player) < 400)
+                            {
+                                
                                 if (monsters.Health < GetRjungle(monsters))
                                 {
                                     R.Cast(monsters);
                                 }
-                            
-                            
+
+
+                            }
                         }
                     }
                 }
             }
-
         }
 
         protected override void LastHit()
