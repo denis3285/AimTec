@@ -631,7 +631,7 @@ namespace Fiora_By_Kornis
                         }
                     }
                 }
-                if (useQ)
+                if (useE)
                 {
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(300))
                     {
