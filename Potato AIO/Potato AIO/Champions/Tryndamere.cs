@@ -295,7 +295,7 @@ namespace Potato_AIO.Champions
                 }
 
 
-                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range))
+                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(E.Range))
                     .ToList())
                 {
                     if (hero == jungleTarget)

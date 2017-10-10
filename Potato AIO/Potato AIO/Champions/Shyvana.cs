@@ -322,7 +322,7 @@ namespace Potato_AIO.Champions
                 if (RootMenu["farming"]["jungle"]["qaa"].Enabled)
                 {
         
-                        foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range))
+                        foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(600))
                             .ToList())
                         {
                             if (hero == jungleTarget)
@@ -363,7 +363,7 @@ namespace Potato_AIO.Champions
                 if (RootMenu["farming"]["lane"]["qaa"].Enabled)
                 {
 
-                    foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+                    foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(600))
                     {
                         if (minion != null && hero == minion)
                         {

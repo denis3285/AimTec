@@ -435,7 +435,7 @@ namespace Potato_AIO.Champions
 
 
 
-                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(Q.Range))
                 {
                     if (minion != null && hero == minion)
                     {

@@ -383,7 +383,7 @@ namespace Potato_AIO.Champions
                     return;
                 }
 
-                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range))
+                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(600))
                     .ToList())
                 {
                     if (hero == jungleTarget)
@@ -417,7 +417,7 @@ namespace Potato_AIO.Champions
                 }
 
 
-                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(600))
                 {
                     if (minion != null && hero == minion)
                     {
