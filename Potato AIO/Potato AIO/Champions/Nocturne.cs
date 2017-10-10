@@ -328,6 +328,77 @@ namespace Potato_AIO.Champions
                     }
                 }
             }
+            if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Laneclear))
+            {
+
+                Obj_AI_Minion hero = e.Target as Obj_AI_Minion;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+
+
+                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range))
+                    .ToList())
+                {
+                    if (hero == jungleTarget)
+                    {
+                        if (jungleTarget.IsValidTarget() && !jungleTarget.UnitSkinName.Contains("Plant"))
+                        {
+
+
+                            if (RootMenu["combo"]["items"].Enabled)
+                            {
+                                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                    Player.HasItem(ItemId.RavenousHydra))
+                                {
+                                    var items = new[]
+                                        {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                    if (slot != null)
+                                    {
+                                        var spellslot = slot.SpellSlot;
+                                        if (spellslot != SpellSlot.Unknown &&
+                                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                        {
+                                            Player.SpellBook.CastSpell(spellslot);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+
+                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+                {
+                    if (minion != null && hero == minion)
+                    {
+                        if (RootMenu["combo"]["items"].Enabled)
+                        {
+                            if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                Player.HasItem(ItemId.RavenousHydra))
+                            {
+                                var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                if (slot != null)
+                                {
+                                    var spellslot = slot.SpellSlot;
+                                    if (spellslot != SpellSlot.Unknown &&
+                                        Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                    {
+                                        Player.SpellBook.CastSpell(spellslot);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
         }
         protected override void SetMenu()
         {

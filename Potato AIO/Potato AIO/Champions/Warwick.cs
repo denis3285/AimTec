@@ -29,7 +29,7 @@ namespace Potato_AIO.Champions
     {
         protected override void Combo()
         {
-    
+
             if (RootMenu["combo"]["useq"].Enabled)
             {
                 var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
@@ -106,7 +106,7 @@ namespace Potato_AIO.Champions
             }
         }
 
-        
+
 
         protected override void Farming()
         {
@@ -126,9 +126,9 @@ namespace Potato_AIO.Champions
 
                         if (minion.IsValidTarget(Q.Range))
                         {
-                            
-                                Q.Cast(minion);
-                            
+
+                            Q.Cast(minion);
+
 
                         }
 
@@ -149,7 +149,7 @@ namespace Potato_AIO.Champions
                         }
 
                     }
-                  
+
                 }
             }
             if (RootMenu["farming"]["jungle"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent())
@@ -179,13 +179,13 @@ namespace Potato_AIO.Champions
                             E.Cast();
                         }
                     }
-                    
+
                 }
             }
 
         }
 
-        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
+        public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
         private int hmmm;
         private int rdelay;
 
@@ -203,18 +203,20 @@ namespace Potato_AIO.Champions
         {
             Vector2 maybeworks;
             var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
-            var xaOffset = (int)maybeworks.X;
-            var yaOffset = (int)maybeworks.Y;
+            var xaOffset = (int) maybeworks.X;
+            var yaOffset = (int) maybeworks.Y;
             if (RootMenu["drawings"]["drawtoggle"].Enabled)
             {
                 if (RootMenu["combo"]["turret"].Enabled)
                 {
-                    Render.Text("R Under-Turret: ON", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None, Color.GreenYellow);
+                    Render.Text("R Under-Turret: ON", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None,
+                        Color.GreenYellow);
 
                 }
                 if (!RootMenu["combo"]["turret"].Enabled)
                 {
-                    Render.Text("R Under-Turret: OFF", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None, Color.Red);
+                    Render.Text("R Under-Turret: OFF", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None,
+                        Color.Red);
 
                 }
             }
@@ -223,7 +225,7 @@ namespace Potato_AIO.Champions
             {
                 Render.Circle(Player.Position, Q.Range, 40, Color.Crimson);
             }
- 
+
             if (RootMenu["drawings"]["drawe"].Enabled)
             {
                 Render.Circle(Player.Position, E.Range, 40, Color.Wheat);
@@ -234,14 +236,14 @@ namespace Potato_AIO.Champions
             }
             if (RootMenu["drawings"]["draww"].Enabled)
             {
-                DrawCircleOnMinimap(Player.Position,  W.Range, Color.Wheat, 3, 40);
+                DrawCircleOnMinimap(Player.Position, W.Range, Color.Wheat, 3, 40);
             }
         }
 
 
         protected override void Killsteal()
         {
- 
+
             if (Q.Ready &&
                 RootMenu["ks"]["ksq"].Enabled)
             {
@@ -251,10 +253,10 @@ namespace Potato_AIO.Champions
                     bestTarget.Health &&
                     bestTarget.IsValidTarget(Q.Range))
                 {
-                   Q.Cast(bestTarget);
+                    Q.Cast(bestTarget);
                 }
             }
- 
+
 
 
         }
@@ -324,6 +326,7 @@ namespace Potato_AIO.Champions
 
             }
         }
+
         internal override void PostAttack(object sender, PostAttackEventArgs e)
         {
 
@@ -343,7 +346,7 @@ namespace Potato_AIO.Champions
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
                     {
-                        var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                         var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                         if (slot != null)
                         {
@@ -373,7 +376,7 @@ namespace Potato_AIO.Champions
                     if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                         Player.HasItem(ItemId.RavenousHydra))
                     {
-                        var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                         var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                         if (slot != null)
                         {
@@ -387,9 +390,78 @@ namespace Potato_AIO.Champions
                     }
                 }
             }
+            if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Laneclear))
+            {
+
+                Obj_AI_Minion hero = e.Target as Obj_AI_Minion;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+
+
+                foreach (var jungleTarget in Bases.GameObjects.Jungle.Where(m => m.IsValidTarget(Q.Range))
+                    .ToList())
+                {
+                    if (hero == jungleTarget)
+                    {
+                        if (jungleTarget.IsValidTarget() && !jungleTarget.UnitSkinName.Contains("Plant"))
+                        {
+
+
+                            if (RootMenu["combo"]["items"].Enabled)
+                            {
+                                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                    Player.HasItem(ItemId.RavenousHydra))
+                                {
+                                    var items = new[]
+                                        {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                    if (slot != null)
+                                    {
+                                        var spellslot = slot.SpellSlot;
+                                        if (spellslot != SpellSlot.Unknown &&
+                                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                        {
+                                            Player.SpellBook.CastSpell(spellslot);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+
+
+                foreach (var minion in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
+                {
+                    if (minion != null && hero == minion)
+                    {
+                        if (RootMenu["combo"]["items"].Enabled)
+                        {
+                            if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                Player.HasItem(ItemId.RavenousHydra))
+                            {
+                                var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                                var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                if (slot != null)
+                                {
+                                    var spellslot = slot.SpellSlot;
+                                    if (spellslot != SpellSlot.Unknown &&
+                                        Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                    {
+                                        Player.SpellBook.CastSpell(spellslot);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
         }
-
-
 
         protected override void SetMenu()
         {
