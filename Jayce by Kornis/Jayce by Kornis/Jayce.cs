@@ -1,6 +1,7 @@
 ﻿using System.Net.Configuration;
 using System.Resources;
 using System.Security.Authentication.ExtendedProtection;
+using Aimtec.SDK.Events;
 
 namespace Jayce_By_Kornis
 {
@@ -153,12 +154,13 @@ namespace Jayce_By_Kornis
                 FleeMenu.Add(new MenuKeyBind("key", "Flee Key:", KeyCode.G, KeybindType.Press));
             }
             Menu.Add(FleeMenu);
+            Gapcloser.Attach(Menu, "Melee E Anti-GapClose");
             Menu.Attach();
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
-
+            Gapcloser.OnGapcloser += OnGapcloser;
             LoadSpells();
             Console.WriteLine("Jayce by Kornis - Loaded");
         }
@@ -166,7 +168,19 @@ namespace Jayce_By_Kornis
         public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
         private float timer;
         private int helalmoney;
+        private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+            if (Player.HasBuff("jaycestancehammer"))
+            {
+                
+                if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready)
+                {
+                    
+                    E.CastOnUnit(target);
 
+                }
+            }
+        }
         public void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
         {
             if (sender.IsMe)
