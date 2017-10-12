@@ -108,13 +108,26 @@ namespace Irelia_By_Kornis
             }
             Menu.Add(DrawMenu);
             Menu.Attach();
-
+            Gapcloser.Attach(Menu, "E Anti-GapClose");
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
             Orbwalker.PostAttack += OnPostAttack;
+            Gapcloser.OnGapcloser += OnGapcloser;
             LoadSpells();
             Console.WriteLine("Irelia by Kornis - Loaded");
         }
+        private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+            if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready)
+            {
+
+                E.CastOnUnit(target);
+
+
+            }
+
+        }
+
         public void OnPostAttack(object sender, PostAttackEventArgs args)
         {
             var heroTarget = args.Target as Obj_AI_Hero;
