@@ -445,31 +445,38 @@ namespace Rengar_By_Kornis
                         foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                         {
 
-
-                            if (minion.IsValidTarget(Q.Range) && minion != null)
+                            if (useQ)
                             {
-                                Q.Cast(minion);
+                                if (minion.IsValidTarget(Q.Range) && minion != null)
+                                {
+                                    Q.Cast(minion);
+                                }
                             }
                         }
                         break;
                     case 1:
                         foreach (var minion in GetEnemyLaneMinionsTargetsInRange(W.Range))
                         {
-
-                            if (minion.IsValidTarget(W.Range - 100) && minion != null && hitsw <= GetEnemyLaneMinionsTargetsInRange(W.Range).Count)
+                            if (useW)
                             {
-                                W.Cast();
+                                if (minion.IsValidTarget(W.Range - 100) && minion != null &&
+                                    hitsw <= GetEnemyLaneMinionsTargetsInRange(W.Range).Count)
+                                {
+                                    W.Cast();
+                                }
                             }
                         }
                         break;
                     case 2:
                         foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                         {
-
-
-                            if (minion.IsValidTarget(E.Range - 100) && minion != null)
+                            if (useE)
                             {
-                                E.Cast();
+
+                                if (minion.IsValidTarget(E.Range - 100) && minion != null)
+                                {
+                                    E.Cast();
+                                }
                             }
                         }
                         break;
@@ -555,29 +562,32 @@ namespace Rengar_By_Kornis
                     {
                         case 0:
 
-
-                            if (minion.IsValidTarget(Q.Range) && minion != null)
+                            if (useQ)
                             {
-                                Q.Cast(minion);
+                                if (minion.IsValidTarget(Q.Range) && minion != null)
+                                {
+                                    Q.Cast(minion);
+                                }
                             }
-
                             break;
                         case 1:
-
-                            if (minion.IsValidTarget(W.Range - 100) && minion != null)
+                            if (useW)
                             {
-                                W.Cast();
+                                if (minion.IsValidTarget(W.Range - 100) && minion != null)
+                                {
+                                    W.Cast();
+                                }
                             }
-
                             break;
                         case 2:
 
-
-                            if (minion.IsValidTarget(E.Range - 100) && minion != null)
+                            if (useE)
                             {
-                                E.Cast(minion);
+                                if (minion.IsValidTarget(E.Range - 100) && minion != null)
+                                {
+                                    E.Cast(minion);
+                                }
                             }
-
                             break;
                     }
                 }
