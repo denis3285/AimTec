@@ -2,6 +2,7 @@
 using System.Resources;
 using System.Security.Authentication.ExtendedProtection;
 using Aimtec.SDK.Damage.JSON;
+using Aimtec.SDK.Events;
 
 namespace Darius_By_Kornis
 {
@@ -103,14 +104,29 @@ namespace Darius_By_Kornis
                        DrawMenu.Add(new MenuBool("toggle", "Draw Toggle"));
             }
             Menu.Add(DrawMenu);
-
+            Gapcloser.Attach(Menu, "E Anti-GapClose");
             Menu.Attach();
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+            Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.PostAttack += OnPostAttack;
             LoadSpells();
             Console.WriteLine("Darius by Kornis - Loaded");
+        }
+        private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
+            if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready)
+            {
+
+                DelayAction.Queue(Args.DurationTick / 200, () =>
+                {
+                    E.Cast(Args.EndPosition);
+                });
+
+
+            }
+
         }
 
         public void OnPostAttack(object sender, PostAttackEventArgs args)
