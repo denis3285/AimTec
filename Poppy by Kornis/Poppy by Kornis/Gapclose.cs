@@ -873,7 +873,7 @@
                 {
                     ChampionName = "XinZhao",
                     Slot = SpellSlot.E,
-                    SpellName = "xenzhaosweep",
+                    SpellName = "XinZhaoE",
                     SpellType = SpellType.Targeted
                 });
 

@@ -873,7 +873,7 @@
                 {
                     ChampionName = "XinZhao",
                     Slot = SpellSlot.E,
-                    SpellName = "xenzhaosweep",
+                    SpellName = "XinZhaoE",
                     SpellType = SpellType.Targeted
                 });
 
@@ -957,7 +957,7 @@
                     {
                         return;
                     }
-                        
+
                     var heroMenu = new Menu("Gapcloser" + enemy.ChampionName.ToLower(), enemy.ChampionName)
                 {
                     new MenuBool("Gapcloser" + enemy.ChampionName.ToLower() + "Enabled", "Enabled"),
@@ -966,7 +966,7 @@
                     new MenuSlider("Gapcloser" + enemy.ChampionName.ToLower() + "HPercent",
                         "When Player HealthPercent <= x%", 100, 1, 101)
                 };
-                Menu.Add(heroMenu);
+                    Menu.Add(heroMenu);
 
                     heroMenu.Add(new MenuBool("Gapcloser" + enemy.ChampionName.ToLower() + "." + spell.SpellName.ToLower(),
                         "Anti Slot: " + spell.Slot + "(" + spell.SpellName + ")"));
