@@ -121,7 +121,7 @@ namespace Potato_AIO.Champions
                         if (minion.IsValidTarget(Q.Range) && minion != null)
                         {
 
-                            Q.Cast();
+                            Q.Cast(minion);
 
 
                         }

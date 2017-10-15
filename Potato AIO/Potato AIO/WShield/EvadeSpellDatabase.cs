@@ -38,6 +38,19 @@ namespace Potato_AIO.WShield
 
                 Spells.Add(new EvadeSpellData
                 {
+                    Name = "SionW",
+                    Slot = SpellSlot.W,
+                    Range = 700,
+                    Delay = 200,
+                    Speed = int.MaxValue,
+                    _dangerLevel = 1
+                });
+            }
+            if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
+            {
+
+                Spells.Add(new EvadeSpellData
+                {
                     Name = "SkarnerExoskeleton",
                     Slot = SpellSlot.W,
                     Range = 500,
@@ -54,6 +67,19 @@ namespace Potato_AIO.WShield
                     Name = "NocturneShroudofDarkness",
                     Slot = SpellSlot.W,
                     Range = 500,
+                    Delay = 300,
+                    Speed = int.MaxValue,
+                    _dangerLevel = 1
+                });
+            }
+            if (ObjectManager.GetLocalPlayer().ChampionName == "JarvanIV")
+            {
+
+                Spells.Add(new EvadeSpellData
+                {
+                    Name = "JarvanIVGoldenAegis",
+                    Slot = SpellSlot.W,
+                    Range = 625,
                     Delay = 300,
                     Speed = int.MaxValue,
                     _dangerLevel = 1

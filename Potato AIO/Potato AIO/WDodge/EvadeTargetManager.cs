@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using Potato_AIO.Bases;
 
-namespace Potato_AIO.WShield
+namespace Potato_AIO.WDodge
 {
     #region
 
@@ -30,25 +30,11 @@ namespace Potato_AIO.WShield
             Menu = new Menu("EvadeTargetMenu", "Misc.")
             {
                 new MenuSeperator("Brian.EvadeTargetMenu.Credit", "Made by Brian"),
-                new MenuBool("Brian.EvadeTargetMenu.EvadeTargetW", "Use Shielding on Targeted / Attacks"),
+                new MenuBool("Brian.EvadeTargetMenu.EvadeTargetW", "Dodge Targeted Spells"),
             };
 
             InitSpells();
-            AttackMenu = new Menu("Brian.EvadeTargetMenu.DodgeAttackMenu", "Shield Attack");
-            {
-                AttackMenu.Add(new MenuBool("Brian.EvadeTargetMenu.BAttack", "Basic Attack"));
-                AttackMenu.Add(new MenuSlider("Brian.EvadeTargetMenu.BAttackHpU", "^- if Health <=", 80, 1, 100));
-                AttackMenu.Add(new MenuBool("Brian.EvadeTargetMenu.CAttack", "Crit Attack"));
-                AttackMenu.Add(new MenuSlider("Brian.EvadeTargetMenu.CAttackHpU", "^- if Health <=", 80, 1, 100));
-                AttackMenu.Add(new MenuBool("Brian.EvadeTargetMenu.Turret", "Block Turret Attack"));
-                AttackMenu.Add(new MenuBool("Brian.EvadeTargetMenu.Minion", "Block Minion Attack"));
-                AttackMenu.Add(new MenuSlider("Brian.EvadeTargetMenu.HP", "^- if Health <=", 20, 1, 100));
-            }
-            if (ObjectManager.GetLocalPlayer().ChampionName == "Skarner" || ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-            {
-                Menu.Add(AttackMenu);
-            }
-
+          
 
             mainMenu.Add(Menu);
 
@@ -233,17 +219,7 @@ namespace Potato_AIO.WShield
 
             if (aaa == ObjectManager.GetLocalPlayer())
             {
-                if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
-                {
-                    Potato_AIO.Bases.Champion.W.Cast();
-                }
-                if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                {
-                    if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                    {
-                        Potato_AIO.Bases.Champion.W.Cast();
-                    }
-                }
+                Potato_AIO.Bases.Champion.W.Cast(hero);
             }
 
 

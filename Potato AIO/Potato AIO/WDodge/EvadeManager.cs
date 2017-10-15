@@ -18,7 +18,7 @@
 
 using Potato_AIO.Bases;
 
-namespace Potato_AIO.WShield
+namespace Potato_AIO.WDodge
 {
     #region
 
@@ -160,44 +160,28 @@ namespace Potato_AIO.WShield
                                         x.IsAboutToHit(
                                             150 + evadeSpell.Delay,
                                             ObjectManager.GetLocalPlayer())).ToArray();
-                            if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
+
+                            if (willHitList.Any())
                             {
-                                if (willHitList.Any())
+                                var meow = GameObjects.EnemyHeroes.Where(x => x.IsValidTarget(525) && x != null);
+                                foreach (var zzz in meow)
                                 {
+
 
                                     if (willHitList.OrderByDescending(
                                             x => dangerLevel)
                                         .Any(
                                             x =>
-                                                Potato_AIO.Bases.Champion.W.Cast()))
+
+                                                Potato_AIO.Bases.Champion.W.CastOnUnit(zzz)))
                                     {
                                         return;
 
                                     }
                                 }
                             }
-                            if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                            {
-                                if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                                {
-                                    if (willHitList.Any())
-                                    {
-
-                                        if (willHitList.OrderByDescending(
-                                                x => dangerLevel)
-                                            .Any(
-                                                x =>
-                                                    Potato_AIO.Bases.Champion.W.Cast()))
-                                        {
-                                            return;
-
-                                        }
-                                    }
-                                }
-                            }
-                            
                         }
-
+                        
                     }
                 }
             }

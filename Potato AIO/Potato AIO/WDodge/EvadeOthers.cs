@@ -1,6 +1,6 @@
 ﻿using Aimtec.SDK.Damage;
 
-namespace Potato_AIO.WShield
+namespace Potato_AIO.WDodge
 {
     #region
 
@@ -172,92 +172,7 @@ namespace Potato_AIO.WShield
             }
             var target = sender as Obj_AI_Hero;
 
-            if (ObjectManager.GetLocalPlayer().ChampionName == "Skarner" || ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-            {
-                var ally = Args.Target as Obj_AI_Hero;
-                if (ally != null)
-                {
-
-                    if (EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.Turret"].Enabled)
-                    {
-                        if (ally.IsHero && ally.IsMe && sender.IsTurret)
-                        {
-                            if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
-                            {
-                                Potato_AIO.Bases.Champion.W.Cast();
-                            }
-                            if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                            {
-                                if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                                {
-                                    Potato_AIO.Bases.Champion.W.Cast();
-                                }
-                            }
-                        }
-                    }
-                }
-
-              
-                if (ally != null)
-                {
-                    if (ally.IsHero && ally.IsMe)
-                    {
-                        if (Args.SpellData.Name.Contains("BasicAttack") && Args.Sender.IsHero &&
-                            EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttack"]
-                                .Enabled &&
-                            ally.HealthPercent() <=
-                            EvadeTargetManager.AttackMenu["Brian.EvadeTargetMenu.BAttackHpU"]
-                                .Value)
-                        {
-
-                            if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
-                            {
-                                Potato_AIO.Bases.Champion.W.Cast();
-                            }
-                            if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                            {
-                                if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                                {
-                                    Potato_AIO.Bases.Champion.W.Cast();
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (ally != null)
-                {
-                    if (Args.Sender.IsMinion)
-                    {
-
-
-                        if (EvadeTargetManager
-                                .AttackMenu["Brian.EvadeTargetMenu.Minion"]
-                                .Enabled && ally.HealthPercent() <=
-                            EvadeTargetManager
-                                .AttackMenu["Brian.EvadeTargetMenu.HP"]
-                                .Value)
-                        {
-                            if (ally.IsHero && ally.IsMe)
-                            {
-                                if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
-                                {
-                                    Potato_AIO.Bases.Champion.W.Cast();
-                                }
-                                if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                                {
-                                    if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                                    {
-                                        Potato_AIO.Bases.Champion.W.Cast();
-                                    }
-                                }
-
-
-                            }
-                        }
-                    }
-                }
-            }
+           
 
             if (target == null || target.Team == ObjectManager.GetLocalPlayer().Team || !target.IsValid ||
                 Args.Target == null || string.IsNullOrEmpty(Args.SpellData.Name) || !target.IsHero ||
@@ -280,17 +195,11 @@ namespace Potato_AIO.WShield
             }
             if (Args.Target.IsMe)
             {
-                if (ObjectManager.GetLocalPlayer().ChampionName != "Sion")
+                if (target.Distance(ObjectManager.GetLocalPlayer()) < 525)
                 {
-                    Potato_AIO.Bases.Champion.W.Cast();
+                    Potato_AIO.Bases.Champion.W.Cast(target);
                 }
-                if (ObjectManager.GetLocalPlayer().ChampionName == "Sion")
-                {
-                    if (!ObjectManager.GetLocalPlayer().HasBuff("sionwshieldstacks"))
-                    {
-                        Potato_AIO.Bases.Champion.W.Cast();
-                    }
-                }
+               
             }
         }
 

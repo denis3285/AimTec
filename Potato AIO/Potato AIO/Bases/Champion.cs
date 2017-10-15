@@ -39,6 +39,8 @@ namespace Potato_AIO.Bases
 
         internal static Spell R { get; set; } = default(Spell);
         internal static Spell W2 { get; set; } = default(Spell);
+        internal static Spell Q2 { get; set; } = default(Spell);
+        internal static Spell E2 { get; set; } = default(Spell);
         internal static Menu RootMenu { get; set; } = default(Menu);
 
         internal static Spell W { get; set; } = default(Spell);
@@ -91,6 +93,7 @@ namespace Potato_AIO.Bases
             Gapcloser.OnGapcloser += OnGapcloser;
             BuffManager.OnRemoveBuff += uh;
             BuffManager.OnAddBuff += ah;
+
         }
 
       
