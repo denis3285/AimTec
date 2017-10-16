@@ -191,6 +191,8 @@ namespace Potato_AIO.Champions
         private int hmmm;
         private MenuSlider meowmeowtime;
         private int meowmeowtimes;
+        private Vector3 position;
+        private int zzzzzzzzzz;
 
         public int Hmmmmm { get; private set; }
 
@@ -217,6 +219,7 @@ namespace Potato_AIO.Champions
                     .ForEach(
                         unit =>
                         {
+
                            
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
@@ -264,6 +267,7 @@ namespace Potato_AIO.Champions
             {
                 Render.Circle(Player.Position,600, 50, Color.LightGreen);
             }
+            Render.Circle(position, 150, 40, Color.Wheat);
         }
     
         public static void DrawCircleOnMinimap(
@@ -423,6 +427,7 @@ namespace Potato_AIO.Champions
             WDodge.EvadeTargetManager.Attach(zzzzzz);
             RootMenu.Add(zzzzzz);
             RootMenu.Add(DrawMenu);
+            RootMenu.Add(new MenuKeyBind("insec", "Insec with W > Q", KeyCode.T, KeybindType.Press));
             RootMenu.Attach();
         }
 
@@ -452,10 +457,71 @@ namespace Potato_AIO.Champions
 
         protected override void SemiR()
         {
-         
 
+            if (RootMenu["insec"].Enabled)
+            {
+                if (position == Vector3.Zero)
+                {
+                   
+                    Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
+                }
+                var target = TargetSelector.Implementation.GetTarget(W.Range);
+                if (target != null && target.IsValidTarget(W.Range))
+                {
+                    if (Q.Ready && Player.Mana > Player.GetSpell(SpellSlot.Q).Cost + Player.GetSpell(SpellSlot.W).Cost)
+                    {
+                        W.Cast(target);
+                       
+                        if (!position.IsZero)
+                        {
+                            Player.IssueOrder(OrderType.MoveTo,
+                                position);
+                        }
+                        if (Player.Distance(position) < 150)
+                        {
+                            Q.Cast(target);
+                        }
+                        if (position.Distance(target) < 150)
+                        {
+                            position = target.ServerPosition.Extend(Player.ServerPosition, -200);
+                        }
+                       
+
+                    }
+                }
+            }
+            
+            if (!position.IsZero && zzzzzzzzzz+100 < Game.TickCount)
+            {
+                zzzzzzzzzz = 2000 + Game.TickCount;
+            }
+            if (zzzzzzzzzz < Game.TickCount)
+            {
+                position = new Vector3(0, 0, 0);
+            }
         }
+        internal override void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                if (args.SpellData.Name == "MaokaiQ")
+                {
 
+                    position = new Vector3(0, 0, 0);
+                }
+                if (args.SpellData.Name == "MaokaiW")
+                {
+                    if (RootMenu["insec"].Enabled)
+                    { var target = TargetSelector.Implementation.GetTarget(W.Range);
+                        if (target != null && target.IsValidTarget(W.Range))
+                        {
+                           
+                            position = target.ServerPosition.Extend(Player.ServerPosition, -300-(target.MoveSpeed/10));
+                        }
+                    }
+                }
+            }
+        }
         protected override void LastHit()
         {
         }
