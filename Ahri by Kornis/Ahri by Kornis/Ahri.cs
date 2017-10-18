@@ -575,81 +575,84 @@ namespace Ahri_By_Kornis
                     }
                 }
             }
-            if (bursting)
+            if (useR)
             {
-
-                if (target.Health <
-                    Player.GetSpellDamage(target, SpellSlot.Q) +
-                    Player.GetSpellDamage(target, SpellSlot.W) +
-                    Player.GetSpellDamage(target, SpellSlot.E) +
-                    Player.GetSpellDamage(target, SpellSlot.R) * 2)
+                if (bursting)
                 {
-                    if (enemies >= target.CountEnemyHeroesInRange(600))
-                    {
-                        if (R.Ready && E.Ready)
-                        {
-                            if (E.Cast(target))
-                            {
-                                R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
 
+                    if (target.Health <
+                        Player.GetSpellDamage(target, SpellSlot.Q) +
+                        Player.GetSpellDamage(target, SpellSlot.W) +
+                        Player.GetSpellDamage(target, SpellSlot.E) +
+                        Player.GetSpellDamage(target, SpellSlot.R) * 2)
+                    {
+                        if (enemies >= target.CountEnemyHeroesInRange(600))
+                        {
+                            if (R.Ready && E.Ready)
+                            {
+                                if (E.Cast(target))
+                                {
+                                    R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
+
+                                }
                             }
                         }
-                    }
 
-                    if (Player.HasBuff("AhriTumble"))
-                    {
-                        switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
+                        if (Player.HasBuff("AhriTumble"))
                         {
-                            case 0:
-                                var meow = Q.GetPredictionInput(target);
-                                var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
-                                Vector2 intersec = new Vector2();
-                                for (int i = 450; i >= 0; i = i - 50)
-                                {
-                                    for (int j = 50; j <= 450; j = j + 50)
+                            switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
+                            {
+                                case 0:
+                                    var meow = Q.GetPredictionInput(target);
+                                    var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
+                                    Vector2 intersec = new Vector2();
+                                    for (int i = 450; i >= 0; i = i - 50)
                                     {
-                                        var vectors =
-                                            Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
-                                                targetpos, i, j);
-                                        foreach (var x in vectors)
+                                        for (int j = 50; j <= 450; j = j + 50)
                                         {
-                                            if (!AnyWallInBetween(Player.Position, x))
+                                            var vectors =
+                                                Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
+                                                    targetpos, i, j);
+                                            foreach (var x in vectors)
                                             {
-                                                intersec = x;
-                                                goto ABC;
+                                                if (!AnyWallInBetween(Player.Position, x))
+                                                {
+                                                    intersec = x;
+                                                    goto ABC;
+                                                }
                                             }
                                         }
                                     }
-                                }
-                                ABC:
-                                R.Cast(intersec.To3D());
-                                break;
-                            case 1:
-                                if (Menu["combo"]["rset"]["under"].Enabled)
-                                {
-                                    R.Cast(Game.CursorPos);
-                                }
-                                if (!Menu["combo"]["rset"]["under"].Enabled)
-                                {
-                                    if (!target.IsUnderEnemyTurret())
+                                    ABC:
+                                    R.Cast(intersec.To3D());
+                                    break;
+                                case 1:
+                                    if (Menu["combo"]["rset"]["under"].Enabled)
                                     {
                                         R.Cast(Game.CursorPos);
                                     }
-                                }
-                                break;
-                            case 2:
-                                if (Menu["combo"]["rset"]["under"].Enabled)
-                                {
-                                    R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
-                                }
-                                if (!Menu["combo"]["rset"]["under"].Enabled)
-                                {
-                                    if (!target.IsUnderEnemyTurret())
+                                    if (!Menu["combo"]["rset"]["under"].Enabled)
+                                    {
+                                        if (!target.IsUnderEnemyTurret())
+                                        {
+                                            R.Cast(Game.CursorPos);
+                                        }
+                                    }
+                                    break;
+                                case 2:
+                                    if (Menu["combo"]["rset"]["under"].Enabled)
                                     {
                                         R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
                                     }
-                                }
-                                break;
+                                    if (!Menu["combo"]["rset"]["under"].Enabled)
+                                    {
+                                        if (!target.IsUnderEnemyTurret())
+                                        {
+                                            R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
+                                        }
+                                    }
+                                    break;
+                            }
                         }
                     }
                 }
