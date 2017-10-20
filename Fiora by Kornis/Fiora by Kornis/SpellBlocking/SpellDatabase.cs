@@ -3866,7 +3866,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                 new SpellData
                 {
                     ChampionName = "Taliyah",
-                    SpellName = "TaliyahW",
+                    SpellName = "TaliyahWVC",
                     Slot = SpellSlot.W,
                     Type = SkillShotType.SkillshotCircle,
                     Delay = 600,
@@ -3877,7 +3877,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                     AddHitbox = true,
                     DangerValue = 2,
                     IsDangerous = true,
-                    MissileSpellName = "TaliyahW",
+                    MissileSpellName = "TaliyahWVC",
                 });
 
             #endregion Taliyah
