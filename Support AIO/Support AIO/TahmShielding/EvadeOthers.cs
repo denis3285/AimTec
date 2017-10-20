@@ -157,9 +157,7 @@ namespace Support_AIO.TahmShielding
                             switch (target.ChampionName)
                             {
                                 case "Jax":
-                                    if (Menu["Blockjax"]["BlockSpellE"] != null &&
-                                        Menu["Blockjax"]["BlockSpellE"].Enabled)
-                                    {
+                               
                                         if (target.HasBuff("jaxcounterstrike"))
                                         {
 
@@ -179,15 +177,13 @@ namespace Support_AIO.TahmShielding
 
                                             }
 
-                                        }
-                                    }
+                                        
+                                   }
 
 
                                     break;
                                 case "Riven":
-                                    if (Menu["Blockriven"]["BlockSpellQ"] != null &&
-                                        Menu["Blockriven"]["BlockSpellQ"].Enabled)
-                                    {
+                                    
                                         if (Utils.GameTimeTickCount - RivenQTime <= 100 && RivenDashPos.IsValid() &&
                                             ally.Distance(target) <= RivenQRange)
                                         {
@@ -199,7 +195,7 @@ namespace Support_AIO.TahmShielding
                                             }
 
                                         }
-                                    }
+                                    
                                     break;
                             }
                         }
