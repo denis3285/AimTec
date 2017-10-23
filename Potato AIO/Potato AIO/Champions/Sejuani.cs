@@ -46,7 +46,7 @@ namespace Potato_AIO.Champions
                     }
                 }
             }
-            if (RootMenu["harass"]["useW"].Enabled && target.IsValidTarget(W.Range))
+            if (RootMenu["combo"]["useW"].Enabled && target.IsValidTarget(W.Range))
             {
                 if (target != null)
                 {
