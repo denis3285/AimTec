@@ -425,7 +425,7 @@ namespace Potato_AIO.Champions
             W = new Aimtec.SDK.Spell(SpellSlot.W, 450);
             E = new Aimtec.SDK.Spell(SpellSlot.E, 550);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 4000f);
-            Q.SetSkillshot(0.5f, 70, 1400f, false, SkillshotType.Circle, false, HitChance.None);
+            Q.SetSkillshot(0.5f, 180, 1400f, false, SkillshotType.Circle, false, HitChance.None);
             E.SetSkillshot(0.5f, 70, 1400, false, SkillshotType.Line, false, HitChance.None);
             W.SetCharged("GalioW", "GalioW", 420, 450, 0.2f);
            
