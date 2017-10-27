@@ -106,25 +106,38 @@ namespace Support_AIO.Champions
 
                             if (target != null && target.IsValidTarget(R.Range))
                             {
-                                switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
-                                    case 0:
-                                        if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
-                                            Player.GetSpellDamage(target, SpellSlot.W) +
-                                            Player.GetSpellDamage(target, SpellSlot.E) +
-                                            Player.GetSpellDamage(target, SpellSlot.R) +
-                                            Player.GetSpellDamage(target, SpellSlot.R,
-                                                DamageStage.DamagePerSecond))
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
-                                    case 1:
-                                        if (target.HealthPercent()  < RootMenu["combo"]["health"].As<MenuSlider>().Value)
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
+                                    switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                    {
+                                        case 0:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                        case 1:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            if (target.HealthPercent() <
+                                                RootMenu["combo"]["health"].As<MenuSlider>().Value)
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                    }
                                 }
                             }
                         }
@@ -179,30 +192,42 @@ namespace Support_AIO.Champions
 
                             if (target != null && target.IsValidTarget(R.Range))
                             {
-                                switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
-                                    case 0:
-                                        if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
-                                            Player.GetSpellDamage(target, SpellSlot.W) +
-                                            Player.GetSpellDamage(target, SpellSlot.E) +
-                                            Player.GetSpellDamage(target, SpellSlot.R) +
-                                            Player.GetSpellDamage(target, SpellSlot.R,
-                                                DamageStage.DamagePerSecond))
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
-                                    case 1:
-                                        if (target.HealthPercent() < RootMenu["combo"]["health"].As<MenuSlider>().Value)
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
+                                    switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                    {
+                                        case 0:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                        case 1:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            if (target.HealthPercent() <
+                                                RootMenu["combo"]["health"].As<MenuSlider>().Value)
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                    }
                                 }
                             }
                         }
                     }
-
                     break;
                 case 2:
                     if (RootMenu["combo"]["user"].Enabled)
@@ -214,31 +239,47 @@ namespace Support_AIO.Champions
 
                             if (target != null && target.IsValidTarget(R.Range))
                             {
-                                switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
-                                    case 0:
-                                        if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
-                                            Player.GetSpellDamage(target, SpellSlot.W) +
-                                            Player.GetSpellDamage(target, SpellSlot.E) +
-                                            Player.GetSpellDamage(target, SpellSlot.R) +
-                                            Player.GetSpellDamage(target, SpellSlot.R,
-                                                DamageStage.DamagePerSecond))
-                                        {
-                                            if (R.Cast(target))
+                                    switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                    {
+                                        case 0:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
                                             {
-                                                hewwo = 300 + Game.TickCount;
+                                                if (R.Cast(target))
+                                                {
+                                                    hewwo = 300 + Game.TickCount;
+                                                }
                                             }
-                                        }
-                                        break;
-                                    case 1:
-                                        if (target.HealthPercent() < RootMenu["combo"]["health"].As<MenuSlider>().Value)
-                                        {
-                                            if (R.Cast(target))
+                                            break;
+                                        case 1:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
                                             {
-                                                hewwo = 300 + Game.TickCount;
+                                                if (R.Cast(target))
+                                                {
+                                                    hewwo = 300 + Game.TickCount;
+                                                }
                                             }
-                                        }
-                                        break;
+                                            if (target.HealthPercent() <
+                                                RootMenu["combo"]["health"].As<MenuSlider>().Value)
+                                            {
+                                                if (R.Cast(target))
+                                                {
+                                                    hewwo = 300 + Game.TickCount;
+                                                }
+                                            }
+                                            break;
+                                    }
                                 }
                             }
                         }
@@ -331,33 +372,47 @@ namespace Support_AIO.Champions
                     {
                         var target = Extensions.GetBestEnemyHeroTargetInRange(R.Range);
 
-                        if(target.IsValidTarget() && !W.Ready && !Q.Ready)
+                        if (target.IsValidTarget() && !W.Ready && !Q.Ready)
                         {
 
 
                             if (target != null && target.IsValidTarget(R.Range))
                             {
-                                switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
-                                    case 0:
-                                        if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
-                                            Player.GetSpellDamage(target, SpellSlot.W) +
-                                            Player.GetSpellDamage(target, SpellSlot.E) +
-                                            Player.GetSpellDamage(target, SpellSlot.R) +
-                                            Player.GetSpellDamage(target, SpellSlot.R,
-                                                DamageStage.DamagePerSecond))
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
-                                    case 1:
-                                        if (target.HealthPercent() < RootMenu["combo"]["health"].As<MenuSlider>().Value)
-                                        {
-                                            R.Cast(target);
-                                        }
-                                        break;
+                                    switch (RootMenu["combo"]["rmode"].As<MenuList>().Value)
+                                    {
+                                        case 0:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                        case 1:
+                                            if (target.Health < Player.GetSpellDamage(target, SpellSlot.Q) +
+                                                Player.GetSpellDamage(target, SpellSlot.W) +
+                                                Player.GetSpellDamage(target, SpellSlot.E) +
+                                                Player.GetSpellDamage(target, SpellSlot.R) +
+                                                Player.GetSpellDamage(target, SpellSlot.R,
+                                                    DamageStage.DamagePerSecond))
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            if (target.HealthPercent() <
+                                                RootMenu["combo"]["health"].As<MenuSlider>().Value)
+                                            {
+                                                R.Cast(target);
+                                            }
+                                            break;
+                                    }
                                 }
                             }
+
                         }
                     }
                     break;
@@ -381,9 +436,12 @@ namespace Support_AIO.Champions
                             {
                                 if (target.Distance(Player) > R.Range)
                                 {
-                                    if (R.Cast(target))
+                                    if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                     {
-                                        Flash.Cast(target.ServerPosition);
+                                        if (R.Cast(target))
+                                        {
+                                            Flash.Cast(target.ServerPosition);
+                                        }
                                     }
                                 }
                             }
@@ -415,7 +473,7 @@ namespace Support_AIO.Champions
                     {
                         return;
                     }
-                    if (RootMenu["farming"]["lane"]["usee"].Enabled)
+                    if (RootMenu["farming"]["lane"]["usee"].Enabled && !RootMenu["farming"]["lane"]["laste"].Enabled)
                     {
                         foreach (var lowest in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range)
                             .OrderBy(x => x.Health))
@@ -428,6 +486,28 @@ namespace Support_AIO.Champions
                                     E.CastOnUnit(lowest);
                                 }
                             }
+                        }
+                    }
+                    if (RootMenu["farming"]["lane"]["usee"].Enabled && RootMenu["farming"]["lane"]["laste"].Enabled)
+                    {
+                        foreach (var lowest in Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range)
+                            .OrderBy(x => x.Health))
+                        {
+                            if (lowest != null)
+                            {
+                               
+                                if (lowest.IsValidTarget(E.Range) && lowest.Health < Player.GetSpellDamage(lowest, SpellSlot.E))
+                                {
+                                    E.CastOnUnit(lowest);
+                                }
+                            }
+                        }
+                    }
+                    if (RootMenu["farming"]["lane"]["usew"].Enabled)
+                    {
+                        if (minion.IsValidTarget(Q.Range) && minion != null)
+                        {
+                            W.Cast(minion.ServerPosition);
                         }
                     }
                     if (RootMenu["farming"]["lane"]["useq"].Enabled)
@@ -778,6 +858,14 @@ namespace Support_AIO.Champions
                 
             }
             RootMenu.Add(ComboMenu);
+            var BlackList = new Menu("blacklist", "R Blacklist");
+            {
+                foreach (var target in GameObjects.EnemyHeroes)
+                {
+                    BlackList.Add(new MenuBool(target.ChampionName.ToLower(), "Block: " + target.ChampionName, false));
+                }
+            }
+            RootMenu.Add(BlackList);
             HarassMenu = new Menu("harass", "Harass");
             {
                 HarassMenu.Add(new MenuList("harassmode", "Harass Mode", new[] { "Q > W > E", "Q > E > W", "W > Q > E", "E > W > Q" }, 1));
@@ -794,7 +882,9 @@ namespace Support_AIO.Champions
                 LaneClear.Add(new MenuSlider("mana", "Mana Manager", 50));
                 LaneClear.Add(new MenuBool("useq", "Use Q to Farm"));
                 LaneClear.Add(new MenuSlider("hite", "^- if Hits X", 2, 1, 6));
+                LaneClear.Add(new MenuBool("usew", "Use W to Farm"));
                 LaneClear.Add(new MenuBool("usee", "Use E to Farm"));
+                LaneClear.Add(new MenuBool("laste", "^- Only if Killable"));
             }
             var JungleClear = new Menu("jungle", "Jungle Clear");
             {
@@ -815,13 +905,21 @@ namespace Support_AIO.Champions
                 DrawMenu.Add(new MenuBool("flashr", "Draw Flash R Range"));
                 DrawMenu.Add(new MenuBool("damage", "Draw Damage"));
             }
-
+            Gapcloser.Attach(RootMenu, "Q Anti-Gap");
             RootMenu.Add(DrawMenu);
             RootMenu.Add(new MenuKeyBind("flashr", "Flash - R", KeyCode.T, KeybindType.Press));
             RootMenu.Attach();
         }
 
+        internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
+        {
 
+            if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
+            {
+                Q.Cast(Args.EndPosition);
+            }
+
+        }
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 900);
