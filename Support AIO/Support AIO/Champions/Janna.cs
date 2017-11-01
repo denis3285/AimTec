@@ -32,31 +32,33 @@ namespace Support_AIO.Champions
             bool useW = RootMenu["combo"]["usew"].Enabled;
 
 
-
-
-            var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
-
-            if (!target.IsValidTarget())
+            if (!Player.HasBuff("ReapTheWhirlwind"))
             {
 
-                return;
-            }
+                var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
 
-
-            if (target.IsValidTarget(Q.Range) && useQ)
-            {
-
-                if (target != null)
+                if (!target.IsValidTarget())
                 {
-                    Q.Cast(target);
+
+                    return;
                 }
-            }
-            if (target.IsValidTarget(W.Range) && useW)
-            {
 
-                if (target != null)
+
+                if (target.IsValidTarget(Q.Range) && useQ)
                 {
-                    W.CastOnUnit(target);
+
+                    if (target != null)
+                    {
+                        Q.Cast(target);
+                    }
+                }
+                if (target.IsValidTarget(W.Range) && useW)
+                {
+
+                    if (target != null)
+                    {
+                        W.CastOnUnit(target);
+                    }
                 }
             }
         }
@@ -64,7 +66,20 @@ namespace Support_AIO.Champions
         protected override void SemiR()
         {
 
+            if (Player.HasBuff("ReapTheWhirlwind"))
+            {
+                Orbwalker.Implementation.AttackingEnabled = false;
+                Orbwalker.Implementation.MovingEnabled = false;
 
+
+            }
+            if (!Player.HasBuff("ReapTheWhirlwind"))
+            {
+                Orbwalker.Implementation.AttackingEnabled = true;
+                Orbwalker.Implementation.MovingEnabled = true;
+
+
+            }
             if (RootMenu["insec"].Enabled)
             {
                 Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
@@ -146,7 +161,7 @@ namespace Support_AIO.Champions
 
         protected override void Harass()
         {
-            throw new NotImplementedException();
+
         }
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
@@ -166,7 +181,7 @@ namespace Support_AIO.Champions
                 }
             }
         }
-    
+
         protected override void SetMenu()
         {
             RootMenu = new Menu("root", $"Support AIO - {Program.Player.ChampionName}", true);
@@ -222,13 +237,14 @@ namespace Support_AIO.Champions
 
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
-         
 
+            if (!Player.HasBuff("ReapTheWhirlwind"))
+            {
                 if (target != null && Args.EndPosition.Distance(Player) < Q.Range)
                 {
                     Q.Cast(Args.EndPosition);
                 }
-            
+            }
         }
 
 
@@ -251,7 +267,7 @@ namespace Support_AIO.Champions
                     {
 
                         E.CastOnUnit(caster);
-     
+
 
                     }
                 }
