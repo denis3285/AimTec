@@ -113,8 +113,21 @@ namespace Darius_By_Kornis
             Game.OnUpdate += Game_OnUpdate;
             Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.PostAttack += OnPostAttack;
+            Obj_AI_Base.OnProcessSpellCast += ProcessCast;
             LoadSpells();
             Console.WriteLine("Darius by Kornis - Loaded");
+        }
+
+        private void ProcessCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs e)
+        {
+            if (e.Sender.IsMe)
+            {
+                if (e.SpellData.Name == "SummonerFlash")
+                {
+                    
+                    delayyyyyyyyyyyyyyyyyyy = 500 + Game.TickCount;
+                }
+            }
         }
 
         private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
@@ -139,6 +152,10 @@ namespace Darius_By_Kornis
             var heroTarget = args.Target as Obj_AI_Hero;
             if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo))
             {
+                if (delayyyyyyyyyyyyyyyyyyy > Game.TickCount)
+                {
+                    return;
+                }
                 if (!Menu["combo"]["waa"].Enabled)
                 {
                     return;
@@ -154,6 +171,7 @@ namespace Darius_By_Kornis
 
                     Orbwalker.ResetAutoAttackTimer();
                 }
+               
 
             }
         }
@@ -219,6 +237,7 @@ namespace Darius_By_Kornis
         }
 
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
+        private int delayyyyyyyyyyyyyyyyyyy;
 
         public static int SxOffset(Obj_AI_Hero target)
         {
