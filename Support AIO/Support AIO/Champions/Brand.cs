@@ -663,7 +663,7 @@ namespace Support_AIO.Champions
             E = new Aimtec.SDK.Spell(SpellSlot.E, 625);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 750);
             Q.SetSkillshot(0.25f, 75f, 1600, true, SkillshotType.Line);
-            W.SetSkillshot(0.85f, 200f, 3200, false, SkillshotType.Circle);
+            W.SetSkillshot(0.85f, 200f, 2900, false, SkillshotType.Circle);
         }
     }
 }
