@@ -37,7 +37,7 @@ namespace Darius_By_Kornis
 
         public void LoadSpells()
         {
-            Q = new Spell(SpellSlot.Q, 425);
+            Q = new Spell(SpellSlot.Q, 415);
             W = new Spell(SpellSlot.W, 300);
             E = new Spell(SpellSlot.E, 490);
 
@@ -54,7 +54,9 @@ namespace Darius_By_Kornis
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("lockq", "Use Q Outside Lock", false));
                 ComboMenu.Add(new MenuBool("qaa", "Don't Q if in AA Range", false));
-                ComboMenu.Add(new MenuBool("check", "Checks for Auto Attack for Q (Smooth Combo)").SetToolTip("If tries to Auto Attack, don't cast Q"));
+                ComboMenu.Add(
+                    new MenuBool("check", "Checks for Auto Attack for Q (Smooth Combo)").SetToolTip(
+                        "If tries to Auto Attack, don't cast Q"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("waa", "^- Only for AA Reset", false));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
@@ -101,7 +103,7 @@ namespace Darius_By_Kornis
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
                 DrawMenu.Add(new MenuBool("rdamage", "Draw R Damage"));
                 DrawMenu.Add(new MenuBool("stacks", "Draw Stack Count"));
-                       DrawMenu.Add(new MenuBool("toggle", "Draw Toggle"));
+                DrawMenu.Add(new MenuBool("toggle", "Draw Toggle"));
             }
             Menu.Add(DrawMenu);
             Gapcloser.Attach(Menu, "E Anti-GapClose");
@@ -114,6 +116,7 @@ namespace Darius_By_Kornis
             LoadSpells();
             Console.WriteLine("Darius by Kornis - Loaded");
         }
+
         private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
             if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready)
@@ -145,7 +148,13 @@ namespace Darius_By_Kornis
                 {
                     return;
                 }
-                W.Cast();
+
+                if (W.Cast())
+                {
+
+                    Orbwalker.ResetAutoAttackTimer();
+                }
+
             }
         }
 
@@ -515,7 +524,7 @@ namespace Darius_By_Kornis
 
                             if (minion.IsValidTarget(Q.Range) && minion != null)
                             {
-                                
+
                                 if (!Orbwalker.IsWindingUp)
                                 {
                                     Q.Cast();
@@ -646,14 +655,14 @@ namespace Darius_By_Kornis
                 if (bestTarget != null &&
                     bestTarget.IsValidTarget(Q.Range))
                 {
-                    if (bestTarget.Distance(Player) < 240)
+                    if (bestTarget.Distance(Player) <= 240)
                     {
                         if (bestTarget.Health <= GetQmelee(bestTarget))
                         {
                             Q.CastOnUnit(bestTarget);
                         }
                     }
-                    if (bestTarget.Distance(Player) > 240)
+                    if (bestTarget.Distance(Player) >= 240)
                     {
                         if (bestTarget.Health <= GetQmax(bestTarget))
                         {
@@ -730,33 +739,37 @@ namespace Darius_By_Kornis
                 {
                     var target = GetBestEnemyHeroTargetInRange(Q.Range);
 
-                    
+
                     if (target.IsValidTarget(Q.Range) && target != null)
                     {
-                        if (target.ServerPosition.Distance(Player.ServerPosition) < 240)
+                        if (Player.Distance(target) <= 250)
                         {
                             if (Player.HasBuff("dariusqcast"))
                             {
-                                Orbwalker.Move(target.ServerPosition.Extend(Player.ServerPosition, 350));
+                                Orbwalker.MovingEnabled = false;
+                                Player.IssueOrder(OrderType.MoveTo, Player.Position.Extend(target.Position, -Q.Range));
                             }
+                            else Orbwalker.MovingEnabled = true;
 
 
                         }
+                        else Orbwalker.MovingEnabled = true;
 
 
                     }
+                    else Orbwalker.MovingEnabled = true;
                 }
                 {
-                    var target = GetBestEnemyHeroTargetInRange(Q.Range+200);
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range + 200);
 
 
                     if (target.IsValidTarget(Q.Range + 200) && target != null)
                     {
-                        if (target.ServerPosition.Distance(Player.ServerPosition) > Q.Range-50)
+                        if (target.ServerPosition.Distance(Player.ServerPosition) > Q.Range - 50)
                         {
                             if (Player.HasBuff("dariusqcast"))
                             {
-                                Orbwalker.Move(target.ServerPosition);
+                                Player.IssueOrder(OrderType.MoveTo, target.Position);
                             }
 
 
@@ -766,6 +779,7 @@ namespace Darius_By_Kornis
                 }
 
             }
+            else Orbwalker.MovingEnabled = true;
         }
 
         private void OnCombo()
@@ -776,31 +790,48 @@ namespace Darius_By_Kornis
             bool useE = Menu["combo"]["usee"].Enabled;
             bool useR = Menu["combo"]["user"].Enabled;
 
-            var target = GetBestEnemyHeroTargetInRange(E.Range);
 
-            if (!target.IsValidTarget())
+            if (W.Ready && useW && !Menu["combo"]["waa"].Enabled)
             {
-                return;
-            }
-            if (W.Ready && useW && target.IsValidTarget(W.Range) && !Menu["combo"]["waa"].Enabled)
-            {
+                var target = GetBestEnemyHeroTargetInRange(W.Range);
 
-                if (target != null)
+                if (target.IsValidTarget())
                 {
 
-                    W.Cast();
+
+                    if (target != null && target.IsValidTarget(W.Range))
+                    {
+
+                        W.Cast();
+                    }
                 }
             }
             if (useQ)
             {
-                if (Q.Ready && target.IsValidTarget(Q.Range))
+                var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                if (target.IsValidTarget())
                 {
 
-                    if (target != null)
+                    if (Q.Ready && target.IsValidTarget(Q.Range))
                     {
-                        if (Menu["combo"]["qaa"].Enabled)
+
+                        if (target != null)
                         {
-                            if (Player.Distance(target) > 300)
+                            if (Menu["combo"]["qaa"].Enabled)
+                            {
+                                if (Player.Distance(target) >= Player.GetFullAttackRange(target))
+                                {
+                                    if (Menu["combo"]["check"].Enabled)
+                                    {
+                                        if (!Orbwalker.IsWindingUp)
+                                        {
+                                            Q.Cast();
+                                        }
+                                    }
+                                }
+                            }
+                            if (!Menu["combo"]["qaa"].Enabled)
                             {
                                 if (Menu["combo"]["check"].Enabled)
                                 {
@@ -809,79 +840,81 @@ namespace Darius_By_Kornis
                                         Q.Cast();
                                     }
                                 }
+
                             }
-                        }
-                        if (!Menu["combo"]["qaa"].Enabled)
-                        {
-                            if (Menu["combo"]["check"].Enabled)
+                            if (Menu["combo"]["qaa"].Enabled)
                             {
-                                if (!Orbwalker.IsWindingUp)
+                                if (Player.Distance(target) >= Player.GetFullAttackRange(target))
                                 {
-                                    Q.Cast();
+                                    if (!Menu["combo"]["check"].Enabled)
+                                    {
+
+                                        Q.Cast();
+
+                                    }
                                 }
                             }
-
-                        }
-                        if (Menu["combo"]["qaa"].Enabled)
-                        {
-                            if (Player.Distance(target) > 300)
+                            if (!Menu["combo"]["qaa"].Enabled)
                             {
                                 if (!Menu["combo"]["check"].Enabled)
                                 {
-                              
-                                        Q.Cast();
-                                    
-                                }
-                            }
-                        }
-                        if (!Menu["combo"]["qaa"].Enabled)
-                        {
-                            if (!Menu["combo"]["check"].Enabled)
-                            {
-                              
-                                    Q.Cast();
-                                
-                            }
 
+                                    Q.Cast();
+
+                                }
+
+                            }
                         }
                     }
                 }
             }
             if (useE)
             {
-                if (E.Ready && target.IsValidTarget(E.Range))
+                var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                if (target.IsValidTarget())
                 {
 
-                    if (target != null)
+                    if (E.Ready && target.IsValidTarget(E.Range))
                     {
-                        if (Menu["combo"]["eaa"].Enabled)
+
+                        if (target != null)
                         {
-                            if (Player.Distance(target) > 300)
+                            if (Menu["combo"]["eaa"].Enabled)
+                            {
+                                if (Player.Distance(target) > Player.GetFullAttackRange(target))
+                                {
+                                    E.CastOnUnit(target);
+                                }
+                            }
+                            if (!Menu["combo"]["eaa"].Enabled)
                             {
                                 E.CastOnUnit(target);
+
                             }
                         }
-                        if (!Menu["combo"]["eaa"].Enabled)
-                        {
-                            E.CastOnUnit(target);
+                    }
+                }
+            }
+            if (R.Ready && useR)
+            {
+                var target = GetBestEnemyHeroTargetInRange(R.Range);
 
+                if (target.IsValidTarget())
+                {
+
+
+                    if (target != null && target.Health <= GetR(target) && target.IsValidTarget(R.Range) &&
+                        target.Health >= Menu["combo"]["waster"].As<MenuSlider>().Value)
+                    {
+                        if (Menu["combo"]["toggle"].Enabled)
+                        {
+                            R.CastOnUnit(target);
                         }
                     }
                 }
-            }
-            if (R.Ready && useR && target.IsValidTarget(R.Range))
-            {
 
-                if (target != null && target.Health <= GetR(target) &&
-                    target.Health >= Menu["combo"]["waster"].As<MenuSlider>().Value)
-                {
-                    if (Menu["combo"]["toggle"].Enabled)
-                    {
-                        R.CastOnUnit(target);
-                    }
-                }
             }
-
         }
 
         private void OnHarass()
@@ -889,48 +922,72 @@ namespace Darius_By_Kornis
             bool useQ = Menu["harass"]["useq"].Enabled;
             bool useW = Menu["harass"]["usew"].Enabled;
             bool useE = Menu["harass"]["usee"].Enabled;
-            var target = GetBestEnemyHeroTargetInRange(E.Range);
 
-            if (!target.IsValidTarget())
-            {
-                return;
-            }
 
-            if (E.Ready && useE && target.IsValidTarget(E.Range))
+            if (E.Ready && useE)
             {
-                if (target != null)
+                var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                if (target.IsValidTarget())
                 {
-                    E.CastOnUnit(target);
-                }
-            }
-            if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
-            {
-                if (target != null)
-                {
-                    if (Menu["combo"]["check"].Enabled)
-                    {
-                        if (!Orbwalker.IsWindingUp)
-                        {
-                            Q.Cast();
 
-                        }
-                    }
-                    if (!Menu["combo"]["check"].Enabled)
+
+                    if (target != null && target.IsValidTarget(E.Range))
                     {
-                        Q.Cast();
+
+                        E.CastOnUnit(target);
 
                     }
                 }
             }
-            if (W.Ready && useW && target.IsValidTarget(W.Range))
+            if (Q.Ready && useQ)
             {
+                var target = GetBestEnemyHeroTargetInRange(Q.Range);
 
-                if (target != null)
+                if (target.IsValidTarget())
                 {
-                    W.Cast();
+
+
+                    if (target != null && target.IsValidTarget(Q.Range))
+                    {
+
+                       
+                            if (Menu["combo"]["check"].Enabled)
+                            {
+                                if (!Orbwalker.IsWindingUp)
+                                {
+                                    Q.Cast();
+
+                                }
+                            }
+                            if (!Menu["combo"]["check"].Enabled)
+                            {
+                                Q.Cast();
+
+                            }
+                        
+                    }
                 }
+            }
+            if (W.Ready && useW)
+            {
+                var target = GetBestEnemyHeroTargetInRange(W.Range);
+
+                if (target.IsValidTarget())
+                {
+
+
+                    if (target != null && target.IsValidTarget(W.Range))
+                    {
+
+
+                    
+                            W.Cast();
+                        
+                    }
+                }
+
             }
         }
-
     }
 }
