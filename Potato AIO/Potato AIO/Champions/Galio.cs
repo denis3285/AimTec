@@ -218,6 +218,10 @@ namespace Potato_AIO.Champions
             {
                 Render.Circle(Player.Position, 800, 50, Color.LightGreen);
             }
+            if (RootMenu["drawings"]["flashw"].Enabled)
+            {
+                Render.Circle(Player.Position, W.Range + 340, 50, Color.LightGreen);
+            }
         }
         public static void DrawCircleOnMinimap(
             Vector3 center,
@@ -387,12 +391,16 @@ namespace Potato_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
                 DrawMenu.Add(new MenuBool("draww", "Draw W Range"));
                 DrawMenu.Add(new MenuBool("drawe", "Draw E Range"));
+                DrawMenu.Add(new MenuBool("flashw", "Draw Flash > W Range"));
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Minimap"));
                 DrawMenu.Add(new MenuBool("drawdamage", "Draw Damage"));
             }
             Gapcloser.Attach(RootMenu, "W Anti-Gap");
             RootMenu.Add(DrawMenu);
+            RootMenu.Add(new MenuKeyBind("flashw", "Flash > W", KeyCode.T, KeybindType.Press));
+            RootMenu.Add(new MenuSlider("timeflash", "^-  Flash After X ms.", 1000, 0, 2500));
             RootMenu.Attach();
+
         }
 
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
@@ -413,8 +421,8 @@ namespace Potato_AIO.Champions
                     W.ShootChargedSpell(Game.CursorPos, true);
                 }
 
-
-
+           
+               
             }
 
         }
@@ -428,13 +436,56 @@ namespace Potato_AIO.Champions
             Q.SetSkillshot(0.5f, 180, 1400f, false, SkillshotType.Circle, false, HitChance.None);
             E.SetSkillshot(0.5f, 70, 1400, false, SkillshotType.Line, false, HitChance.None);
             W.SetCharged("GalioW", "GalioW", 420, 450, 0.2f);
-           
 
+            if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
+                Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner1, 425);
+            if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
+                Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner2, 425);
 
         }
 
         protected override void SemiR()
         {
+            if (RootMenu["flashw"].Enabled)
+            {
+                Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
+                var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range + 340);
+                if (W.Ready)
+                {
+                    if (Flash.Ready && Flash != null && target.IsValidTarget())
+                    {
+                        if (target.IsValidTarget(W.Range + 340))
+                        {
+                            if (!W.IsCharging)
+                            {
+                                if (W.StartCharging(Game.CursorPos))
+                                {
+                                    meowmeowtimes = RootMenu["timeflash"].As<MenuSlider>().Value + Game.TickCount;
+                                }
+                            }
+                            if (meowmeowtimes < Game.TickCount)
+                            {
+                                if (W.IsCharging)
+                                {
+
+
+
+                                    if (Flash.Cast(target.ServerPosition))
+                                    {
+                                        W.ShootChargedSpell(Game.CursorPos, true);
+
+                                    }
+                                }
+                            }
+
+
+
+
+                        }
+                    }
+                }
+            }
+
             if (Player.HasBuff("GalioW"))
             {
                 Orbwalker.Implementation.AttackingEnabled = false;
