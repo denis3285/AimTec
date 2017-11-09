@@ -271,12 +271,12 @@ namespace Support_AIO.Champions
 
         protected override void Farming()
         {
-            throw new NotImplementedException();
+        
         }
 
         protected override void LastHit()
         {
-            throw new NotImplementedException();
+    
         }
 
         public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
