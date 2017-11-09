@@ -359,7 +359,7 @@ namespace Potato_AIO.Champions
                 LaneClear.Add(new MenuBool("useQ", "Use Q to Farm"));
                 LaneClear.Add(new MenuBool("qlast", "^- Only for Last Hit"));
                 LaneClear.Add(new MenuBool("useW", "Use W to Farm"));
-                LaneClear.Add(new MenuSlider("hitW", "Min. minion for W", 3, 1, 6));
+                LaneClear.Add(new MenuSlider("hitW", "Min. Minion for W", 3, 1, 6));
                 LaneClear.Add(new MenuBool("useE", "Use E to Farm"));
                
             }
