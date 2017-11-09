@@ -266,7 +266,7 @@ namespace Support_AIO.Champions
 
         protected override void LastHit()
         {
-            throw new NotImplementedException();
+
         }
 
 
@@ -296,7 +296,7 @@ namespace Support_AIO.Champions
 
         protected override void Harass()
         {
-            throw new NotImplementedException();
+          
         }
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)

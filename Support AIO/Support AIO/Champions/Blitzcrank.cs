@@ -102,12 +102,10 @@ namespace Support_AIO.Champions
 
         protected override void Farming()
         {
-            throw new NotImplementedException();
         }
 
         protected override void LastHit()
         {
-            throw new NotImplementedException();
         }
 
         protected override void Drawings()
@@ -158,7 +156,6 @@ namespace Support_AIO.Champions
 
         protected override void Harass()
         {
-            throw new NotImplementedException();
         }
 
         protected override void SetMenu()
