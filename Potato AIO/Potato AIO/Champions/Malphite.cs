@@ -384,7 +384,7 @@ namespace Potato_AIO.Champions
                 LaneClear.Add(new MenuBool("lastq", "^- Only for Last Hit"));
                 LaneClear.Add(new MenuBool("useW", "Use W to Farm"));
                 LaneClear.Add(new MenuBool("useE", "Use E to Farm"));
-                LaneClear.Add(new MenuSlider("hitE", "^- Min. minion for E", 3, 1, 6));
+                LaneClear.Add(new MenuSlider("hitE", "^- Min. Minion for E", 3, 1, 6));
 
 
             }
@@ -407,7 +407,7 @@ namespace Potato_AIO.Champions
             }
             KillstealMenu = new Menu("ks", "Killsteal");
             {
-                KillstealMenu.Add(new MenuBool("ksq", "Killseal with Q"));
+                KillstealMenu.Add(new MenuBool("ksq", "Killsteal with Q"));
 
             }
             RootMenu.Add(KillstealMenu);
