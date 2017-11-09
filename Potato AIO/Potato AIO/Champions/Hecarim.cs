@@ -247,9 +247,9 @@ namespace Potato_AIO.Champions
             var LaneClear = new Menu("lane", "Lane Clear");
             {
                 LaneClear.Add(new MenuBool("useQ", "Use Q to Farm"));
-                LaneClear.Add(new MenuSlider("hitQ", "^- Min. minion for Q", 3, 1, 6));
+                LaneClear.Add(new MenuSlider("hitQ", "^- Min. Minion for Q", 3, 1, 6));
                 LaneClear.Add(new MenuBool("useW", "Use W to Farm"));
-                LaneClear.Add(new MenuSlider("hitW", "^- Min. minion for W", 3, 1, 6));
+                LaneClear.Add(new MenuSlider("hitW", "^- Min. Minion for W", 3, 1, 6));
                 
 
             }
