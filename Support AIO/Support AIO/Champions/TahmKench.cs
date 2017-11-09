@@ -272,7 +272,7 @@ namespace Support_AIO.Champions
 
         protected override void Harass()
         {
-            throw new NotImplementedException();
+
         }
 
         internal override void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
