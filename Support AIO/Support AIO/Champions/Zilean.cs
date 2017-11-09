@@ -252,7 +252,7 @@ namespace Support_AIO.Champions
 
         protected override void LastHit()
         {
-            throw new NotImplementedException();
+  
         }
 
 
