@@ -535,8 +535,8 @@ namespace Potato_AIO.Champions
             FarmMenu.Add(JungleClear);
             KillstealMenu = new Menu("ks", "Killsteal");
             {
-                KillstealMenu.Add(new MenuBool("ksq", "Killseal with Q"));
-                KillstealMenu.Add(new MenuBool("ksw", "Killseal with W"));
+                KillstealMenu.Add(new MenuBool("ksq", "Killsteal with Q"));
+                KillstealMenu.Add(new MenuBool("ksw", "Killsteal with W"));
             }
             RootMenu.Add(KillstealMenu);
 
