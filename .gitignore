@@ -221,3 +221,5 @@ pip-log.txt
 *.ipdb
 *.dll
 !*object*
+*.ide
+*.ide
