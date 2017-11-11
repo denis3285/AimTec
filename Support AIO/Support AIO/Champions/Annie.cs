@@ -45,14 +45,20 @@ namespace Support_AIO.Champions
                         if (target.CountEnemyHeroesInRange(290) >=
                             RootMenu["combo"]["hitsr"].As<MenuSlider>().Value)
                         {
-                            R.Cast(target);
+                            if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                            {
+                                R.Cast(target);
+                            }
                         }
                         if (RootMenu["combo"]["kill"].Enabled)
                         {
                             if (target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
                                 Player.GetSpellDamage(target, SpellSlot.W) + Player.GetSpellDamage(target, SpellSlot.R))
                             {
-                                R.Cast(target);
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                {
+                                    R.Cast(target);
+                                }
                             }
                         }
                     }
@@ -116,10 +122,14 @@ namespace Support_AIO.Champions
                         {
                             if (target.Distance(Player) < R.Range + 380)
                             {
-                                var meowmeow = R.GetPrediction(target);
-                                if (R.Cast(meowmeow.CastPosition))
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
-                                    Flash.Cast(target.ServerPosition);
+
+                                    var meowmeow = R.GetPrediction(target);
+                                    if (R.Cast(meowmeow.CastPosition))
+                                    {
+                                        Flash.Cast(target.ServerPosition);
+                                    }
                                 }
                             }
                         }
@@ -987,6 +997,14 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("support", "Support Mode", false));
             }
             RootMenu.Add(ComboMenu);
+            var BlackList = new Menu("blacklist", "R Blacklist");
+            {
+                foreach (var target in GameObjects.EnemyHeroes)
+                {
+                    BlackList.Add(new MenuBool(target.ChampionName.ToLower(), "Block: " + target.ChampionName, false));
+                }
+            }
+            RootMenu.Add(BlackList);
             HarassMenu = new Menu("harass", "Harass");
             {
                 HarassMenu.Add(new MenuSlider("mana", "Mana Percent", 50, 1, 100));
