@@ -103,10 +103,10 @@ namespace Potato_AIO.Champions
         {
 
             bool useE = RootMenu["farming"]["lane"]["useE"].Enabled;
-           
+            bool useQ = RootMenu["farming"]["lane"]["useQ"].Enabled;
 
 
-                if (Q.Ready)
+            if (Q.Ready && useQ)
                 {
                     foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(Q.Range))
                     {
