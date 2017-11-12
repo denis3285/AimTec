@@ -31,77 +31,177 @@ namespace Support_AIO.Champions
             bool useW = RootMenu["combo"]["usew"].Enabled;
 
             bool useR = RootMenu["combo"]["user"].Enabled;
-            if (useR)
+            if (!RootMenu["combo"]["startq"].Enabled)
             {
-                var target = Extensions.GetBestEnemyHeroTargetInRange(R.Range);
-
-                if (target.IsValidTarget() && target != null)
+                if (useR)
                 {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(R.Range);
 
-                    if (target.IsValidTarget(R.Range) &&
-                        target.Health >= RootMenu["combo"]["wasteR"].As<MenuSlider>().Value)
+                    if (target.IsValidTarget() && target != null)
                     {
 
-                        if (target.CountEnemyHeroesInRange(290) >=
-                            RootMenu["combo"]["hitsr"].As<MenuSlider>().Value)
+                        if (target.IsValidTarget(R.Range) &&
+                            target.Health >= RootMenu["combo"]["wasteR"].As<MenuSlider>().Value)
                         {
-                            if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
-                            {
-                                R.Cast(target);
-                            }
-                        }
-                        if (RootMenu["combo"]["kill"].Enabled)
-                        {
-                            if (target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
-                                Player.GetSpellDamage(target, SpellSlot.W) + Player.GetSpellDamage(target, SpellSlot.R))
+
+                            if (target.CountEnemyHeroesInRange(290) >=
+                                RootMenu["combo"]["hitsr"].As<MenuSlider>().Value)
                             {
                                 if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
                                 {
                                     R.Cast(target);
                                 }
                             }
+                            if (RootMenu["combo"]["kill"].Enabled)
+                            {
+                                if (target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
+                                    Player.GetSpellDamage(target, SpellSlot.W) +
+                                    Player.GetSpellDamage(target, SpellSlot.R))
+                                {
+                                    if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                    {
+                                        R.Cast(target);
+                                    }
+                                }
+                            }
                         }
+
                     }
-
                 }
-            }
-            if (useW)
-            {
-                var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range);
-
-                if (target.IsValidTarget())
+                if (useW)
                 {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range);
 
-                    if (target.IsValidTarget(W.Range))
+                    if (target.IsValidTarget())
                     {
 
-                        if (target != null)
+                        if (target.IsValidTarget(W.Range))
                         {
-                            W.Cast(target);
+
+                            if (target != null)
+                            {
+                                W.Cast(target);
+                            }
                         }
+
                     }
-
                 }
-            }
-            if (useQ)
-            {
-                var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
-
-                if (target.IsValidTarget())
+                if (useQ)
                 {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
 
-                    if (target.IsValidTarget(Q.Range))
+                    if (target.IsValidTarget())
                     {
 
-                        if (target != null)
+                        if (target.IsValidTarget(Q.Range))
                         {
-                            Q.CastOnUnit(target);
+
+                            if (target != null)
+                            {
+                                Q.CastOnUnit(target);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+            if (RootMenu["combo"]["startq"].Enabled)
+            {
+                if (useR)
+                {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(R.Range);
+
+                    if (target.IsValidTarget() && target != null)
+                    {
+
+                        if (target.IsValidTarget(R.Range) &&
+                            target.Health >= RootMenu["combo"]["wasteR"].As<MenuSlider>().Value)
+                        {
+
+                            if (target.CountEnemyHeroesInRange(290) >=
+                                RootMenu["combo"]["hitsr"].As<MenuSlider>().Value)
+                            {
+                                if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                {
+                                    R.Cast(target);
+                                }
+                            }
+                            if (RootMenu["combo"]["kill"].Enabled)
+                            {
+                                if (target.Health <= Player.GetSpellDamage(target, SpellSlot.Q) +
+                                    Player.GetSpellDamage(target, SpellSlot.W) +
+                                    Player.GetSpellDamage(target, SpellSlot.R))
+                                {
+                                    if (!RootMenu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                                    {
+                                        R.Cast(target);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                if (RootMenu["combo"]["forcew"].As<MenuSlider>().Value <= Player.CountEnemyHeroesInRange(W.Range))
+                {
+                    if (useW)
+                    {
+                        var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range);
+
+                        if (target.IsValidTarget())
+                        {
+
+                            if (target.IsValidTarget(W.Range))
+                            {
+
+                                if (target != null)
+                                {
+                                    W.Cast(target);
+                                }
+                            }
+
                         }
                     }
-
                 }
-            }
+                if (useQ)
+                {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
 
+                    if (target.IsValidTarget())
+                    {
+
+                        if (target.IsValidTarget(Q.Range))
+                        {
+
+                            if (target != null)
+                            {
+                                Q.CastOnUnit(target);
+                            }
+                        }
+
+                    }
+                }
+                if (useW)
+                {
+                    var target = Extensions.GetBestEnemyHeroTargetInRange(W.Range);
+
+                    if (target.IsValidTarget())
+                    {
+
+                        if (target.IsValidTarget(W.Range))
+                        {
+
+                            if (target != null)
+                            {
+                                W.Cast(target);
+                            }
+                        }
+
+                    }
+                }
+
+            }
         }
 
 
@@ -983,6 +1083,8 @@ namespace Support_AIO.Champions
             ComboMenu = new Menu("combo", "Combo");
             {
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
+                ComboMenu.Add(new MenuBool("startq", "Start Combo with Q", false));
+                ComboMenu.Add(new MenuSlider("forcew", "^- Force W if X Enemies", 3, 1, 5));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("usee", "Auto E on Enemy Auto Attacks"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo"));
