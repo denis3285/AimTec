@@ -1003,7 +1003,7 @@ namespace Jayce_By_Kornis
                                         }
                                     }
                                 }
-                                if (!Menu["combo"]["wset"]["wait"].Enabled && Player.HasBuff("JayceHyperCharge"))
+                                if (!Menu["combo"]["wset"]["wait"].Enabled)
                                 {
                                     if (!W.Ready)
                                     {
@@ -1011,7 +1011,7 @@ namespace Jayce_By_Kornis
                                         {
                                             R.Cast();
                                         }
-                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
+                                        if (timer - Game.ClockTime > 1 && target.Distance(Player) <= Player.GetFullAttackRange(target))
                                         {
                                             R.Cast();
                                         }
