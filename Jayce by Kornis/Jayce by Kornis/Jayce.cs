@@ -44,8 +44,8 @@ namespace Jayce_By_Kornis
             W2 = new Spell(SpellSlot.W, 600);
             E2 = new Spell(SpellSlot.E, 660);
             R = new Spell(SpellSlot.R, 0);
-            Q2.SetSkillshot(0.25f, 70f, 1500f, true, SkillshotType.Line, false, HitChance.None);
-            QE.SetSkillshot(0.25f, 70f, 2000, true, SkillshotType.Line, false, HitChance.None);
+            Q2.SetSkillshot(0.25f, 70f, 1800, true, SkillshotType.Line, false, HitChance.None);
+            QE.SetSkillshot(0.25f, 70f, 2200, true, SkillshotType.Line, false, HitChance.None);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
@@ -940,7 +940,7 @@ namespace Jayce_By_Kornis
             if (!Menu["combo"]["qset"]["qerange"].Enabled && Q2.Ready && !E2.Ready ||
                 (Q2.Ready && !Menu["combo"]["qset"]["qerange"].Enabled && Player.SpellBook.GetSpell(SpellSlot.Q).Cost +
                  Player.SpellBook.GetSpell(SpellSlot.E).Cost >
-                 Player.Mana) || Q2.Ready && Menu["combo"]["qset"]["qerange"].Enabled &&
+                 Player.Mana) || Q2.Ready && !Menu["combo"]["qset"]["qerange"].Enabled &&
                 !Menu["combo"]["eset"]["eq"].Enabled)
             {
                 if (!Player.HasBuff("jaycestancehammer"))
