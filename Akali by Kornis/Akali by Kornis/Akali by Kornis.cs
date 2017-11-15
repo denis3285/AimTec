@@ -56,10 +56,19 @@ namespace Akali_By_Kornis
                 ComboMenu.Add(new MenuSlider("saver", "Save X R Stacks", 1, 0, 3));
                 ComboMenu.Add(new MenuSlider("minr", "Min. R Range", 200, 0, 400));
                 ComboMenu.Add(new MenuKeyBind("flashe", "W > R GapClose", KeyCode.T, KeybindType.Press));
+                ComboMenu.Add(new MenuKeyBind("turret", "R Under Turret Toggle", KeyCode.T, KeybindType.Toggle));
                 ComboMenu.Add(new MenuBool("items", "Use Items"));
             }
             Menu.Add(ComboMenu);
-           
+            var BlackList = new Menu("blacklist", "R Blacklist");
+            {
+                foreach (var target in GameObjects.EnemyHeroes)
+                {
+                    BlackList.Add(new MenuBool(target.ChampionName.ToLower(), "Block: " + target.ChampionName, false));
+                }
+            }
+            Menu.Add(BlackList);
+
             var HarassMenu = new Menu("harass", "Harass");
             {
              
@@ -96,7 +105,8 @@ namespace Akali_By_Kornis
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
                 DrawMenu.Add(new MenuBool("drawwr", "Draw W+R Range"));
                 DrawMenu.Add(new MenuBool("minr", "Draw min. R Range"));
-                
+                DrawMenu.Add(new MenuBool("drawtoggle", "Draw Under-Turret Toggle"));
+
             }
             Menu.Add(DrawMenu);
             var FleeMenu = new Menu("flee", "Flee");
@@ -145,7 +155,23 @@ namespace Akali_By_Kornis
 
         private void Render_OnPresent()
         {
-            
+            Vector2 maybeworks;
+            var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
+            var xaOffset = (int)maybeworks.X;
+            var yaOffset = (int)maybeworks.Y;
+            if (Menu["drawings"]["drawtoggle"].Enabled)
+            {
+                if (Menu["combo"]["turret"].Enabled)
+                {
+                    Render.Text("R Under-Turret: ON", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None, Color.GreenYellow);
+
+                }
+                if (!Menu["combo"]["turret"].Enabled)
+                {
+                    Render.Text("R Under-Turret: OFF", new Vector2(xaOffset - 50, yaOffset + 10), RenderTextFlags.None, Color.Red);
+
+                }
+            }
             if (Menu["drawings"]["drawq"].Enabled)
             {
                 Render.Circle(Player.Position, Q.Range, 40, Color.CornflowerBlue);
@@ -175,6 +201,7 @@ namespace Akali_By_Kornis
             {
                 return;
             }
+   
             switch (Orbwalker.Mode)
             {
                 case OrbwalkingMode.Combo:
@@ -683,8 +710,17 @@ namespace Akali_By_Kornis
 
                 if (target != null && target.Distance(Player) >= Menu["combo"]["minr"].As<MenuSlider>().Value)
                 {
-
-                    R.CastOnUnit(target);
+                    if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                    {
+                        if (!Menu["combo"]["turret"].Enabled && !target.IsUnderEnemyTurret())
+                        {
+                            R.CastOnUnit(target);
+                        }
+                        if (Menu["combo"]["turret"].Enabled)
+                        {
+                            R.CastOnUnit(target);
+                        }
+                    }
                 }
             }
             if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
@@ -783,8 +819,18 @@ namespace Akali_By_Kornis
 
                 if (target != null && target.Distance(Player) >= Menu["combo"]["minr"].As<MenuSlider>().Value && Player.SpellBook.GetSpell(SpellSlot.R).Ammo > Menu["combo"]["saver"].As<MenuSlider>().Value)
                 {
-
-                    R.CastOnUnit(target);
+                    if (!Menu["blacklist"][target.ChampionName.ToLower()].Enabled)
+                    {
+                        if (!Menu["combo"]["turret"].Enabled && !target.IsUnderEnemyTurret())
+                        {
+                            R.CastOnUnit(target);
+                        }
+                        if (Menu["combo"]["turret"].Enabled)
+                        {
+                            R.CastOnUnit(target);
+                        }
+                    }
+                   
                 }
             }
 
