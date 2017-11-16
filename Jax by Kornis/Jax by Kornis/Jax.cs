@@ -211,7 +211,7 @@ namespace Jax_By_Kornis
                         if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                             Player.HasItem(ItemId.RavenousHydra))
                         {
-                            var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                            var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                             var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                             if (slot != null)
                             {
@@ -239,7 +239,27 @@ namespace Jax_By_Kornis
                     return;
                 }
                 W.Cast();
+                if (!W.Ready)
+                {
+
+                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                        Player.HasItem(ItemId.RavenousHydra))
+                    {
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                        if (slot != null)
+                        {
+                            var spellslot = slot.SpellSlot;
+                            if (spellslot != SpellSlot.Unknown &&
+                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                            {
+                                Player.SpellBook.CastSpell(spellslot);
+                            }
+                        }
+                    }
+                }
             }
+
 
 
         }
@@ -393,7 +413,7 @@ namespace Jax_By_Kornis
                 {
 
                     var items = new[] {ItemId.TrackersKnife};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
 
@@ -418,7 +438,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.ControlWard))
                 {
                     var items = new[] {ItemId.ControlWard};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -441,10 +461,12 @@ namespace Jax_By_Kornis
                 }
                 if (Player.HasItem(ItemId.WardingTotemTrinket))
                 {
+                    
                     var items = new[] {ItemId.WardingTotemTrinket};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
+                    
                         var spellslot = slot.SpellSlot;
                         if (spellslot != SpellSlot.Unknown &&
                             Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
@@ -466,7 +488,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.RubySightstone))
                 {
                     var items = new[] {ItemId.RubySightstone};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -490,7 +512,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.Sightstone))
                 {
                     var items = new[] {ItemId.Sightstone};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -514,7 +536,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.EnchantmentWarrior))
                 {
                     var items = new[] {ItemId.EnchantmentWarrior};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -538,7 +560,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.EnchantmentCinderhulk))
                 {
                     var items = new[] {ItemId.EnchantmentCinderhulk};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -562,7 +584,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.EnchantmentRunicEchoes))
                 {
                     var items = new[] {ItemId.EnchantmentRunicEchoes};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -586,7 +608,7 @@ namespace Jax_By_Kornis
                 if (Player.HasItem(ItemId.EnchantmentBloodrazor))
                 {
                     var items = new[] {ItemId.EnchantmentBloodrazor};
-                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
