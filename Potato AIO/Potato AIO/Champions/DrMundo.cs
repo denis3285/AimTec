@@ -229,44 +229,115 @@ namespace Potato_AIO.Champions
 
         internal override void PostAttack(object sender, PostAttackEventArgs e)
         {
-            
+
             var heroTarget = e.Target as Obj_AI_Hero;
             if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Combo))
             {
-                if (!RootMenu["combo"]["eaa"].Enabled)
-                {
-                    return;
-                }
+
 
                 Obj_AI_Hero hero = e.Target as Obj_AI_Hero;
                 if (hero == null || !hero.IsValid || !hero.IsEnemy)
                 {
                     return;
                 }
-                if (E.Cast())
+                if (RootMenu["combo"]["eaa"].Enabled)
                 {
-                    Orbwalker.Implementation.ResetAutoAttackTimer();
+                    if (E.Cast())
+                    {
+                        Orbwalker.Implementation.ResetAutoAttackTimer();
+                    }
                 }
+
+
+                    if (RootMenu["combo"]["items"].Enabled)
+                    {
+                        if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                            Player.HasItem(ItemId.RavenousHydra))
+                        {
+                            var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                            var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                            if (slot != null)
+                            {
+                                var spellslot = slot.SpellSlot;
+                                if (spellslot != SpellSlot.Unknown &&
+                                    Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                {
+                                    Player.SpellBook.CastSpell(spellslot);
+                                }
+                            }
+                        }
+                    }
+                
             }
 
             if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Mixed))
             {
-                if (!RootMenu["harass"]["eaa"].Enabled)
-                {
-                    return;
-                }
+
 
                 Obj_AI_Hero hero = e.Target as Obj_AI_Hero;
                 if (hero == null || !hero.IsValid || !hero.IsEnemy)
                 {
                     return;
                 }
-                if (E.Cast())
+                if (RootMenu["harass"]["eaa"].Enabled)
                 {
-                    Orbwalker.Implementation.ResetAutoAttackTimer();
+
+                    if (E.Cast())
+                    {
+                        Orbwalker.Implementation.ResetAutoAttackTimer();
+                    }
+                }
+
+
+                    if (RootMenu["combo"]["items"].Enabled)
+                    {
+                        if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                            Player.HasItem(ItemId.RavenousHydra))
+                        {
+                            var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                            var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                            if (slot != null)
+                            {
+                                var spellslot = slot.SpellSlot;
+                                if (spellslot != SpellSlot.Unknown &&
+                                    Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                {
+                                    Player.SpellBook.CastSpell(spellslot);
+                                }
+                            }
+                        }
+                   }
+                
+            }
+            if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Laneclear))
+            {
+
+                Obj_AI_Minion hero = e.Target as Obj_AI_Minion;
+                if (hero == null || !hero.IsValid || !hero.IsEnemy)
+                {
+                    return;
+                }
+
+                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                    Player.HasItem(ItemId.RavenousHydra))
+                {
+                    var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                    if (slot != null)
+                    {
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            Player.SpellBook.CastSpell(spellslot);
+                        }
+                    }
                 }
             }
+
         }
+
+
 
         protected override void Harass()
         {
@@ -339,6 +410,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("useR", "Use R in Combo"));
                 ComboMenu.Add(new MenuSlider("rhp", "^- Use R if X Health", 50, 0, 100));
                 ComboMenu.Add(new MenuBool("smartw", "Enable Smart W Turn Off"));
+                ComboMenu.Add(new MenuBool("items", "Use Items"));
 
             }
             RootMenu.Add(ComboMenu);

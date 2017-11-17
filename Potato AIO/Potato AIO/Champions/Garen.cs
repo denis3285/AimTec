@@ -54,7 +54,7 @@ namespace Potato_AIO.Champions
             bool useQAA = RootMenu["combo"]["useQAA"].Enabled;
             bool useW = RootMenu["combo"]["useW"].Enabled;
             bool useE = RootMenu["combo"]["useE"].Enabled;
-            bool useR = RootMenu["combo"]["useR"].Enabled;
+
 
             var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
             if (!target.IsValidTarget())
@@ -259,10 +259,10 @@ namespace Potato_AIO.Champions
 
    
                 var bestTarget = Bases.Extensions.GetBestKillableHero(R, DamageType.Physical, false);
-           
-                if (bestTarget != null &&
+      
+            if (bestTarget != null && RootMenu["combo"]["useR"].Enabled &&
                    GetR(bestTarget) >= bestTarget.Health &&
-                    bestTarget.IsValidTarget(R.Range))
+                    bestTarget.IsValidTarget(R.Range) && bestTarget.Health >= RootMenu["combo"]["minhp"].As<MenuSlider>().Value)
                 {
                     R.Cast(bestTarget);
                 }
@@ -326,6 +326,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuBool("WAA", "^- Only on Enemy Auto Attacks"));
                 ComboMenu.Add(new MenuBool("useE", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("useR", "Auto R if Killable"));
+                ComboMenu.Add(new MenuSlider("minhp", "^- Don't waste R if Enemy has Below X Health", 100, 0, 300));
             }
             RootMenu.Add(ComboMenu);
             var FarmMenu = new Menu("farming", "Farming");
