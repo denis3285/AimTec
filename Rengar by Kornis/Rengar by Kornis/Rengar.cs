@@ -122,10 +122,23 @@ namespace Rengar_By_Kornis
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
             Orbwalker.PostAttack += OnPostAttack;
+            SpellBook.OnCastSpell += OnCastSpell;
+            BuffManager.OnRemoveBuff += uh;
             LoadSpells();
             Console.WriteLine("Rengar by Kornis - Loaded");
         }
-
+        private void uh(Obj_AI_Base sender, Buff buff)
+        {
+            if (sender.IsMe)
+            {
+               
+                if (buff.Name == "RengarR")
+                {
+                 
+                    reeeeeeeeeSTOPusingE = false;
+                }
+            }
+        }
 
         private static readonly string[] SmiteMobs = {
             "SRU_Red", "SRU_Blue", "SRU_Dragon_Water", "SRU_Dragon_Fire", "SRU_Dragon_Earth", "SRU_Dragon_Air",
@@ -138,6 +151,15 @@ namespace Rengar_By_Kornis
 
                 return Hello[Player.Level - 1];
             }
+        }
+
+        public void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs args)
+        {
+            if (args.Slot == SpellSlot.R && sender.IsMe)
+            {
+                reeeeeeeeeSTOPusingE = true;
+            }
+
         }
 
         public void OnPostAttack(object sender, PostAttackEventArgs args)
@@ -262,6 +284,7 @@ namespace Rengar_By_Kornis
 
 
         public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
+        private bool reeeeeeeeeSTOPusingE;
 
         public static int SxOffset(Obj_AI_Hero target)
         {
@@ -704,7 +727,7 @@ namespace Rengar_By_Kornis
             bool ChangeE = Menu["combo"]["changee"].Enabled;
             var target = GetBestEnemyHeroTargetInRange(E.Range);
 
-            if (!target.IsValidTarget() || Player.HasBuff("RengarR"))
+            if (!target.IsValidTarget() || Player.HasBuff("RengarR") || reeeeeeeeeSTOPusingE)
             {
                 return;
             }
