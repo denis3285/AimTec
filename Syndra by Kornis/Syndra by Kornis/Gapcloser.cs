@@ -951,19 +951,26 @@
 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy))
             {
-                var heroMenu = new Menu("Gapcloser" + enemy.ChampionName.ToLower(), enemy.ChampionName)
-                {
-                    new MenuBool("Gapcloser" + enemy.ChampionName.ToLower() + "Enabled", "Enabled"),
-                    new MenuSlider("Gapcloser" + enemy.ChampionName.ToLower() + "Distance",
-                        "If Target Distance To Player <= x", 550, 1, 700),
-                    new MenuSlider("Gapcloser" + enemy.ChampionName.ToLower() + "HPercent",
-                        "When Player HealthPercent <= x%", 100, 1, 101)
-                };
-                Menu.Add(heroMenu);
                 foreach (var spell in Spells.Where(x => x.ChampionName == enemy.ChampionName))
                 {
-                    heroMenu.Add(new MenuBool("Gapcloser" + enemy.ChampionName.ToLower() + "." + spell.SpellName.ToLower(),
-                        "Anti Slot: " + spell.Slot + "(" + spell.SpellName + ")"));
+                    if (enemy.ChampionName != spell.ChampionName)
+                    {
+                        return;
+                    }
+                    var heroMenu = new Menu("Gapcloser" + enemy.ChampionName.ToLower(), enemy.ChampionName)
+                    {
+                        new MenuBool("Gapcloser" + enemy.ChampionName.ToLower() + "Enabled", "Enabled"),
+                        new MenuSlider("Gapcloser" + enemy.ChampionName.ToLower() + "Distance",
+                            "If Target Distance To Player <= x", 550, 1, 700),
+                        new MenuSlider("Gapcloser" + enemy.ChampionName.ToLower() + "HPercent",
+                            "When Player HealthPercent <= x%", 100, 1, 101)
+                    };
+                    Menu.Add(heroMenu);
+                 
+                        heroMenu.Add(new MenuBool(
+                            "Gapcloser" + enemy.ChampionName.ToLower() + "." + spell.SpellName.ToLower(),
+                            "Anti Slot: " + spell.Slot + "(" + spell.SpellName + ")"));
+                    
                 }
             }
 

@@ -951,7 +951,13 @@
 
             foreach (var enemy in ObjectManager.Get<Obj_AI_Hero>().Where(x => x.IsEnemy))
             {
-                var heroMenu = new Menu("Gapcloser." + enemy.ChampionName.ToLower(), enemy.ChampionName)
+                foreach (var spell in Spells.Where(x => x.ChampionName == enemy.ChampionName))
+                {
+                    if (enemy.ChampionName != spell.ChampionName)
+                    {
+                        return;
+                    }
+                    var heroMenu = new Menu("Gapcloser." + enemy.ChampionName.ToLower(), enemy.ChampionName)
                 {
                     new MenuBool("Gapcloser." + enemy.ChampionName.ToLower() + ".Enabled", "Enabled"),
                     new MenuSlider("Gapcloser." + enemy.ChampionName.ToLower() + ".Distance",
@@ -959,8 +965,7 @@
                 };
                 Menu.Add(heroMenu);
 
-                foreach (var spell in Spells.Where(x => x.ChampionName == enemy.ChampionName))
-                {
+                
                     heroMenu.Add(new MenuBool("Gapcloser." + enemy.ChampionName.ToLower() + "." + spell.SpellName.ToLower(),
                         "ON Dash: " + spell.Slot + "(" + spell.SpellName + ")"));
                 }
