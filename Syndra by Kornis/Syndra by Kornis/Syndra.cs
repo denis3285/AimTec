@@ -1187,7 +1187,7 @@ namespace Syndra_By_Kornis
 
 
                             Q2.From = target.ServerPosition;
-                            Q2.Delay = 0.80f + Player.Distance(target.ServerPosition) / EQ.Speed;
+                            Q2.Delay = 0.83f+ Player.Distance(target.ServerPosition) / EQ.Speed;
                             var pred = Q2.GetPrediction(target);
                             var ppos = Player.ServerPosition;
                             var startpos = ppos.Extend(pred.CastPosition, Q.Range - 30);
