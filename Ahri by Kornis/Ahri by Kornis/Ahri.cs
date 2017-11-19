@@ -130,6 +130,7 @@ namespace Ahri_By_Kornis
             var FleeMenu = new Menu("flee", "Flee");
             {
                 FleeMenu.Add(new MenuBool("useq", "Use Q to Flee"));
+                FleeMenu.Add(new MenuBool("usee", "Use E while Fleeing"));
                 FleeMenu.Add(new MenuKeyBind("key", "Flee Key:", KeyCode.G, KeybindType.Press));
             }
             Menu.Add(FleeMenu);
@@ -424,6 +425,25 @@ namespace Ahri_By_Kornis
             {
 
                 Q.Cast(Player.ServerPosition.Extend(Game.CursorPos, -500));
+            }
+            if (Menu["flee"]["usee"].Enabled)
+            {
+                var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                if (!target.IsValidTarget())
+                {
+                    return;
+                }
+
+
+                if (E.Ready && target.IsValidTarget(E.Range))
+                {
+                    if (target != null)
+                    {
+                        E.Cast(target);
+                    }
+                }
+
             }
 
         }
