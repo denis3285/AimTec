@@ -1,6 +1,7 @@
 ﻿using System.Net.Configuration;
 using System.Resources;
 using System.Security.Authentication.ExtendedProtection;
+using Aimtec.SDK.Damage.JSON;
 
 namespace Rengar_By_Kornis
 {
@@ -35,10 +36,10 @@ namespace Rengar_By_Kornis
 
         public void LoadSpells()
         {
-            Q = new Spell(SpellSlot.Q, 550);
+            Q = new Spell(SpellSlot.Q, 600);
             W = new Spell(SpellSlot.W, 425);
             E = new Spell(SpellSlot.E, 1000);
-            Q.SetSkillshot(0.4f, 150, 3000, false, SkillshotType.Line);
+            Q.SetSkillshot(0.3f, 120, 2000, false, SkillshotType.Line);
             E.SetSkillshot(0.25f, 70f, 1500, true, SkillshotType.Line, false, HitChance.High);
             var smiteSlot = Player.SpellBook.Spells.FirstOrDefault(x => x.SpellData.Name.ToLower().Contains("smite"));
             if (smiteSlot != null)
@@ -57,11 +58,13 @@ namespace Rengar_By_Kornis
             {
                 ComboMenu.Add(new MenuList("priority", "Priority: ", new[] { " Q ", " W ", " E " }, 0));
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
+                ComboMenu.Add(new MenuBool("priorityq", "Priority Q if can kill Q + AA"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("autow", "^- Auto W if CC'd"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("changee", "^- Priority E if out of Q Range"));
-                
+                ComboMenu.Add(new MenuBool("bushe", "Don't use E from Bush", false));
+
             }
             Menu.Add(ComboMenu);
             var HarassMenu = new Menu("harass", "Harass");
@@ -340,6 +343,7 @@ namespace Rengar_By_Kornis
                     .ForEach(
                         unit =>
                         {
+               
 
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
@@ -671,6 +675,10 @@ namespace Rengar_By_Kornis
                     bestTarget.IsValidTarget(Q.Range) && !Player.HasBuff("RengarR"))
                 {
                     Q.Cast(bestTarget);
+                    if (bestTarget.Distance(Player) <= 420)
+                    {
+                        Q.Cast(Q.GetPrediction(bestTarget).CastPosition.Extend(Q.GetPrediction(bestTarget).UnitPosition, 100));
+                    }
                 }
             }
            
@@ -754,11 +762,37 @@ namespace Rengar_By_Kornis
                     {
                         if (target.IsValidTarget(E.Range) && target != null)
                         {
-                            E.Cast(target);
+                            if (!Menu["combo"]["bushe"].Enabled)
+                            {
+                                E.Cast(target);
 
+                            }
+                            if (Menu["combo"]["bushe"].Enabled && !Player.HasBuff("rengarpassivebuff"))
+                            {
+                                E.Cast(target);
 
+                            }
                         }
                     }
+                }
+                if (Menu["combo"]["priorityq"].Enabled)
+                {
+
+                    if (target.IsValidTarget(Q.Range) && target != null)
+                    {
+                        
+                        if (Player.GetAutoAttackDamage(target) + Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.Empowered)*2 >=
+                            target.Health)
+                        {
+                            Q.Cast(target);
+                            if (target.Distance(Player) <= 420)
+                            {
+                                Q.Cast(Q.GetPrediction(target).CastPosition
+                                    .Extend(Q.GetPrediction(target).UnitPosition, 100));
+                            }
+                        }
+                    }
+
                 }
                 switch (Menu["combo"]["priority"].As<MenuList>().Value)
                 {
@@ -768,6 +802,10 @@ namespace Rengar_By_Kornis
                         if (target.IsValidTarget(Q.Range) && target != null)
                         {
                             Q.Cast(target);
+                            if (target.Distance(Player) <= 420)
+                            {
+                                Q.Cast(Q.GetPrediction(target).CastPosition.Extend(Q.GetPrediction(target).UnitPosition, 100));
+                            }
                         }
 
                         break;
@@ -783,6 +821,63 @@ namespace Rengar_By_Kornis
 
 
                         if (target.IsValidTarget(E.Range - 100) && target != null)
+                        {
+                            if (!Menu["combo"]["bushe"].Enabled)
+                            {
+                                if (E.Cast(target))
+                                {
+                                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                        Player.HasItem(ItemId.RavenousHydra))
+                                    {
+                                        var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                        if (slot != null && target.Distance(Player) < 400)
+                                        {
+                                            var spellslot = slot.SpellSlot;
+                                            if (spellslot != SpellSlot.Unknown &&
+                                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                            {
+                                                Player.SpellBook.CastSpell(spellslot);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            if (Menu["combo"]["bushe"].Enabled && !Player.HasBuff("rengarpassivebuff"))
+                            {
+                                if (E.Cast(target))
+                                {
+                                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                        Player.HasItem(ItemId.RavenousHydra))
+                                    {
+                                        var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                        if (slot != null && target.Distance(Player) < 400)
+                                        {
+                                            var spellslot = slot.SpellSlot;
+                                            if (spellslot != SpellSlot.Unknown &&
+                                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                            {
+                                                Player.SpellBook.CastSpell(spellslot);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+
+                        break;
+                }
+            }
+            if (Player.Mana < 4)
+            {
+                if (E.Ready && useE && target.IsValidTarget(E.Range))
+                {
+                    if (target != null)
+                    {
+                        if (!Menu["combo"]["bushe"].Enabled)
                         {
                             if (E.Cast(target))
                             {
@@ -802,35 +897,31 @@ namespace Rengar_By_Kornis
                                     }
                                 }
                             }
-                        }
 
-                        break;
-                }
-            }
-            if (Player.Mana < 4)
-            {
-                if (E.Ready && useE && target.IsValidTarget(E.Range))
-                {
-                    if (target != null)
-                    {
-                        if (E.Cast(target))
+                        }
+                        if (Menu["combo"]["bushe"].Enabled && !Player.HasBuff("rengarpassivebuff"))
                         {
-                            if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
-                                Player.HasItem(ItemId.RavenousHydra))
+                            if (E.Cast(target))
                             {
-                                var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
-                                var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
-                                if (slot != null && target.Distance(Player) < 400)
+                                if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                                    Player.HasItem(ItemId.RavenousHydra))
                                 {
-                                    var spellslot = slot.SpellSlot;
-                                    if (spellslot != SpellSlot.Unknown &&
-                                        Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                                    var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                                    if (slot != null && target.Distance(Player) < 400)
                                     {
-                                        Player.SpellBook.CastSpell(spellslot);
+                                        var spellslot = slot.SpellSlot;
+                                        if (spellslot != SpellSlot.Unknown &&
+                                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                                        {
+                                            Player.SpellBook.CastSpell(spellslot);
+                                        }
                                     }
                                 }
                             }
+
                         }
+                      
                     }
                 }
                 if (W.Ready && useW && target.IsValidTarget(W.Range - 100))
@@ -846,7 +937,12 @@ namespace Rengar_By_Kornis
 
                     if (target != null)
                     {
+                 
                         Q.Cast(target);
+                        if (target.Distance(Player) <= 420)
+                        {
+                            Q.Cast(Q.GetPrediction(target).CastPosition.Extend(Q.GetPrediction(target).UnitPosition, 100));
+                        }
                     }
 
                 }
@@ -874,6 +970,10 @@ namespace Rengar_By_Kornis
                         if (target.IsValidTarget(Q.Range) && target != null)
                         {
                             Q.Cast(target);
+                            if (target.Distance(Player) <= 420)
+                            {
+                                Q.Cast(Q.GetPrediction(target).CastPosition.Extend(Q.GetPrediction(target).UnitPosition, 100));
+                            }
                         }
 
                         break;
@@ -919,6 +1019,10 @@ namespace Rengar_By_Kornis
                     if (target != null)
                     {
                         Q.Cast(target);
+                        if (target.Distance(Player) <= 420)
+                        {
+                            Q.Cast(Q.GetPrediction(target).CastPosition.Extend(Q.GetPrediction(target).UnitPosition, 100));
+                        }
                     }
 
                 }
