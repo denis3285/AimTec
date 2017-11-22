@@ -132,9 +132,33 @@ namespace Katarina_By_Kornis
             Game.OnUpdate += Game_OnUpdate;
             BuffManager.OnRemoveBuff += uh;
             SpellBook.OnCastSpell += OnCastSpell;
+            GameObject.OnCreate += OnCreate;
+            GameObject.OnDestroy += OnDestroy;
 
             LoadSpells();
             Console.WriteLine("Katarina by Kornis - Loaded");
+        }
+        public List<GameObject> Daggers = new List<GameObject>();
+        private void OnDestroy(GameObject sender)
+        {
+            
+            if (sender.Name.Contains("W_Indicator_Ally"))
+            {
+
+                Daggers.Remove(sender);
+
+            }
+
+        }
+
+        private void OnCreate(GameObject sender)
+        {
+   
+            if (sender.Name.Contains("W_Indicator_Ally"))
+            {
+             
+                Daggers.Add(sender);
+            }
         }
 
         private void uh(Obj_AI_Base sender, Buff buff)
@@ -165,8 +189,8 @@ namespace Katarina_By_Kornis
         private int timeW;
         private bool meowmeowRthing = false;
         private int meowwwwwwwwwww;
-        private GameObject mmm;
         private int ahhhhhhhhhhh;
+        private GameObject something;
 
         public void OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs args)
         {
@@ -194,35 +218,44 @@ namespace Katarina_By_Kornis
                         {
                         if (Player.HasBuff("katarinarsound"))
                         {
-                            if (target.Distance(Player) >= R.Range - 100 && E.Ready)
+                            if (target.Distance(Player) >= R.Range - 50 && E.Ready)
                             {
 
-
-                                if (mmm != null)
+                                if (Daggers.Count > 0)
                                 {
-                                    if (target.Distance(mmm) < 450 &&
-                                        target.IsValidTarget(E.Range) && E.Ready && args.Slot == SpellSlot.E)
-
+                                    foreach (var dagger in Daggers)
                                     {
 
-                                        args.Process = true;
+                                        if (dagger != null)
+                                        {
+  
+                                                if (target.Distance(dagger) < 450 &&
+                                                    target.IsValidTarget(E.Range) && E.Ready &&
+                                                    args.Slot == SpellSlot.E)
+
+                                                {
+
+                                                    args.Process = true;
 
 
+                                                }
+
+                                                if (dagger.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
+                                                {
+                                                    args.Process = true;
+                                                }
+                                                if (dagger.Distance(target) > 450 && args.Slot == SpellSlot.E)
+                                                {
+
+                                                    args.Process = true;
+                                                }
+
+
+                                            
+                                        }
                                     }
-
-                                    if (mmm.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
-                                    {
-                                        args.Process = true;
-                                    }
-                                    if (mmm.Distance(target) > 450 && args.Slot == SpellSlot.E)
-                                    {
-
-                                        args.Process = true;
-                                    }
-
-
                                 }
-                                if (mmm == null && args.Slot == SpellSlot.E)
+                                if (Daggers.Count == 0 && args.Slot == SpellSlot.E)
                                 {
 
                                     args.Process = true;
@@ -234,30 +267,40 @@ namespace Katarina_By_Kornis
                                 target.Health)
                             {
 
-
-                                if (mmm != null && E.Ready)
+                                if (Daggers.Count > 0)
                                 {
-
-                                    if (target.Distance(mmm) < 450 &&
-                                        target.IsValidTarget(E.Range) && E.Ready && args.Slot == SpellSlot.E)
-
+                                    foreach (var dagger in Daggers)
                                     {
 
-                                        args.Process = true;
+                                        if (dagger != null)
+                                        {
+                                            if (dagger != null && E.Ready)
+                                            {
+
+                                                if (target.Distance(dagger) < 450 &&
+                                                    target.IsValidTarget(E.Range) && E.Ready &&
+                                                    args.Slot == SpellSlot.E)
+
+                                                {
+
+                                                    args.Process = true;
 
 
-                                    }
-                                    if (mmm.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
-                                    {
-                                        args.Process = true;
-                                    }
-                                    if (mmm.Distance(target) > 450 && args.Slot == SpellSlot.E)
-                                    {
+                                                }
+                                                if (dagger.Distance(Player) > E.Range && args.Slot == SpellSlot.E)
+                                                {
+                                                    args.Process = true;
+                                                }
+                                                if (dagger.Distance(target) > 450 && args.Slot == SpellSlot.E)
+                                                {
 
-                                        args.Process = true;
+                                                    args.Process = true;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
-                                if (mmm == null && E.Ready && args.Slot == SpellSlot.E)
+                                if (Daggers.Count == 0 && E.Ready && args.Slot == SpellSlot.E)
                                 {
                                     args.Process = true;
                                 }
@@ -278,25 +321,26 @@ namespace Katarina_By_Kornis
                 {
                     if (Menu["killsteal"]["ksdagger"].Enabled && E.Ready)
                     {
-                        var daggers = ObjectManager.Get<GameObject>()
-                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                        d.Name == "HiddenMinion");
-                        foreach (var dagger in daggers)
+                        if (Daggers.Count > 0)
                         {
-
-                            if (dagger != null)
+                            foreach (var dagger in Daggers)
                             {
-                                var bestTarget = GetEGAP(DamageType.Magical, false);
-                                if (bestTarget != null && !bestTarget.IsDead &&
-                                    !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
+
+                                if (dagger != null)
                                 {
-                                    if (Passive(bestTarget) >= bestTarget.Health &&
-                                        bestTarget.Distance(dagger) < 450 &&
-                                        bestTarget.IsValidTarget(E.Range))
+                                    var bestTarget = GetEGAP(DamageType.Magical, false);
+                                    if (bestTarget != null && !bestTarget.IsDead &&
+                                        !bestTarget.HasBuffOfType(BuffType.Invulnerability) &&
+                                        !bestTarget.HasBuff("UndyingRage"))
                                     {
+                                        if (Passive(bestTarget) >= bestTarget.Health &&
+                                            bestTarget.Distance(dagger) < 450 &&
+                                            bestTarget.IsValidTarget(E.Range))
+                                        {
 
-                                        args.Process = true;
+                                            args.Process = true;
 
+                                        }
                                     }
                                 }
                             }
@@ -463,45 +507,45 @@ namespace Katarina_By_Kornis
 
         }
 
-        public static double Passive(Obj_AI_Base target)
+        public double Passive(Obj_AI_Base target)
         {
             double dmg = 0;
             double yay = 0;
-            var daggers = ObjectManager.Get<GameObject>()
-                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                            d.Name == "HiddenMinion");
-            foreach (var dagger in daggers)
+            if (Daggers.Count > 0)
             {
-
-                if (dagger != null)
+                foreach (var dagger in Daggers)
                 {
-                    if (dagger.Distance(target) < 450)
+
+                    if (dagger != null)
                     {
+                        if (dagger.Distance(target) < 450)
+                        {
 
 
-                        if (Player.Level >= 1 && Player.Level < 6)
-                        {
-                            dmg = 0.55;
+                            if (Player.Level >= 1 && Player.Level < 6)
+                            {
+                                dmg = 0.55;
+                            }
+                            if (Player.Level >= 6 && Player.Level < 11)
+                            {
+                                dmg = 0.7;
+                            }
+                            if (Player.Level >= 11 && Player.Level < 16)
+                            {
+                                dmg = 0.85;
+                            }
+                            if (Player.Level >= 16)
+                            {
+                                dmg = 1;
+                            }
+                            double psv = 35 + (Player.Level * 12);
+                            double psvdmg = Player.TotalAbilityDamage * dmg;
+                            double full = psvdmg + psv + (Player.TotalAttackDamage - Player.BaseAttackDamage);
+                            double damage = Player.CalculateDamage(target, DamageType.Magical, full);
+                            yay = damage;
                         }
-                        if (Player.Level >= 6 && Player.Level < 11)
-                        {
-                            dmg = 0.7;
-                        }
-                        if (Player.Level >= 11 && Player.Level < 16)
-                        {
-                            dmg = 0.85;
-                        }
-                        if (Player.Level >= 16)
-                        {
-                            dmg = 1;
-                        }
-                        double psv = 35 + (Player.Level * 12);
-                        double psvdmg = Player.TotalAbilityDamage * dmg;
-                        double full = psvdmg + psv + (Player.TotalAttackDamage - Player.BaseAttackDamage);
-                        double damage = Player.CalculateDamage(target, DamageType.Magical, full);
-                        yay = damage;
+
                     }
-
                 }
             }
             return yay;
@@ -529,26 +573,28 @@ namespace Katarina_By_Kornis
             {
 
 
-                var daggers = ObjectManager.Get<GameObject>()
-                    .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= 2000 &&
-                                d.Name == "HiddenMinion");
-                foreach (var dagger in daggers)
+               if(Daggers.Count > 0)
                 {
+                    foreach (var dagger in Daggers)
+                    {
 
-                   
-                    
-                    if (dagger.CountEnemyHeroesInRange(450) != 0)
-                    {
-                        Render.Circle(dagger.ServerPosition, 450, 20, Color.LawnGreen);
-                        Render.Circle(dagger.ServerPosition, 150, 20, Color.LawnGreen);
-                    }
-                    if (dagger.CountEnemyHeroesInRange(450) == 0)
-                    {
-                        Render.Circle(dagger.ServerPosition, 450, 20, Color.Red);
-                        Render.Circle(dagger.ServerPosition, 150, 20, Color.Red);
+                        if (dagger != null)
+                        {
+                            if (dagger.CountEnemyHeroesInRange(450) != 0)
+                            {
+                                Render.Circle(dagger.ServerPosition, 450, 20, Color.LawnGreen);
+                                Render.Circle(dagger.ServerPosition, 150, 20, Color.LawnGreen);
+                            }
+                            if (dagger.CountEnemyHeroesInRange(450) == 0)
+                            {
+                                Render.Circle(dagger.ServerPosition, 450, 20, Color.Red);
+                                Render.Circle(dagger.ServerPosition, 150, 20, Color.Red);
+                            }
+
+                        }
                     }
                 }
-                
+
             }
 
 
@@ -608,17 +654,7 @@ namespace Katarina_By_Kornis
 
         private void Game_OnUpdate()
         {
-            var daggers = ObjectManager.Get<GameObject>()
-                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                            d.Name == "HiddenMinion");
-            foreach (var dagger in daggers)
-            {
-                mmm = dagger;
-            }
-            if (daggers.Count() == 0)
-            {
-                mmm = null;
-            }
+
             if (Player.HasBuff("katarinarsound"))
             {
                
@@ -714,37 +750,37 @@ namespace Katarina_By_Kornis
                     if (minion.IsValidTarget(E.Range) && minion != null)
                     {
 
-                        var daggers = ObjectManager.Get<GameObject>()
-                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                        d.Name == "HiddenMinion");
-                        foreach (var dagger in daggers)
+                        if (Daggers.Count > 0)
                         {
-
-                            if (dagger != null)
+                            foreach (var dagger in Daggers)
                             {
-                                if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(450, false, false,
-                                        dagger.ServerPosition)) >= hitE)
+
+                                if (dagger != null)
                                 {
-                                    if (timeW < Game.TickCount)
+                                    if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(450, false, false,
+                                            dagger.ServerPosition)) >= hitE)
                                     {
-                                        if (Menu["farming"]["turret"].Enabled)
+                                        if (timeW < Game.TickCount)
                                         {
-                                            if (!dagger.IsUnderEnemyTurret())
+                                            if (Menu["farming"]["turret"].Enabled)
                                             {
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(minion.ServerPosition, 200));
+
+                                                }
+                                            }
+                                            if (!Menu["farming"]["turret"].Enabled)
+                                            {
+
                                                 E.Cast(dagger.ServerPosition.Extend(minion.ServerPosition, 200));
 
                                             }
-                                        }
-                                        if (!Menu["farming"]["turret"].Enabled)
-                                        {
-
-                                            E.Cast(dagger.ServerPosition.Extend(minion.ServerPosition, 200));
 
                                         }
-
                                     }
-                                }
 
+                                }
                             }
                         }
                     }
@@ -858,17 +894,17 @@ namespace Katarina_By_Kornis
                 }
                 if (meow)
                 {
-                    var daggers = ObjectManager.Get<GameObject>()
-                        .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                    d.Name == "HiddenMinion");
-                    foreach (var dagger in daggers)
+                    if (Daggers.Count > 0)
                     {
-
-                        if (dagger != null)
+                        foreach (var dagger in Daggers)
                         {
-                            if (dagger.Distance(Game.CursorPos) < 200)
+
+                            if (dagger != null)
                             {
-                                E.Cast(dagger.ServerPosition);
+                                if (dagger.Distance(Game.CursorPos) < 200)
+                                {
+                                    E.Cast(dagger.ServerPosition);
+                                }
                             }
                         }
                     }
@@ -899,30 +935,31 @@ namespace Katarina_By_Kornis
         {
             if (Menu["killsteal"]["ksdagger"].Enabled && E.Ready)
             {
-                var daggers = ObjectManager.Get<GameObject>()
-                    .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                d.Name == "HiddenMinion");
-                foreach (var dagger in daggers)
+                if (Daggers.Count > 0)
                 {
-
-                    if (dagger != null)
+                    foreach (var dagger in Daggers)
                     {
-                        var bestTarget = GetEGAP(DamageType.Magical, false);
-                        if (bestTarget != null && !bestTarget.IsDead &&
-                            !bestTarget.HasBuffOfType(BuffType.Invulnerability) && !bestTarget.HasBuff("UndyingRage"))
+
+                        if (dagger != null)
                         {
-                            if (Passive(bestTarget) >= bestTarget.Health && bestTarget.Distance(dagger) < 450 &&
-                                bestTarget.IsValidTarget(E.Range))
+                            var bestTarget = GetEGAP(DamageType.Magical, false);
+                            if (bestTarget != null && !bestTarget.IsDead &&
+                                !bestTarget.HasBuffOfType(BuffType.Invulnerability) &&
+                                !bestTarget.HasBuff("UndyingRage"))
                             {
+                                if (Passive(bestTarget) >= bestTarget.Health && bestTarget.Distance(dagger) < 450 &&
+                                    bestTarget.IsValidTarget(E.Range))
+                                {
 
-                                E.Cast(bestTarget.ServerPosition.Extend(dagger.ServerPosition, 200));
+                                    E.Cast(bestTarget.ServerPosition.Extend(dagger.ServerPosition, 200));
 
 
+                                }
                             }
                         }
                     }
-                }
 
+                }
             }
             if (Q.Ready &&
                 Menu["killsteal"]["ksq"].Enabled)
@@ -1115,85 +1152,89 @@ namespace Katarina_By_Kornis
                         if (target.Distance(Player) >= R.Range - 100 && E.Ready)
                         {
 
-                            var daggers = ObjectManager.Get<GameObject>()
-                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                            d.Name == "HiddenMinion");
-                            foreach (var dagger in daggers)
+                            if (Daggers.Count > 0)
                             {
-
-                                if (dagger != null)
+                                foreach (var dagger in Daggers)
                                 {
-                                    if (target.Distance(dagger) < 450 &&
-                                        target.IsValidTarget(E.Range) && E.Ready)
 
+                                    if (dagger != null)
                                     {
-                                        if (Menu["combo"]["eturret"].Enabled)
+                                        if (target.Distance(dagger) < 450 &&
+                                            target.IsValidTarget(E.Range) && E.Ready)
+
                                         {
-                                            if (!dagger.IsUnderEnemyTurret())
+                                            if (Menu["combo"]["eturret"].Enabled)
                                             {
-                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                }
                                             }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            
-                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-                                            
-                                        }
-
-
-                                    }
-
-                                    if (dagger.Distance(Player) > E.Range)
-                                    {
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!target.IsUnderEnemyTurret())
+                                            if (!Menu["combo"]["eturret"].Enabled)
                                             {
+
+                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                            }
+
+
+                                        }
+
+                                        if (dagger.Distance(Player) > E.Range)
+                                        {
+                                            if (Menu["combo"]["eturret"].Enabled)
+                                            {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
                                                 E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                             }
                                         }
-                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        if (dagger.Distance(target) > 450)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                        }
-                                    }
-                                    if (dagger.Distance(target) > 450)
-                                    {
-
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!target.IsUnderEnemyTurret())
+                                            if (Menu["combo"]["eturret"].Enabled)
                                             {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
                                                 E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                             }
                                         }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
+                                        break;
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                        }
                                     }
-                                    break;
-
                                 }
                             }
-                            if (mmm == null && E.Ready)
+                            if (Daggers.Count == 0)
                             {
-
-
-                                if (Menu["combo"]["eturret"].Enabled)
+                                if (E.Ready)
                                 {
-                                    if (!target.IsUnderEnemyTurret())
+
+
+
+                                    if (Menu["combo"]["eturret"].Enabled)
                                     {
+                                        if (!target.IsUnderEnemyTurret())
+                                        {
+                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        }
+                                    }
+                                    if (!Menu["combo"]["eturret"].Enabled)
+                                    {
+
                                         E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                     }
-                                }
-                                if (!Menu["combo"]["eturret"].Enabled)
-                                {
-
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                 }
                             }
                         }
@@ -1202,69 +1243,69 @@ namespace Katarina_By_Kornis
                             target.Health && E.Ready)
                         {
 
-                            var daggers = ObjectManager.Get<GameObject>()
-                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                            d.Name == "HiddenMinion");
-                            foreach (var dagger in daggers)
+                            if (Daggers.Count > 0)
                             {
-
-                                if (dagger != null)
+                                foreach (var dagger in Daggers)
                                 {
-                                    if (target.Distance(dagger) < 450 &&
-                                        target.IsValidTarget(E.Range) && E.Ready)
 
+                                    if (dagger != null)
                                     {
+                                        if (target.Distance(dagger) < 450 &&
+                                            target.IsValidTarget(E.Range) && E.Ready)
 
-                                        if (Menu["combo"]["eturret"].Enabled)
                                         {
-                                            if (!dagger.IsUnderEnemyTurret())
+
+                                            if (Menu["combo"]["eturret"].Enabled)
                                             {
+                                                if (!dagger.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
                                                 E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
                                             }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
 
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
                                         }
-
-
-                                    }
-                                    if (dagger.Distance(Player) > E.Range)
-                                    {
-                                        if (Menu["combo"]["eturret"].Enabled)
+                                        if (dagger.Distance(Player) > E.Range)
                                         {
-                                            if (!target.IsUnderEnemyTurret())
+                                            if (Menu["combo"]["eturret"].Enabled)
                                             {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
                                                 E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                             }
                                         }
-                                        if (!Menu["combo"]["eturret"].Enabled)
+                                        if (dagger.Distance(target) > 450)
                                         {
 
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                        }
-                                    }
-                                    if (dagger.Distance(target) > 450)
-                                    {
-
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!target.IsUnderEnemyTurret())
+                                            if (Menu["combo"]["eturret"].Enabled)
                                             {
+                                                if (!target.IsUnderEnemyTurret())
+                                                {
+                                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                                }
+                                            }
+                                            if (!Menu["combo"]["eturret"].Enabled)
+                                            {
+
                                                 E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                             }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
-
-                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
                                         }
                                     }
                                 }
                             }
-                            if (mmm == null && E.Ready)
+                            if (Daggers.Count ==0 && E.Ready)
                             {
 
                                 if (Menu["combo"]["eturret"].Enabled)
@@ -1368,16 +1409,198 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var daggers = ObjectManager.Get<GameObject>()
-                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                            d.Name == "HiddenMinion");
-                            foreach (var dagger in daggers)
+                            if (Daggers.Count > 0)
                             {
-
-                                if (dagger != null)
+                                foreach (var dagger in Daggers)
                                 {
 
-                                    if (!SaveE)
+                                    if (dagger != null)
+                                    {
+
+                                        if (!SaveE)
+                                        {
+
+                                            if (target.Distance(dagger) < 450 &&
+                                                target.IsValidTarget(E.Range))
+                                            {
+
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!dagger.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition,
+                                                            200));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                                }
+
+
+                                            }
+                                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                            {
+                                                case 0:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 1:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                    }
+                                                    if (R.Ready)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, -50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, -50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
+
+
+                                    if (SaveE)
                                     {
 
                                         if (target.Distance(dagger) < 450 &&
@@ -1400,173 +1623,8 @@ namespace Katarina_By_Kornis
 
 
                                         }
-                                        switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                        {
-                                            case 0:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                break;
-                                            case 1:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                break;
-                                            case 2:
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                }
-                                                if (R.Ready)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-                                }
-
-
-                                if (SaveE)
-                                {
-
-                                    if (target.Distance(dagger) < 450 &&
-                                        target.IsValidTarget(E.Range))
-                                    {
-
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!dagger.IsUnderEnemyTurret())
-                                            {
-                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-                                            }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
-
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-
-                                        }
-
 
                                     }
-
                                 }
                             }
                             if (!SaveE)
@@ -1575,7 +1633,7 @@ namespace Katarina_By_Kornis
                                 switch (Menu["combo"]["emode"].As<MenuList>().Value)
                                 {
                                     case 0:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (Menu["combo"]["eturret"].Enabled)
@@ -1593,7 +1651,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 1:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (Menu["combo"]["eturret"].Enabled)
@@ -1611,7 +1669,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 2:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
@@ -1721,17 +1779,197 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var daggers = ObjectManager.Get<GameObject>()
-                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                            d.Name == "HiddenMinion");
-                            foreach (var dagger in daggers)
+                            if (Daggers.Count > 0)
                             {
-
-                                if (dagger != null)
+                                foreach (var dagger in Daggers)
                                 {
-                                    if (!SaveE)
-                                    {
 
+                                    if (dagger != null)
+                                    {
+                                        if (!SaveE)
+                                        {
+
+                                            if (target.Distance(dagger) < 450 &&
+                                                target.IsValidTarget(E.Range))
+                                            {
+
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!dagger.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition,
+                                                            200));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                                }
+
+
+                                            }
+                                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                            {
+                                                case 0:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 1:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                    }
+                                                    if (R.Ready)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, -50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, -50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                        }
+
+                                    }
+                                    if (SaveE)
+                                    {
                                         if (target.Distance(dagger) < 450 &&
                                             target.IsValidTarget(E.Range))
                                         {
@@ -1752,173 +1990,10 @@ namespace Katarina_By_Kornis
 
 
                                         }
-                                        switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                        {
-                                            case 0:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                break;
-                                            case 1:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                break;
-                                            case 2:
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                }
-                                                if (R.Ready)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-
-                                }
-                                if (SaveE)
-                                {
-                                    if (target.Distance(dagger) < 450 &&
-                                        target.IsValidTarget(E.Range))
-                                    {
-
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!dagger.IsUnderEnemyTurret())
-                                            {
-                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-                                            }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
-
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-
-                                        }
-
 
                                     }
 
                                 }
-
                             }
                             if (!SaveE)
                             {
@@ -1926,7 +2001,7 @@ namespace Katarina_By_Kornis
                                 {
 
                                     case 0:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (Menu["combo"]["eturret"].Enabled)
@@ -1944,7 +2019,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 1:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
                                             if (Menu["combo"]["eturret"].Enabled)
                                             {
@@ -1961,7 +2036,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 2:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
@@ -2082,15 +2157,184 @@ namespace Katarina_By_Kornis
                     {
                         if (target != null)
                         {
-                            var daggers = ObjectManager.Get<GameObject>()
-                                .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                            d.Name == "HiddenMinion");
-                            foreach (var dagger in daggers)
+                            if (Daggers.Count > 0)
                             {
-
-                                if (dagger != null)
+                                foreach (var dagger in Daggers)
                                 {
-                                    if (!SaveE)
+
+                                    if (dagger != null)
+                                    {
+                                        if (!SaveE)
+                                        {
+
+                                            if (target.Distance(dagger) < 450 &&
+                                                target.IsValidTarget(E.Range))
+                                            {
+
+                                                if (Menu["combo"]["eturret"].Enabled)
+                                                {
+                                                    if (!dagger.IsUnderEnemyTurret())
+                                                    {
+                                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition,
+                                                            200));
+                                                    }
+                                                }
+                                                if (!Menu["combo"]["eturret"].Enabled)
+                                                {
+
+                                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+
+                                                }
+
+
+                                            }
+                                            switch (Menu["combo"]["emode"].As<MenuList>().Value)
+                                            {
+                                                case 0:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 1:
+                                                    if (dagger.Distance(Player) > E.Range)
+                                                    {
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    if (dagger.Distance(target) > 450)
+                                                    {
+
+                                                        if (Menu["combo"]["eturret"].Enabled)
+                                                        {
+                                                            if (!target.IsUnderEnemyTurret())
+                                                            {
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                        if (!Menu["combo"]["eturret"].Enabled)
+                                                        {
+
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, 50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, 50));
+                                                            }
+                                                        }
+                                                    }
+                                                    if (R.Ready)
+                                                    {
+                                                        if (dagger.Distance(Player) > E.Range)
+                                                        {
+                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
+                                                                -50));
+                                                        }
+                                                        if (dagger.Distance(target) > 450)
+                                                        {
+                                                            if (Menu["combo"]["eturret"].Enabled)
+                                                            {
+                                                                if (!target.IsUnderEnemyTurret())
+                                                                {
+                                                                    E.Cast(target.ServerPosition.Extend(
+                                                                        Player.ServerPosition, -50));
+                                                                }
+                                                            }
+                                                            if (!Menu["combo"]["eturret"].Enabled)
+                                                            {
+
+                                                                E.Cast(target.ServerPosition.Extend(
+                                                                    Player.ServerPosition, -50));
+                                                            }
+                                                        }
+                                                    }
+                                                    break;
+                                            }
+                                        }
+                                    }
+
+
+                                    if (SaveE)
                                     {
 
                                         if (target.Distance(dagger) < 450 &&
@@ -2113,162 +2357,8 @@ namespace Katarina_By_Kornis
 
 
                                         }
-                                        switch (Menu["combo"]["emode"].As<MenuList>().Value)
-                                        {
-                                            case 0:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                    }
-                                                }
-                                                break;
-                                            case 1:
-                                                if (dagger.Distance(Player) > E.Range)
-                                                {
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                if (dagger.Distance(target) > 450)
-                                                {
-
-                                                    if (Menu["combo"]["eturret"].Enabled)
-                                                    {
-                                                        if (!target.IsUnderEnemyTurret())
-                                                        {
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                    if (!Menu["combo"]["eturret"].Enabled)
-                                                    {
-
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                    }
-                                                }
-                                                break;
-                                            case 2:
-                                                if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                                        }
-                                                    }
-                                                }
-                                                if (R.Ready)
-                                                {
-                                                    if (dagger.Distance(Player) > E.Range)
-                                                    {
-                                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition,
-                                                            -50));
-                                                    }
-                                                    if (dagger.Distance(target) > 450)
-                                                    {
-                                                        if (Menu["combo"]["eturret"].Enabled)
-                                                        {
-                                                            if (!target.IsUnderEnemyTurret())
-                                                            {
-                                                                E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                            }
-                                                        }
-                                                        if (!Menu["combo"]["eturret"].Enabled)
-                                                        {
-
-                                                            E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                                        }
-                                                    }
-                                                }
-                                                break;
-                                        }
-                                    }
-                                }
-
-
-                                if (SaveE)
-                                {
-
-                                    if (target.Distance(dagger) < 450 &&
-                                        target.IsValidTarget(E.Range))
-                                    {
-
-                                        if (Menu["combo"]["eturret"].Enabled)
-                                        {
-                                            if (!dagger.IsUnderEnemyTurret())
-                                            {
-                                                E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-                                            }
-                                        }
-                                        if (!Menu["combo"]["eturret"].Enabled)
-                                        {
-
-                                            E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-
-                                        }
-
 
                                     }
-
                                 }
                             }
                             if (!SaveE)
@@ -2276,7 +2366,7 @@ namespace Katarina_By_Kornis
                                 switch (Menu["combo"]["emode"].As<MenuList>().Value)
                                 {
                                     case 0:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (Menu["combo"]["eturret"].Enabled)
@@ -2294,7 +2384,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 1:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (Menu["combo"]["eturret"].Enabled)
@@ -2312,7 +2402,7 @@ namespace Katarina_By_Kornis
                                         }
                                         break;
                                     case 2:
-                                        if (mmm == null)
+                                        if (Daggers.Count == 0)
                                         {
 
                                             if (!R.Ready || Player.GetSpell(SpellSlot.R).Level == 0)
@@ -2414,34 +2504,34 @@ namespace Katarina_By_Kornis
                     }
                     if (E.Ready && useE && target.IsValidTarget(E.Range) && !Q.Ready)
                     {
-                        var daggers = ObjectManager.Get<GameObject>()
-                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                        d.Name == "HiddenMinion");
-                        foreach (var dagger in daggers)
+                        if (Daggers.Count > 0)
                         {
-
-                            if (dagger != null)
+                            foreach (var dagger in Daggers)
                             {
-                                if (target.Distance(dagger) < 450 &&
-                                    target.IsValidTarget(E.Range))
+
+                                if (dagger != null)
                                 {
+                                    if (target.Distance(dagger) < 450 &&
+                                        target.IsValidTarget(E.Range))
+                                    {
 
-                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
 
 
-                                }
-                                if (dagger.Distance(Player) > E.Range)
-                                {
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
-                                }
-                                if (dagger.Distance(target) > 450)
-                                {
+                                    }
+                                    if (dagger.Distance(Player) > E.Range)
+                                    {
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
+                                    if (dagger.Distance(target) > 450)
+                                    {
 
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
+                                    }
                                 }
                             }
                         }
-                        if (mmm == null)
+                        if (Daggers.Count == 0)
                         {
 
                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, -50));
@@ -2466,30 +2556,30 @@ namespace Katarina_By_Kornis
                     }
                     if (E.Ready && useE && target.IsValidTarget(E.Range))
                     {
-                        var daggers = ObjectManager.Get<GameObject>()
-                            .Where(d => d.IsValid && !d.IsDead && d.Distance(Player) <= E.Range &&
-                                        d.Name == "HiddenMinion");
-                        foreach (var dagger in daggers)
+                        if (Daggers.Count > 0)
                         {
-
-                            if (dagger != null)
+                            foreach (var dagger in Daggers)
                             {
-                                if (target.Distance(dagger) < 450 &&
-                                    target.IsValidTarget(E.Range))
+
+                                if (dagger != null)
                                 {
-                                    E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
-                                }
-                                if (dagger.Distance(Player) > E.Range)
-                                {
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
-                                }
-                                if (dagger.Distance(target) > 450)
-                                {
-                                    E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    if (target.Distance(dagger) < 450 &&
+                                        target.IsValidTarget(E.Range))
+                                    {
+                                        E.Cast(dagger.ServerPosition.Extend(target.ServerPosition, 200));
+                                    }
+                                    if (dagger.Distance(Player) > E.Range)
+                                    {
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    }
+                                    if (dagger.Distance(target) > 450)
+                                    {
+                                        E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
+                                    }
                                 }
                             }
                         }
-                        if (mmm == null)
+                        if (Daggers.Count == 0)
                         {
                             E.Cast(target.ServerPosition.Extend(Player.ServerPosition, 50));
                         }
