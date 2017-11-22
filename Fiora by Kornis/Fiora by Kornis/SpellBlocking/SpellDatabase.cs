@@ -3974,6 +3974,70 @@ namespace Fiora_By_Kornis.SpellBlocking
 
             #endregion Taric
 
+            #region Zoe
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Zoe",
+                    SpellName = "ZoeQ",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 250,
+                    Range = 800,
+                    Radius = 90,
+                    MissileSpeed = 1600,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "ZoeQMissile"
+
+                });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Zoe",
+                    SpellName = "ZoeQRecast",
+                    Slot = SpellSlot.Q,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 250,
+                    Range = 900,
+                    Radius = 90,
+                    MissileSpeed = 50000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "ZoeQMis2Warning",
+                    CollisionObjects =
+                        new[]
+                            {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
+
+
+                });
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Zoe",
+                    SpellName = "ZoeE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 250,
+                    Range = 900,
+                    Radius = 60,
+                    MissileSpeed = 2000,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = true,
+                    MissileSpellName = "ZoeE",
+                    CollisionObjects =
+                    new[]
+                    {CollisionObjectTypes.Champions, CollisionObjectTypes.Minion, CollisionObjectTypes.YasuoWall},
+
+                });
+            #endregion Zoe
+
             #region Thresh
 
             Spells.Add(

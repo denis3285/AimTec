@@ -430,7 +430,7 @@ namespace Fiora_By_Kornis
 
                     }
                 }
-                Render.Circle(Player.ServerPosition, 500, 40, Color.CornflowerBlue);
+               
             }
         }
 
