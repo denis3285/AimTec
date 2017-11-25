@@ -151,13 +151,13 @@ namespace Potato_AIO.Champions
             {
                 foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(E.Range))
                 {
-                    
 
-                        if (minion.IsValidTarget(E.Range) && minion != null && !Player.HasBuff("GarenE"))
-                        {
-                            E.Cast();
-                        }
-                    
+
+                    if (minion.IsValidTarget(E.Range) && minion != null)
+                    {
+                        E.Cast();
+                    }
+
                 }
             }
 
@@ -205,8 +205,8 @@ namespace Potato_AIO.Champions
 
         protected override void Drawings()
         {
-          
-    
+
+
             if (RootMenu["drawings"]["draww"].Enabled)
             {
                 Render.Circle(Player.Position, W.Range, 50, Color.Crimson);
@@ -223,7 +223,7 @@ namespace Potato_AIO.Champions
         {
 
 
-            
+
 
         }
 
@@ -249,25 +249,25 @@ namespace Potato_AIO.Champions
                 }
 
 
-                    if (RootMenu["combo"]["items"].Enabled)
+                if (RootMenu["combo"]["items"].Enabled)
+                {
+                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                        Player.HasItem(ItemId.RavenousHydra))
                     {
-                        if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
-                            Player.HasItem(ItemId.RavenousHydra))
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                        if (slot != null)
                         {
-                            var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
-                            var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
-                            if (slot != null)
+                            var spellslot = slot.SpellSlot;
+                            if (spellslot != SpellSlot.Unknown &&
+                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
                             {
-                                var spellslot = slot.SpellSlot;
-                                if (spellslot != SpellSlot.Unknown &&
-                                    Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
-                                {
-                                    Player.SpellBook.CastSpell(spellslot);
-                                }
+                                Player.SpellBook.CastSpell(spellslot);
                             }
                         }
                     }
-                
+                }
+
             }
 
             if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Mixed))
@@ -289,25 +289,25 @@ namespace Potato_AIO.Champions
                 }
 
 
-                    if (RootMenu["combo"]["items"].Enabled)
+                if (RootMenu["combo"]["items"].Enabled)
+                {
+                    if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
+                        Player.HasItem(ItemId.RavenousHydra))
                     {
-                        if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
-                            Player.HasItem(ItemId.RavenousHydra))
+                        var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
+                        var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
+                        if (slot != null)
                         {
-                            var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
-                            var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
-                            if (slot != null)
+                            var spellslot = slot.SpellSlot;
+                            if (spellslot != SpellSlot.Unknown &&
+                                Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
                             {
-                                var spellslot = slot.SpellSlot;
-                                if (spellslot != SpellSlot.Unknown &&
-                                    Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
-                                {
-                                    Player.SpellBook.CastSpell(spellslot);
-                                }
+                                Player.SpellBook.CastSpell(spellslot);
                             }
                         }
-                   }
-                
+                    }
+                }
+
             }
             if (Orbwalker.Implementation.Mode.Equals(OrbwalkingMode.Laneclear))
             {
@@ -349,7 +349,8 @@ namespace Potato_AIO.Champions
                 {
                     if (target != null)
                     {
-                        if (!target.IsDead && Player.HealthPercent() >= RootMenu["harass"]["qhp"].As<MenuSlider>().Value)
+                        if (!target.IsDead &&
+                            Player.HealthPercent() >= RootMenu["harass"]["qhp"].As<MenuSlider>().Value)
                         {
                             Q.Cast(target);
                         }
@@ -365,7 +366,8 @@ namespace Potato_AIO.Champions
                 {
                     if (target != null)
                     {
-                        if (!target.IsDead && Player.HealthPercent() >= RootMenu["harass"]["qhp"].As<MenuSlider>().Value)
+                        if (!target.IsDead &&
+                            Player.HealthPercent() >= RootMenu["harass"]["qhp"].As<MenuSlider>().Value)
                         {
                             W.Cast();
                         }
@@ -433,7 +435,7 @@ namespace Potato_AIO.Champions
                 LaneClear.Add(new MenuBool("useW", "Use W to Farm"));
                 LaneClear.Add(new MenuSlider("hitW", "Min. Minion for W", 3, 1, 6));
                 LaneClear.Add(new MenuBool("useE", "Use E to Farm"));
-               
+
             }
             var JungleClear = new Menu("jungle", "Jungle Clear");
             {
@@ -443,7 +445,7 @@ namespace Potato_AIO.Champions
             }
             RootMenu.Add(FarmMenu);
             FarmMenu.Add(LaneClear);
-            FarmMenu.Add(JungleClear);              
+            FarmMenu.Add(JungleClear);
             DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
@@ -452,6 +454,7 @@ namespace Potato_AIO.Champions
             RootMenu.Add(DrawMenu);
             RootMenu.Attach();
         }
+
         protected override void SetSpells()
         {
             Q = new Aimtec.SDK.Spell(SpellSlot.Q, 975);
@@ -471,7 +474,8 @@ namespace Potato_AIO.Champions
                     if (GameObjects.EnemyMinions.Count(h => h.IsValidTarget(300, false, false,
                             Player.ServerPosition)) == 0 && Player.CountEnemyHeroesInRange(300) == 0 &&
                         Bases.GameObjects.Jungle.Count(h => h.IsValidTarget(00, false, false,
-                            Player.ServerPosition)) == 0 || Player.HealthPercent() < RootMenu["combo"]["whp"].As<MenuSlider>().Value)
+                            Player.ServerPosition)) == 0 ||
+                        Player.HealthPercent() < RootMenu["combo"]["whp"].As<MenuSlider>().Value)
                     {
                         W.Cast();
                     }
@@ -486,7 +490,23 @@ namespace Potato_AIO.Champions
 
         protected override void LastHit()
         {
+            if (Q.Ready)
+            {
+                foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(Q.Range))
+                {
+                    if (minion.IsValidTarget(Q.Range) && minion != null)
+                    {
+                        if (RootMenu["farming"]["lane"]["qlast"].Enabled)
+                        {
+                            if (minion.Health < Player.GetSpellDamage(minion, SpellSlot.Q))
+                            {
+                                Q.Cast(minion);
+                            }
+                        }
 
+                    }
+                }
+            }
         }
     }
 }

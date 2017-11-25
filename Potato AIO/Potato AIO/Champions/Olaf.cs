@@ -810,6 +810,13 @@ namespace Potato_AIO.Champions
                 DrawMenu.Add(new MenuBool("drawdamage", "Draw Damage"));
             }
             RootMenu.Add(DrawMenu);
+            var FleeMenu = new Menu("fleemenu", "Flee");
+            {
+
+                FleeMenu.Add(new MenuBool("useq", "Use Q While Fleeing"));
+                FleeMenu.Add(new MenuKeyBind("key", "Flee Key:", KeyCode.G, KeybindType.Press));
+            }
+            RootMenu.Add(FleeMenu);
             RootMenu.Attach();
         }
 
@@ -825,7 +832,45 @@ namespace Potato_AIO.Champions
 
         protected override void SemiR()
         {
-       
+            if (RootMenu["fleemenu"]["key"].Enabled)
+            {
+                Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
+                if (RootMenu["fleemenu"]["useq"].Enabled)
+                {
+                    var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
+
+                    if (!target.IsValidTarget())
+                    {
+                        return;
+                    }
+
+
+                    if (Q.Ready && target.IsValidTarget(Q.Range))
+                    {
+                        if (target != null)
+                        {
+                            var meowpred = Q.GetPrediction(target);
+                            if (target.Distance(Player) <= 300)
+                            {
+                                Q.Cast(meowpred.CastPosition.Extend(Player.ServerPosition, -50));
+                            }
+                            if (target.Distance(Player) <= 500 && target.Distance(Player) >= 300)
+                            {
+                                Q.Cast(meowpred.CastPosition.Extend(Player.ServerPosition, -90));
+                            }
+                            if (target.Distance(Player) <= 700 && target.Distance(Player) >= 500)
+                            {
+                                Q.Cast(meowpred.CastPosition.Extend(Player.ServerPosition, -160));
+                            }
+                            if (target.Distance(Player) <= Q.Range && target.Distance(Player) >= 700)
+                            {
+                                Q.Cast(meowpred.CastPosition.Extend(Player.ServerPosition, -210));
+                            }
+                        }
+                    }
+
+                }
+            }
         }
     
 
