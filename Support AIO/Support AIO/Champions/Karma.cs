@@ -42,7 +42,32 @@ namespace Support_AIO.Champions
 
                 return;
             }
+            if (RootMenu["combo"]["forcee"].Enabled)
+            {
+                if (Player.CountAllyHeroesInRange(600) >= RootMenu["forcee"].Value)
+                {
+                    if (R.Ready && E.Ready)
+                    {
+                        if (target.IsValidTarget(Q.Range + 50) && useE)
+                        {
 
+                            if (target != null)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+
+                    if (target.IsValidTarget(Q.Range) && useE)
+                    {
+
+                        if (target != null)
+                        {
+                            E.Cast();
+                        }
+                    }
+                }
+            }
             switch (RootMenu["combo"]["combomode"].As<MenuList>().Value)
             {
                 case 0:
@@ -296,7 +321,141 @@ namespace Support_AIO.Champions
 
         protected override void Harass()
         {
-          
+            bool useQ = RootMenu["harass"]["useq"].Enabled;
+            bool useW = RootMenu["harass"]["usew"].Enabled;
+            bool useE = RootMenu["harass"]["usee"].Enabled;
+
+
+
+            var target = Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
+
+            if (!target.IsValidTarget())
+            {
+
+                return;
+            }
+
+            switch (RootMenu["harass"]["harassmode"].As<MenuList>().Value)
+            {
+                case 0:
+                    if (R.Ready && Q.Ready)
+                    {
+                        var collisions =
+                            (IList<Obj_AI_Base>)Q.GetPrediction(target).CollisionObjects;
+                        if (collisions.Any())
+                        {
+                            if (collisions.All(c => Support_AIO.Bases.Extensions.GetAllGenericUnitTargets().Contains(c)))
+                            {
+                                return;
+                            }
+                        }
+                        if (target.IsValidTarget(Q.Range) && useQ)
+                        {
+
+                            if (target != null)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+                    if (useQ && target.IsValidTarget(Q.Range))
+                    {
+                        Q.Cast(target);
+                    }
+                    if (target.IsValidTarget(W.Range) && useW && !Player.HasBuff("KarmaMantra"))
+                    {
+
+                        if (target != null)
+                        {
+                            W.CastOnUnit(target);
+                        }
+                    }
+                    if (target.IsValidTarget(W.Range) && useE && !Player.HasBuff("KarmaMantra"))
+                    {
+
+                        if (target != null)
+                        {
+                            E.Cast();
+                        }
+                    }
+                    break;
+                case 1:
+                    if (R.Ready && W.Ready)
+                    {
+                        if (target.IsValidTarget(W.Range) && useQ)
+                        {
+
+                            if (target != null)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+                    if (target.IsValidTarget(W.Range) && useW)
+                    {
+
+                        if (target != null)
+                        {
+                            W.CastOnUnit(target);
+                        }
+                    }
+                    if ((!R.Ready || !W.Ready) && useQ && Q.Ready && !Player.HasBuff("KarmaMantra"))
+                    {
+                        if (target.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(target);
+                        }
+                    }
+
+
+                    if (target.IsValidTarget(W.Range) && useE && !Player.HasBuff("KarmaMantra"))
+                    {
+
+                        if (target != null)
+                        {
+                            E.Cast();
+                        }
+                    }
+                    break;
+                case 2:
+                    if (R.Ready && E.Ready)
+                    {
+                        if (target.IsValidTarget(Q.Range - 50) && useE)
+                        {
+
+                            if (target != null)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+
+                    if (target.IsValidTarget(W.Range) && useE)
+                    {
+
+                        if (target != null)
+                        {
+                            E.Cast();
+                        }
+                    }
+
+                    if (useQ && Q.Ready && !Player.HasBuff("KarmaMantra"))
+                    {
+                        if (target.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(target);
+                        }
+                    }
+                    if (target.IsValidTarget(W.Range) && useW && !Player.HasBuff("KarmaMantra"))
+                    {
+
+                        if (target != null)
+                        {
+                            W.CastOnUnit(target);
+                        }
+                    }
+                    break;
+            }
         }
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
@@ -329,12 +488,22 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
+                ComboMenu.Add(new MenuSliderBool("forcee", "^- Force R - E if X Allies in Range", false, 3, 1, 5));
                 ComboMenu.Add(new MenuBool("support", "Support Mode"));
                 ComboMenu.Add(new MenuKeyBind("chase", "Chase Combo", KeyCode.T, KeybindType.Press));
                 ComboMenu.Add(new MenuKeyBind("save", "Survive Combo", KeyCode.Z, KeybindType.Press));
 
             }
             RootMenu.Add(ComboMenu);
+            HarassMenu = new Menu("harass", "Harass");
+            {
+                HarassMenu.Add(new MenuList("harassmode", "Harass Mode", new[] { "R - Q", "R - W", "R - E" }, 1));
+                HarassMenu.Add(new MenuBool("useq", "Use Q in Harass"));
+                HarassMenu.Add(new MenuBool("usew", "Use W in Harass"));
+                HarassMenu.Add(new MenuBool("usee", "Use E in Harass"));
+
+            }
+            RootMenu.Add(HarassMenu);
             DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
