@@ -836,7 +836,7 @@ namespace Jayce_By_Kornis
             if (!Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
             {
                 var target = GetBestEnemyHeroTargetInRange(QE.Range);
-
+                
                 if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
                 {
 
@@ -997,7 +997,7 @@ namespace Jayce_By_Kornis
                                         {
                                             R.Cast();
                                         }
-                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(200))
+                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(265))
                                         {
                                             R.Cast();
                                         }
@@ -1011,7 +1011,7 @@ namespace Jayce_By_Kornis
                                         {
                                             R.Cast();
                                         }
-                                        if (timer - Game.ClockTime > 1 && target.Distance(Player) <= Player.GetFullAttackRange(target))
+                                        if (timer - Game.ClockTime > 1 && target.Distance(Player) <= 265)
                                         {
                                             R.Cast();
                                         }
