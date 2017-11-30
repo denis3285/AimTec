@@ -242,25 +242,45 @@ namespace Syndra_By_Kornis
             {
                 if (e.SpellData.Name == "SyndraQ")
                 {
-                    if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo) || Orbwalker.Mode.Equals(OrbwalkingMode.Mixed))
+                   
+                    if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo))
                     {
-                        var EndPos = e.End;
-                        if (EndPos.Distance(Player) <= 850 && lastw < Game.TickCount)
+                        if (Menu["combo"]["useqe"].Enabled)
                         {
-                            DelayAction.Queue(100, () => E.Cast(EndPos));
-                            zzzzzzzzzzzzzzzzzzz = Game.TickCount + 750;
+                          
+                            var EndPos = e.End;
+                            if (EndPos.Distance(Player) <= 850 && lastw < Game.TickCount)
+                            {
+                                DelayAction.Queue(100, () => E.Cast(EndPos));
+                                zzzzzzzzzzzzzzzzzzz = Game.TickCount + 750;
 
+                            }
+                        }
+                    }
+                    if (Orbwalker.Mode.Equals(OrbwalkingMode.Mixed))
+                    {
+                        if (Menu["harass"]["useqe"].Enabled)
+                        {
+                            var EndPos = e.End;
+                            if (EndPos.Distance(Player) <= 850 && lastw < Game.TickCount)
+                            {
+                                DelayAction.Queue(100, () => E.Cast(EndPos));
+                                zzzzzzzzzzzzzzzzzzz = Game.TickCount + 750;
+
+                            }
                         }
                     }
                     if (Menu["combo"]["qe"].Enabled)
                     {
+                        
                         var EndPos = e.End;
                         if (EndPos.Distance(Player) <= 850 && lastw < Game.TickCount)
                         {
                             DelayAction.Queue(100, () => E.Cast(EndPos));
-
+                           
                         }
                     }
+
                 }
                 if (e.SpellData.Name == "SyndraW")
                 {
