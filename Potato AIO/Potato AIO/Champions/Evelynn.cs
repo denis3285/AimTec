@@ -408,7 +408,7 @@ namespace Potato_AIO.Champions
 
                                 if (!Player.HasBuff("EvelynnQ2"))
                                 {
-                                    Q.Cast(minion);
+                                    Q.Cast(minion.ServerPosition);
                                 }
                                 if (Player.HasBuff("EvelynnQ2"))
                                 {
@@ -538,16 +538,16 @@ namespace Potato_AIO.Champions
                                                             d.Name == "Evelynn_Base_W_Fizz_Mark_Decay");
                                             if (!jungleTarget.IsDead && jungleTarget.HasBuff("EvelynnW"))
                                             {
-                                              
+
                                                 foreach (var meow in daggers)
                                                 {
 
-                                                    
+
 
                                                     if (!Player.HasBuff("EvelynnQ2"))
                                                     {
 
-                                                        Q.Cast(jungleTarget);
+                                                        Q.Cast(jungleTarget.ServerPosition);
                                                     }
                                                     if (Player.HasBuff("EvelynnQ2"))
                                                     {
@@ -558,7 +558,7 @@ namespace Potato_AIO.Champions
                                                     }
                                                 }
                                             }
-                                 
+
                                             if (zz.Count() == 0)
                                             {
                                                 if (!jungleTarget.IsDead && !jungleTarget.HasBuff("EvelynnW"))
@@ -566,7 +566,7 @@ namespace Potato_AIO.Champions
 
                                                     if (!Player.HasBuff("EvelynnQ2"))
                                                     {
-                                                        Q.Cast(jungleTarget);
+                                                        Q.Cast(jungleTarget.ServerPosition);
                                                     }
                                                     if (Player.HasBuff("EvelynnQ2"))
                                                     {
@@ -596,7 +596,7 @@ namespace Potato_AIO.Champions
                                     {
                                         if (!jungleTarget.IsDead)
                                         {
-                                            
+
                                             foreach (var meow in daggers)
                                             {
 
@@ -650,7 +650,7 @@ namespace Potato_AIO.Champions
 
                                             if (!Player.HasBuff("EvelynnQ2"))
                                             {
-                                                Q.Cast(jungleTarget);
+                                                Q.Cast(jungleTarget.ServerPosition);
                                             }
                                             if (Player.HasBuff("EvelynnQ2"))
                                             {
@@ -896,7 +896,8 @@ namespace Potato_AIO.Champions
                 {
                     var bestTarget = Bases.Extensions.GetBestKillableHero(E, DamageType.Magical, false);
                     if (bestTarget != null &&
-                        Player.GetSpellDamage(bestTarget, SpellSlot.E, DamageStage.Empowered) - 30 >= bestTarget.Health &&
+                        Player.GetSpellDamage(bestTarget, SpellSlot.E, DamageStage.Empowered) - 30 >=
+                        bestTarget.Health &&
                         bestTarget.IsValidTarget(E.Range))
                     {
                         E.Cast(bestTarget);
@@ -937,10 +938,10 @@ namespace Potato_AIO.Champions
                 }
             }
         }
-    
 
 
-    protected override void Harass()
+
+        protected override void Harass()
         {
 
 
@@ -973,7 +974,7 @@ namespace Potato_AIO.Champions
                             }
                         }
                     }
-                   
+
                     if (useQ)
                     {
                         var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
@@ -1012,7 +1013,7 @@ namespace Potato_AIO.Champions
                                 {
                                     if (Player.HasItem(ItemId.HextechProtobelt01))
                                     {
-                                        var items = new[] { ItemId.HextechProtobelt01 };
+                                        var items = new[] {ItemId.HextechProtobelt01};
                                         var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                                         if (slot != null)
                                         {
@@ -1137,7 +1138,7 @@ namespace Potato_AIO.Champions
                                     {
                                         if (Player.HasItem(ItemId.HextechProtobelt01))
                                         {
-                                            var items = new[] { ItemId.HextechProtobelt01 };
+                                            var items = new[] {ItemId.HextechProtobelt01};
                                             var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                                             if (slot != null)
                                             {
@@ -1159,7 +1160,7 @@ namespace Potato_AIO.Champions
                                 {
                                     if (Player.HasItem(ItemId.HextechProtobelt01))
                                     {
-                                        var items = new[] { ItemId.HextechProtobelt01 };
+                                        var items = new[] {ItemId.HextechProtobelt01};
                                         var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                                         if (slot != null)
                                         {
@@ -1178,7 +1179,7 @@ namespace Potato_AIO.Champions
 
                     }
                     if (useE && meowwwwwwwwwwwww < Game.TickCount
-                        )
+                    )
                     {
                         var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(E.Range);
 
@@ -1223,7 +1224,7 @@ namespace Potato_AIO.Champions
                 ComboMenu.Add(new MenuKeyBind("wait", " - Wait for W Charm Toggle", KeyCode.G, KeybindType.Toggle));
                 ComboMenu.Add(new MenuBool("useQ", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("useW", "Use W in Combo"));
-                ComboMenu.Add(new MenuBool("useE", "Use E in Combo")); 
+                ComboMenu.Add(new MenuBool("useE", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("useR", "Use R if Killable"));
                 ComboMenu.Add(new MenuSlider("enemiesR", "^- Don't R if X Enemies Behind", 2, 1, 5));
                 ComboMenu.Add(new MenuSlider("backwardR", "^- Backward R Position Check Range", 400, 1, 600));
@@ -1288,7 +1289,7 @@ namespace Potato_AIO.Champions
             }
             RootMenu.Add(DrawMenu);
 
-                RootMenu.Attach();
+            RootMenu.Attach();
         }
 
 
@@ -1300,8 +1301,8 @@ namespace Potato_AIO.Champions
             E = new Aimtec.SDK.Spell(SpellSlot.E, 300);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 500);
             Q.SetSkillshot(0.25f, 60f, 2400f, true, SkillshotType.Line);
-            R.SetSkillshot(0.25f, 180 * (float)Math.PI / 180, 2500f, false, SkillshotType.Cone, false, HitChance.None);
-                     if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
+            R.SetSkillshot(0.25f, 180 * (float) Math.PI / 180, 2500f, false, SkillshotType.Cone, false, HitChance.None);
+            if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
                 Flash = new Aimtec.SDK.Spell(SpellSlot.Summoner2, 425);
@@ -1331,7 +1332,7 @@ namespace Potato_AIO.Champions
             {
                 W.Range = 1600;
             }
-            
+
         }
 
         internal override void OnPreAttack(object sender, PreAttackEventArgs e)
@@ -1387,7 +1388,7 @@ namespace Potato_AIO.Champions
 
 
         protected override void LastHit()
-        { 
+        {
         }
     }
 }
