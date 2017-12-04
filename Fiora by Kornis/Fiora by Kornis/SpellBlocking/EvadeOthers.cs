@@ -285,6 +285,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                                 }
                             }
                             break;
+
                         case "Blitzcrank":
                             if (x.SpellSlot == SpellSlot.E)
                             {
@@ -293,8 +294,16 @@ namespace Fiora_By_Kornis.SpellBlocking
                                     CastW("Blitzcrank", x.SpellSlot);
                                 }
                             }
-                            
-     
+                            break;
+                        case "Leona":
+                            if (x.SpellSlot == SpellSlot.Q)
+                            {
+                                if (Args.Target.IsMe && Args.SpellData.Name == "LeonaShieldOfDaybreakAttack")
+                                {
+                                    CastW("Leona", x.SpellSlot);
+                                }
+                            }
+
                             break;
                         case "Chogath":
                             if (x.SpellSlot == SpellSlot.R)

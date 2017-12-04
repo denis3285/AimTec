@@ -42,6 +42,16 @@
                 });
 
             #endregion Blitzcrank
+            #region Leona
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Leona",
+                    SpellSlot = SpellSlot.Q
+                });
+
+            #endregion Leona
             #region Nasus
 
             Spells.Add(
@@ -332,7 +342,8 @@
                     SpellSlot = SpellSlot.E
                 });
 
-            #endregion Jax
+            #endregion Jax           
+  
 
             #region Pantheon
 
