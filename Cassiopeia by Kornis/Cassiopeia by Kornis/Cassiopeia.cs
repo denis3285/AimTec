@@ -36,7 +36,7 @@ namespace Cassiopeia_By_Kornis
 
         public static Obj_AI_Hero Player => ObjectManager.GetLocalPlayer();
 
- 
+
 
         public static Spell Q, W, E, R, Flash;
 
@@ -47,7 +47,7 @@ namespace Cassiopeia_By_Kornis
             E = new Spell(SpellSlot.E, 750);
             R = new Spell(SpellSlot.R, 825);
             W.SetSkillshot(1.2f, 200, float.MaxValue, false, SkillshotType.Circle, false, HitChance.None);
-            R.SetSkillshot(0.4f, (float) (80 * Math.PI / 180), float.MaxValue, false, SkillshotType.Cone);
+            R.SetSkillshot(0.4f, (float)(80 * Math.PI / 180), float.MaxValue, false, SkillshotType.Cone);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
@@ -82,7 +82,7 @@ namespace Cassiopeia_By_Kornis
             var RSet = new Menu("rset", "R Settings");
             {
                 RSet.Add(new MenuBool("user", "Use R in Combo"));
-                RSet.Add(new MenuList("rmode", "R Mode", new[] {"At X Health", "If Killable"}, 0));
+                RSet.Add(new MenuList("rmode", "R Mode", new[] { "At X Health", "If Killable" }, 0));
                 RSet.Add(new MenuSlider("waster", "Don't waste R if Enemy HP lower than", 100, 0, 500));
                 RSet.Add(new MenuSlider("hpr", "R if Target has Health Percent", 60, 1, 100));
                 RSet.Add(new MenuSlider("hitr", "Min. Enemies to Hit", 1, 1, 5));
@@ -93,7 +93,7 @@ namespace Cassiopeia_By_Kornis
                 RSet.Add(new MenuKeyBind("semi", "Semi-Manual R:", KeyCode.G, KeybindType.Press));
 
             }
-            ComboMenu.Add(new MenuBool("rylais", "Rylais Combo (Starts with E", false));
+            ComboMenu.Add(new MenuBool("rylais", "Rylais Combo (Starts with E)", false));
             Menu.Add(ComboMenu);
             ComboMenu.Add(QSet);
             ComboMenu.Add(WSet);
@@ -158,7 +158,7 @@ namespace Cassiopeia_By_Kornis
             var miscmenu = new Menu("misc", "Misc.");
             {
                 miscmenu.Add(new MenuList("qpred", "Q Pred.", new[] { "Old Version", "New Version" }, 1));
-                
+
 
                 Menu.Add(WhiteList);
                 miscmenu.Add(new MenuBool("stacks", "Stack Q"));
@@ -166,10 +166,10 @@ namespace Cassiopeia_By_Kornis
                 miscmenu.Add(new MenuBool("disable", "Disable AA"));
                 miscmenu.Add(new MenuSlider("level", "At what Level disable AA", 6, 1, 18));
                 miscmenu.Add(new MenuKeyBind("aakey", "AA Disable Key: (Combo)", KeyCode.Space, KeybindType.Press));
-             
+
             }
             Menu.Add(miscmenu);
-            
+
             var DrawMenu = new Menu("drawings", "Drawings");
             {
                 DrawMenu.Add(new MenuBool("drawq", "Draw Q Range"));
@@ -181,7 +181,7 @@ namespace Cassiopeia_By_Kornis
                 DrawMenu.Add(new MenuBool("drawkill", "Draw Killable with Minions with E"));
                 DrawMenu.Add(new MenuBool("drawtoggle", "Draw Farm Toggle"));
             }
-           AutoQ.Attach(Menu, "Auto Q on Dashes");
+            AutoQ.Attach(Menu, "Auto Q on Dashes");
             Cassiopeia_By_Kornis.RGap.Gapcloser.Attach(Menu, "R Anti-GapClose");
             Menu.Add(DrawMenu);
             Menu.Attach();
@@ -217,7 +217,7 @@ namespace Cassiopeia_By_Kornis
             }
         }
 
-        public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
+        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
 
         public static int SxOffset(Obj_AI_Hero target)
         {
@@ -235,7 +235,7 @@ namespace Cassiopeia_By_Kornis
                         args.Cancel = true;
                     }
                 }
-                
+
             }
             if (Orbwalker.Mode.Equals(OrbwalkingMode.Laneclear))
             {
@@ -259,7 +259,7 @@ namespace Cassiopeia_By_Kornis
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                     {
                         if (
-                            HealthPrediction.Implementation.GetPrediction(minion, (int) (0.2 * 1000f)) - 100 <=
+                            HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) - 100 <=
                             GetE(minion))
                         {
                             if (args.Target.IsMinion)
@@ -276,13 +276,13 @@ namespace Cassiopeia_By_Kornis
             {
                 foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                 {
-                    if (HealthPrediction.Implementation.GetPrediction(minion, (int) (0.2 * 1000f))-100 <= GetE(minion))
+                    if (HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) - 100 <= GetE(minion))
                     {
                         if (!Menu["farming"]["mode"].Enabled)
                         {
                             if (args.Target.IsMinion)
                             {
-                               
+
                                 args.Cancel = true;
                             }
                         }
@@ -296,13 +296,13 @@ namespace Cassiopeia_By_Kornis
                 {
                     if (HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) - 100 <= GetE(minion) && Menu["harass"]["laste"].Enabled)
                     {
-                       
-                            if (args.Target.IsMinion)
-                            {
 
-                                args.Cancel = true;
-                            }
-                        
+                        if (args.Target.IsMinion)
+                        {
+
+                            args.Cancel = true;
+                        }
+
 
                     }
                 }
@@ -312,11 +312,11 @@ namespace Cassiopeia_By_Kornis
                 if (Player.Mana > 100 && Menu["misc"]["disable"].Enabled &&
                     Menu["misc"]["level"].As<MenuSlider>().Value <= Player.Level)
                 {
-                
+
                     args.Cancel = true;
                 }
             }
- 
+
 
         }
         public static int SyOffset(Obj_AI_Hero target)
@@ -338,8 +338,8 @@ namespace Cassiopeia_By_Kornis
             }
             if (target.HasBuffOfType(BuffType.Poison))
             {
-                
-                test = test = Player.GetSpellDamage(target, SpellSlot.E, DamageStage.Empowered) ;
+
+                test = test = Player.GetSpellDamage(target, SpellSlot.E, DamageStage.Empowered);
             }
             return test;
 
@@ -349,8 +349,8 @@ namespace Cassiopeia_By_Kornis
         {
             Vector2 maybeworks;
             var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
-            var xaOffset = (int) maybeworks.X;
-            var yaOffset = (int) maybeworks.Y;
+            var xaOffset = (int)maybeworks.X;
+            var yaOffset = (int)maybeworks.Y;
             if (Menu["drawings"]["drawtoggle"].Enabled)
             {
                 if (Menu["farming"]["mode"].Enabled)
@@ -397,7 +397,7 @@ namespace Cassiopeia_By_Kornis
 
                         if (E.Ready)
                         {
-                            if (HealthPrediction.Implementation.GetPrediction(m, (int) (0.2 * 1000f)) <= GetE(m))
+                            if (HealthPrediction.Implementation.GetPrediction(m, (int)(0.2 * 1000f)) <= GetE(m))
                             {
                                 Render.Circle(m.Position, 100, 40, Color.GreenYellow);
 
@@ -427,7 +427,7 @@ namespace Cassiopeia_By_Kornis
                             barPos.Y += yOffset;
                             var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                             var drawStartXPos =
-                                (float) (barPos.X + (unit.Health >
+                                (float)(barPos.X + (unit.Health >
                                                      Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                      GetE(unit) * 3 +
                                                      Player.GetSpellDamage(unit, SpellSlot.R)
@@ -447,34 +447,61 @@ namespace Cassiopeia_By_Kornis
                         });
             }
         }
-
-        private void satcking()
+        public static uint[] TearLikeItems =
         {
-            if (Player.HasItem(ItemId.TearoftheGoddess))
+            ItemId.Manamune,
+            ItemId.ArchangelsStaff,
+            ItemId.TearoftheGoddess,
+            ItemId.ManamuneQuickCharge,
+            ItemId.ArchangelsStaffQuickCharge,
+            ItemId.TearoftheGoddessQuickCharge
+        };
+        public static bool HasTearLikeItem(Obj_AI_Hero unit)
+        {
+            return TearLikeItems.Any(p => Player.HasItem(p));
+        }
+
+        private void stacking()
+        {
+            if (HasTearLikeItem(Player))
             {
-                if (Menu["misc"]["stacks"].Enabled && !Player.IsRecalling())
-                {
-                    if (Menu["misc"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent() &&
-                        Player.CountEnemyHeroesInRange(1000) == 0)
+
+                    var tearLikeItemSlot =
+                        Player.Inventory.Slots.FirstOrDefault(s => s.SlotTaken && TearLikeItems.Contains(s.ItemId));
+                    if (tearLikeItemSlot != null)
                     {
-
-                        if (GetEnemyLaneMinionsTargetsInRange(Q.Range).Count == 0)
+                        var tearLikeItemSpellSlot = tearLikeItemSlot.SpellSlot;
+                        if (tearLikeItemSpellSlot != SpellSlot.Unknown &&
+                            !Player.SpellBook.GetSpell(tearLikeItemSpellSlot).State.HasFlag(SpellState.Cooldown))
                         {
-                            Q.Cast(Player.ServerPosition.Extend(Game.CursorPos, 400));
-                        }
-                        foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
-                        {
-
-
-                            if (minion.IsValidTarget(Q.Range) && minion != null)
+                            if (Menu["misc"]["stacks"].Enabled && !Player.IsRecalling())
                             {
-                               
-                                    Q.Cast(minion);
-                                
-                            }
+                                if (Menu["misc"]["mana"].As<MenuSlider>().Value <= Player.ManaPercent() &&
+                                    Player.CountEnemyHeroesInRange(1600) == 0 &&
+                                    Orbwalker.Mode.Equals(OrbwalkingMode.None))
+                                {
 
+                                    if (GetEnemyLaneMinionsTargetsInRange(Q.Range).Count == 0)
+                                    {
+                                   
+                                        Q.Cast(Player.ServerPosition.Extend(Game.CursorPos, 400));
+                                    }
+                                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
+                                    {
+
+
+                                        if (minion.IsValidTarget(Q.Range) && minion != null)
+                                        {
+
+                                            Q.Cast(minion);
+
+                                        }
+
+                                    }
+                                }
+                            }
                         }
-                    }
+                    
                 }
             }
         }
@@ -493,7 +520,7 @@ namespace Cassiopeia_By_Kornis
             {
                 return;
             }
-            satcking();
+            stacking();
 
             switch (Orbwalker.Mode)
             {
@@ -577,7 +604,7 @@ namespace Cassiopeia_By_Kornis
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargets()
         {
             return GetEnemyLaneMinionsTargetsInRange(float.MaxValue);
-        } 
+        }
 
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargetsInRange(float range)
         {
@@ -592,8 +619,8 @@ namespace Cassiopeia_By_Kornis
 
                 foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                 {
-                    
-                    if (HealthPrediction.Implementation.GetPrediction(minion, (int) (0.2 * 1000f)) <= GetE(minion))
+
+                    if (HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) <= GetE(minion))
                     {
 
                         E.CastOnUnit(minion);
@@ -658,7 +685,7 @@ namespace Cassiopeia_By_Kornis
                         }
                     }
                 }
- 
+
             }
 
             if (!Menu["farming"]["mode"].Enabled)
@@ -670,7 +697,7 @@ namespace Cassiopeia_By_Kornis
                 {
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                     {
-                        if (HealthPrediction.Implementation.GetPrediction(minion, (int) (0.2 * 1000f)) <= GetE(minion))
+                        if (HealthPrediction.Implementation.GetPrediction(minion, (int)(0.2 * 1000f)) <= GetE(minion))
                         {
 
                             E.CastOnUnit(minion);
@@ -732,13 +759,13 @@ namespace Cassiopeia_By_Kornis
 
         public static float GetAngleByDegrees(float degrees)
         {
-            return (float) (degrees * Math.PI / 180);
+            return (float)(degrees * Math.PI / 180);
         }
 
         public Geometry.Sector UltimateCone(Vector2 pos)
         {
             return new Geometry.Sector(
-                (Vector2) Player.Position.Extend(End, -Player.BoundingRadius),
+                (Vector2)Player.Position.Extend(End, -Player.BoundingRadius),
                 pos,
                 GetAngleByDegrees(80f),
                 Menu["combo"]["rset"]["ranger"].As<MenuSlider>().Value);
@@ -783,9 +810,9 @@ namespace Cassiopeia_By_Kornis
                         .As<MenuSlider>().Value))
                     {
 
-                        cone = UltimateCone((Vector2) enemy.ServerPosition);
+                        cone = UltimateCone((Vector2)enemy.ServerPosition);
                         if (GameObjects.EnemyHeroes.Count(
-                                t2 => t2.IsValidTarget() && cone.IsInside((Vector2) t2.ServerPosition)) >=
+                                t2 => t2.IsValidTarget() && cone.IsInside((Vector2)t2.ServerPosition)) >=
                             Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value)
                         {
                             R.Cast(enemy);
@@ -812,12 +839,12 @@ namespace Cassiopeia_By_Kornis
         {
             if (R.Ready)
             {
-              
+
                 foreach (var enemy in GetBestEnemyHeroesTargetsInRange(Menu["combo"]["rset"]["ranger"].As<MenuSlider>()
                     .Value))
                 {
 
-                    
+
                     if (Menu["whitelist"][enemy.ChampionName.ToLower()].As<MenuBool>().Enabled)
                     {
                         R.Cast(enemy);
@@ -900,10 +927,10 @@ namespace Cassiopeia_By_Kornis
                                             Menu["combo"]["rset"]["ranger"].As<MenuSlider>().Value))
                                         {
 
-                                            cone = UltimateCone((Vector2) enemy.ServerPosition);
+                                            cone = UltimateCone((Vector2)enemy.ServerPosition);
                                             if (GameObjects.EnemyHeroes.Count(
                                                     t2 => t2.IsValidTarget() &&
-                                                          cone.IsInside((Vector2) t2.ServerPosition)) >=
+                                                          cone.IsInside((Vector2)t2.ServerPosition)) >=
                                                 Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value &&
                                                 Menu["whitelist"][target.ChampionName.ToLower()].As<MenuBool>().Enabled)
                                             {
@@ -920,10 +947,10 @@ namespace Cassiopeia_By_Kornis
                                         Menu["combo"]["rset"]["ranger"].As<MenuSlider>().Value))
                                     {
 
-                                        cone = UltimateCone((Vector2) enemy.ServerPosition);
+                                        cone = UltimateCone((Vector2)enemy.ServerPosition);
                                         if (GameObjects.EnemyHeroes.Count(
                                                 t2 => t2.IsValidTarget() &&
-                                                      cone.IsInside((Vector2) t2.ServerPosition)) >=
+                                                      cone.IsInside((Vector2)t2.ServerPosition)) >=
                                             Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value &&
                                             Menu["whitelist"][target.ChampionName.ToLower()].As<MenuBool>().Enabled)
                                         {
@@ -948,10 +975,10 @@ namespace Cassiopeia_By_Kornis
                                             Menu["combo"]["rset"]["ranger"].As<MenuSlider>().Value))
                                         {
 
-                                            cone = UltimateCone((Vector2) enemy.ServerPosition);
+                                            cone = UltimateCone((Vector2)enemy.ServerPosition);
                                             if (GameObjects.EnemyHeroes.Count(
                                                     t2 => t2.IsValidTarget() &&
-                                                          cone.IsInside((Vector2) t2.ServerPosition)) >=
+                                                          cone.IsInside((Vector2)t2.ServerPosition)) >=
                                                 Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value &&
                                                 Menu["whitelist"][target.ChampionName.ToLower()].As<MenuBool>().Enabled)
                                             {
@@ -968,10 +995,10 @@ namespace Cassiopeia_By_Kornis
                                         Menu["combo"]["rset"]["ranger"].As<MenuSlider>().Value))
                                     {
 
-                                        cone = UltimateCone((Vector2) enemy.ServerPosition);
+                                        cone = UltimateCone((Vector2)enemy.ServerPosition);
                                         if (GameObjects.EnemyHeroes.Count(
                                                 t2 => t2.IsValidTarget() &&
-                                                      cone.IsInside((Vector2) t2.ServerPosition)) >=
+                                                      cone.IsInside((Vector2)t2.ServerPosition)) >=
                                             Menu["combo"]["rset"]["hitr"].As<MenuSlider>().Value &&
                                             Menu["whitelist"][target.ChampionName.ToLower()].As<MenuBool>().Enabled)
                                         {
@@ -1030,9 +1057,9 @@ namespace Cassiopeia_By_Kornis
                         }
                         if (!Menu["combo"]["wset"]["qw"].Enabled)
                         {
-                           
-                                W.Cast(target);
-                            
+
+                            W.Cast(target);
+
                         }
                     }
                 }
@@ -1045,7 +1072,7 @@ namespace Cassiopeia_By_Kornis
 
                     if (target != null && target.Distance(Player) >= 400)
                     {
-                        
+
                         W.Cast(target);
                     }
                 }
@@ -1187,7 +1214,7 @@ namespace Cassiopeia_By_Kornis
                     }
                 }
             }
- 
+
         }
     }
 }
