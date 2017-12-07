@@ -51,11 +51,12 @@ namespace Irelia_By_Kornis
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuSlider("minq", "^- Min. Q Range", 250, 20, 400));
                 ComboMenu.Add(new MenuBool("gapq", "Use Q for Gapclose on Minion"));
+                ComboMenu.Add(new MenuBool("outofq", "^- Only if out of Q Range"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuBool("stune", "^- Only if Stuns"));
                 ComboMenu.Add(new MenuBool("user", "Use R in Combo "));
-                ComboMenu.Add(new MenuList("rusage", "R Usage", new[] { "Always", "Only if Killable" }, 1));
+                ComboMenu.Add(new MenuList("rusage", "R Usage", new[] {"Always", "Only if Killable"}, 1));
                 ComboMenu.Add(new MenuBool("gapr", "Use R on Minions for Q Gapclose"));
                 ComboMenu.Add(new MenuBool("sheen", "Sheen Proc."));
                 ComboMenu.Add(new MenuBool("items", "Use Items"));
@@ -76,6 +77,7 @@ namespace Irelia_By_Kornis
             Menu.Add(HarassMenu);
             var FarmMenu = new Menu("farming", "Farming");
             {
+                FarmMenu.Add(new MenuKeyBind("toggle", "Farm Toggle", KeyCode.Z, KeybindType.Toggle));
                 FarmMenu.Add(new MenuSlider("mana", "Mana Manager", 50));
                 FarmMenu.Add(new MenuBool("useq", "Use Q to Farm"));
                 FarmMenu.Add(new MenuBool("lastq", "^- Only for Last Hit"));
@@ -116,6 +118,7 @@ namespace Irelia_By_Kornis
             LoadSpells();
             Console.WriteLine("Irelia by Kornis - Loaded");
         }
+
         private void OnGapcloser(Obj_AI_Hero target, GapcloserArgs Args)
         {
             if (target != null && Args.EndPosition.Distance(Player) < E.Range && E.Ready)
@@ -147,7 +150,7 @@ namespace Irelia_By_Kornis
                 if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                     Player.HasItem(ItemId.RavenousHydra))
                 {
-                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                     var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                     if (slot != null)
                     {
@@ -179,7 +182,7 @@ namespace Irelia_By_Kornis
                 if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                     Player.HasItem(ItemId.RavenousHydra))
                 {
-                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                     var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                     if (slot != null)
                     {
@@ -209,7 +212,7 @@ namespace Irelia_By_Kornis
                 if (Player.HasItem(ItemId.TitanicHydra) || Player.HasItem(ItemId.Tiamat) ||
                     Player.HasItem(ItemId.RavenousHydra))
                 {
-                    var items = new[] { ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra };
+                    var items = new[] {ItemId.TitanicHydra, ItemId.Tiamat, ItemId.RavenousHydra};
                     var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                     if (slot != null)
                     {
@@ -225,7 +228,8 @@ namespace Irelia_By_Kornis
 
 
         }
-        public static readonly List<string> SpecialChampions = new List<string> { "Annie", "Jhin" };
+
+        public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
 
         public static int SxOffset(Obj_AI_Hero target)
         {
@@ -236,6 +240,7 @@ namespace Irelia_By_Kornis
         {
             return SpecialChampions.Contains(target.ChampionName) ? 3 : 20;
         }
+
         static double GetQ(Obj_AI_Base target)
         {
             double meow = 0;
@@ -269,6 +274,10 @@ namespace Irelia_By_Kornis
 
         private void Render_OnPresent()
         {
+            Vector2 maybeworks;
+            var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
+            var xaOffset = (int) maybeworks.X;
+            var yaOffset = (int) maybeworks.Y;
             if (Menu["drawings"]["drawq"].Enabled)
             {
                 Render.Circle(Player.Position, Q.Range, 40, Color.Crimson);
@@ -300,6 +309,16 @@ namespace Irelia_By_Kornis
 
                 }
             }
+            if (Menu["farming"]["toggle"].Enabled)
+            {
+                Render.Text(xaOffset - 50, yaOffset + 40, Color.GreenYellow, "Farm: ON",
+                    RenderTextFlags.VerticalCenter);
+            }
+            if (!Menu["farming"]["toggle"].Enabled)
+            {
+                Render.Text(xaOffset - 50, yaOffset + 40, Color.Red, "Farm: OFF",
+                    RenderTextFlags.VerticalCenter);
+            }
             if (Menu["drawings"]["drawdamage"].Enabled)
             {
 
@@ -321,15 +340,15 @@ namespace Irelia_By_Kornis
                             barPos.Y += yOffset;
                             var drawEndXPos = barPos.X + width * (unit.HealthPercent() / 100);
                             var drawStartXPos =
-                                (float)(barPos.X + (unit.Health >
+                                (float) (barPos.X + (unit.Health >
                                                      Player.GetSpellDamage(unit, SpellSlot.Q) +
                                                      Player.GetSpellDamage(unit, SpellSlot.E) +
                                                      Player.GetSpellDamage(unit, SpellSlot.W) +
                                                      Player.GetSpellDamage(unit, SpellSlot.R) * 3
                                              ? width * ((unit.Health - (Player.GetSpellDamage(unit, SpellSlot.Q) +
-                                                         Player.GetSpellDamage(unit, SpellSlot.E) +
-                                                         Player.GetSpellDamage(unit, SpellSlot.W) +
-                                                         Player.GetSpellDamage(unit, SpellSlot.R) * 3)) /
+                                                                        Player.GetSpellDamage(unit, SpellSlot.E) +
+                                                                        Player.GetSpellDamage(unit, SpellSlot.W) +
+                                                                        Player.GetSpellDamage(unit, SpellSlot.R) * 3)) /
                                                         unit.MaxHealth * 100 / 100)
                                              : 0));
 
@@ -382,7 +401,8 @@ namespace Irelia_By_Kornis
 
         public static List<Obj_AI_Minion> GetAllGenericMinionsTargetsInRange(float range)
         {
-            return GetEnemyLaneMinionsTargetsInRange(range).Concat(GetGenericJungleMinionsTargetsInRange(range)).ToList();
+            return GetEnemyLaneMinionsTargetsInRange(range).Concat(GetGenericJungleMinionsTargetsInRange(range))
+                .ToList();
         }
 
         public static List<Obj_AI_Base> GetAllGenericUnitTargets()
@@ -392,7 +412,8 @@ namespace Irelia_By_Kornis
 
         public static List<Obj_AI_Base> GetAllGenericUnitTargetsInRange(float range)
         {
-            return GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(range)).Concat<Obj_AI_Base>(GetAllGenericMinionsTargetsInRange(range)).ToList();
+            return GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(range))
+                .Concat<Obj_AI_Base>(GetAllGenericMinionsTargetsInRange(range)).ToList();
         }
 
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargets()
@@ -466,59 +487,61 @@ namespace Irelia_By_Kornis
         {
             bool useQ = Menu["farming"]["useq"].Enabled;
             bool useW = Menu["farming"]["usew"].Enabled;
-
-            float manapercent = Menu["farming"]["mana"].As<MenuSlider>().Value;
-            if (manapercent < Player.ManaPercent())
+            if (Menu["farming"]["toggle"].Enabled)
             {
-                if (useQ)
+                float manapercent = Menu["farming"]["mana"].As<MenuSlider>().Value;
+                if (manapercent < Player.ManaPercent())
                 {
-                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
+                    if (useQ)
                     {
-
-                        if (minion.IsValidTarget(Q.Range) && minion != null)
+                        foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                         {
-                            if (!Menu["farming"]["turret"].Enabled)
+
+                            if (minion.IsValidTarget(Q.Range) && minion != null)
                             {
-                                if (!Menu["farming"]["lastq"].Enabled)
+                                if (!Menu["farming"]["turret"].Enabled)
                                 {
-                                    Q.Cast(minion);
-                                }
-                                if (Menu["farming"]["lastq"].Enabled)
-                                {
-                                    if (minion.Health <= GetQ(minion))
+                                    if (!Menu["farming"]["lastq"].Enabled)
                                     {
                                         Q.Cast(minion);
                                     }
-                                }
+                                    if (Menu["farming"]["lastq"].Enabled)
+                                    {
+                                        if (minion.Health <= GetQ(minion))
+                                        {
+                                            Q.Cast(minion);
+                                        }
+                                    }
 
-                            }
-                            if (Menu["farming"]["turret"].Enabled && !minion.IsUnderEnemyTurret())
-                            {
-                                if (!Menu["farming"]["lastq"].Enabled)
-                                {
-                                    Q.Cast(minion);
                                 }
-                                if (Menu["farming"]["lastq"].Enabled)
+                                if (Menu["farming"]["turret"].Enabled && !minion.IsUnderEnemyTurret())
                                 {
-                                    if (minion.Health <= GetQ(minion))
+                                    if (!Menu["farming"]["lastq"].Enabled)
                                     {
                                         Q.Cast(minion);
                                     }
-                                }
+                                    if (Menu["farming"]["lastq"].Enabled)
+                                    {
+                                        if (minion.Health <= GetQ(minion))
+                                        {
+                                            Q.Cast(minion);
+                                        }
+                                    }
 
+                                }
                             }
                         }
                     }
-                }
 
-                if (useW)
-                {
-                    foreach (var minion in GetEnemyLaneMinionsTargetsInRange(W.Range))
+                    if (useW)
                     {
-
-                        if (minion.IsValidTarget(W.Range) && minion != null)
+                        foreach (var minion in GetEnemyLaneMinionsTargetsInRange(W.Range))
                         {
-                            W.Cast();
+
+                            if (minion.IsValidTarget(W.Range) && minion != null)
+                            {
+                                W.Cast();
+                            }
                         }
                     }
                 }
@@ -532,28 +555,32 @@ namespace Irelia_By_Kornis
 
         public static List<Obj_AI_Minion> GetGenericJungleMinionsTargetsInRange(float range)
         {
-            return GameObjects.Jungle.Where(m => !GameObjects.JungleSmall.Contains(m) && m.IsValidTarget(range)).ToList();
+            return GameObjects.Jungle.Where(m => !GameObjects.JungleSmall.Contains(m) && m.IsValidTarget(range))
+                .ToList();
         }
 
         private void Jungle()
         {
-            foreach (var jungleTarget in GetGenericJungleMinionsTargetsInRange(Q.Range))
+            if (Menu["farming"]["toggle"].Enabled)
             {
-                bool useQ = Menu["farming"]["useq"].Enabled;
-                bool useW = Menu["farming"]["usew"].Enabled;
-                float manapercent = Menu["farming"]["mana"].As<MenuSlider>().Value;
-                if (manapercent < Player.ManaPercent())
+                foreach (var jungleTarget in GetGenericJungleMinionsTargetsInRange(Q.Range))
                 {
-                    if (useQ && jungleTarget.IsValidTarget(Q.Range))
+                    bool useQ = Menu["farming"]["useq"].Enabled;
+                    bool useW = Menu["farming"]["usew"].Enabled;
+                    float manapercent = Menu["farming"]["mana"].As<MenuSlider>().Value;
+                    if (manapercent < Player.ManaPercent())
                     {
-                        Q.Cast(jungleTarget);
+                        if (useQ && jungleTarget.IsValidTarget(Q.Range))
+                        {
+                            Q.Cast(jungleTarget);
+                        }
+                        if (useW && jungleTarget.IsValidTarget(W.Range))
+                        {
+                            W.Cast();
+                        }
                     }
-                    if (useW && jungleTarget.IsValidTarget(W.Range))
-                    {
-                        W.Cast();
-                    }
-                }
 
+                }
             }
         }
 
@@ -661,7 +688,7 @@ namespace Irelia_By_Kornis
             }
             if (Player.HasItem(ItemId.BladeoftheRuinedKing) || Player.HasItem(ItemId.BilgewaterCutlass))
             {
-                var items = new[] { ItemId.BladeoftheRuinedKing, ItemId.BilgewaterCutlass };
+                var items = new[] {ItemId.BladeoftheRuinedKing, ItemId.BilgewaterCutlass};
                 var slot = Player.Inventory.Slots.First(s => items.Contains(s.ItemId));
                 if (slot != null)
                 {
@@ -674,67 +701,164 @@ namespace Irelia_By_Kornis
                 }
             }
 
-            if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
-            {
-
-                if (target != null && minq < target.Distance(Player))
-                {
-                    Q.Cast(target);
-                }
-            }
             if (gapQ)
             {
                 if (target != null)
                 {
-                    if (target.Distance(Player) > Q.Range)
+                    if (Menu["combo"]["outofq"].Enabled)
                     {
-
-                        foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
+                        if (target.Distance(Player) > Q.Range)
                         {
 
-                            if (minion.IsValidTarget(Q.Range) && minion != null)
+                            foreach (var minion in GetEnemyLaneMinionsTargetsInRange(Q.Range))
                             {
-                                if (Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 &&
-                                    GetQ(minion) >= minion.Health &&
-                                    minion.Distance(Player) <= Q.Range && minion.Distance(target) <= Q.Range &&
-                                    target.Distance(Player) > Q.Range)
+
+                                if (minion.IsValidTarget(Q.Range) && minion != null)
                                 {
-                                    Q.CastOnUnit(minion);
+                                    if (Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 &&
+                                        GetQ(minion) >= minion.Health &&
+                                        minion.Distance(Player) <= Q.Range && minion.Distance(target) <= Q.Range &&
+                                        target.Distance(Player) > Q.Range)
+                                    {
+                                        Q.CastOnUnit(minion);
+                                    }
                                 }
+
                                 if (gapR)
                                 {
+
                                     var minionR =
                                         ObjectManager.Get<Obj_AI_Minion>()
                                             .Where(
                                                 x =>
-                                                    x.IsValidTarget() && x.Distance(Player) < Q.Range &&
+                                                    x.IsValidTarget() && x.Distance(Player) < Q.Range - 50 &&
                                                     x.CountEnemyHeroesInRange(Q.Range) >= 1)
                                             .FirstOrDefault(
                                                 x =>
                                                     x.Health - Player.GetSpellDamage(x, SpellSlot.R) * 2 <
                                                     Player.GetSpellDamage(x, SpellSlot.Q));
-                                    switch (Menu["combo"]["rusage"].As<MenuList>().Value)
+                                    if (minionR != null)
                                     {
-                                        case 0:
-                                            if (minionR.Health > GetQ(minionR) &&
-                                                Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 +
-                                                Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
-                                                Player.Distance(target) > Q.Range &&
-                                                minionR.Distance(Player) <= Q.Range &&
-                                                minionR.Distance(target) <= Q.Range)
-                                            {
-                                                R.CastOnUnit(minionR);
+                                        switch (Menu["combo"]["rusage"].As<MenuList>().Value)
+                                        {
+                                            case 0:
+                                                if (minionR.Health > GetQ(minionR) &&
+                                                    Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 +
+                                                    Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
+                                                    Player.Distance(target) > Q.Range &&
+                                                    minionR.Distance(Player) <= Q.Range &&
+                                                    minionR.Distance(target) <= Q.Range)
+                                                {
+                                                    R.CastOnUnit(minionR);
 
-                                            }
-                                            break;
-                                        case 1:
+                                                }
+                                                break;
+                                            case 1:
+                                                if (Player.GetSpellDamage(target, SpellSlot.R) * 3 +
+                                                    Player.GetSpellDamage(target, SpellSlot.E)
+                                                    + GetQ(target) > target.Health)
+                                                {
+                                                    if (minionR.Distance(Player) <= Q.Range &&
+                                                        minionR.Distance(target) <= Q.Range &&
+                                                        target.Distance(Player) > Q.Range)
+                                                    {
+                                                        if (minionR.Health > GetQ(minionR) &&
+                                                            Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost *
+                                                            2 +
+                                                            Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
+                                                            Player.Distance(target) > Q.Range)
+                                                        {
+
+                                                            R.CastOnUnit(minionR);
+
+                                                        }
+
+                                                    }
+                                                }
+                                                break;
+
+                                        }
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!Menu["combo"]["outofq"].Enabled)
+                    {
+
+                        var minions = GetEnemyLaneMinionsTargetsInRange(Q.Range).Where(x =>
+                                x.Distance(Player) < Q.Range && GetQ(x) >= x.Health &&
+                                x.Distance(target) < Player.Distance(target))
+                            .OrderBy(x => x.Distance(target)).FirstOrDefault();
+                        if (minions != null)
+                        {
+
+                            if (minions.IsValidTarget(Q.Range))
+                            {
+
+                                if (Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 &&
+
+                                    minions.Distance(Player) <= Q.Range && minions.Distance(target) <= Q.Range)
+                                {
+
+                                    Q.CastOnUnit(minions);
+                                    if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
+                                    {
+
+                                        if (target != null && minq < target.Distance(Player))
+                                        {
+
+                                            Q.Cast(target);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (gapR)
+                        {
+
+                            var minionR = GetEnemyLaneMinionsTargetsInRange(Q.Range).Where(x =>
+
+                                x.Health > Player.GetSpellDamage(x, SpellSlot.R) &&
+                                x.Health > Player.GetSpellDamage(x, SpellSlot.Q) &&
+                                x.Distance(target) < Player.Distance(target) && x.Distance(target) < Q.Range &&
+                                Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 +
+                                Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
+                                x.Health - Player.GetSpellDamage(x, SpellSlot.R) * 2 < GetQ(x)).OrderBy(x =>
+                                x.Distance(target)).ThenBy(x => x.Health).FirstOrDefault();
+
+
+                            if (minionR != null)
+                            {
+                                switch (Menu["combo"]["rusage"].As<MenuList>().Value)
+                                {
+                                    case 0:
+
+                                        if (minionR.Health > GetQ(minionR) &&
+                                            Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 +
+                                            Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
+                                            Player.Distance(target) > Q.Range &&
+                                            minionR.Distance(Player) <= Q.Range &&
+                                            minionR.Distance(target) <= Q.Range)
+                                        {
+                                            R.CastOnUnit(minionR);
+
+                                        }
+                                        break;
+                                    case 1:
+                                        if (Player.GetSpellDamage(target, SpellSlot.R) * 3 +
+                                            Player.GetSpellDamage(target, SpellSlot.E)
+                                            + GetQ(target) > target.Health)
+                                        {
                                             if (minionR.Distance(Player) <= Q.Range &&
                                                 minionR.Distance(target) <= Q.Range &&
                                                 target.Distance(Player) > Q.Range)
                                             {
                                                 if (minionR.Health > GetQ(minionR) &&
-                                                    Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost * 2 +
-                                                    Player.SpellBook.GetSpell(SpellSlot.R).Cost &&
+
                                                     Player.Distance(target) > Q.Range)
                                                 {
 
@@ -742,14 +866,27 @@ namespace Irelia_By_Kornis
 
                                                 }
                                             }
-                                            break;
+                                        }
+                                        break;
 
-                                    }
+
 
                                 }
                             }
                         }
                     }
+
+                }
+            }
+
+
+            if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
+            {
+
+                if (target != null && minq < target.Distance(Player))
+                {
+
+                    Q.Cast(target);
                 }
             }
             if (W.Ready && useW && target.IsValidTarget(W.Range))
@@ -934,7 +1071,7 @@ namespace Irelia_By_Kornis
                         W.Cast();
                     }
                 }
-               
+
             }
         }
     }
