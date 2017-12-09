@@ -181,7 +181,7 @@ namespace Syndra_By_Kornis
             Menu.Add(new MenuList("pred", "Pred.", new[] {"Old Version", "New Version"}, 1));
             Menu.Add(new MenuList("preds", "Prediction Mode", new[] {"Core", "TimbelPred"},0));
             Menu.Add(new MenuSeperator("potato", "Timbel probably is Potato. (Don't use Timbel from AimTec Menu)"));
-            Menu.Add(new MenuSeperator("potato2", "Core and New Version is should be best."));
+            Menu.Add(new MenuSeperator("potato2", "Core and New Version should be the best."));
             Gapcloser.Attach(Menu, "E Anti-GapClose");
             Syndra_By_Kornis.DashQ.AutoQ.Attach(Menu, "Auto Q on Dashes");
             Menu.Attach();
