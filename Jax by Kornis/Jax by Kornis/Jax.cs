@@ -388,11 +388,14 @@ namespace Jax_By_Kornis
         // Don't bully me for this :c
         public static void WardJump()
         {
+          
+            
             Player.IssueOrder(OrderType.MoveTo, Game.CursorPos);
             if (!Q.Ready)
             {
                 return;
             }
+   
             Vector3 wardJumpPosition = (Player.Position.Distance(Game.CursorPos) < 600)
                 ? Game.CursorPos
                 : Player.Position.Extend(Game.CursorPos, 600);
@@ -406,9 +409,9 @@ namespace Jax_By_Kornis
             {
                 Q.Cast(entityToWardJump);
             }
-            else if (delay < Game.TickCount)
-            {
 
+            if (delay < Game.TickCount)
+            {
                 if (Player.HasItem(ItemId.TrackersKnife))
                 {
 
@@ -423,68 +426,31 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
+
                             }
                         }
                     }
                 }
-                if (Player.HasItem(ItemId.ControlWard))
-                {
-                    var items = new[] {ItemId.ControlWard};
-                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
-                    if (slot != null)
-                    {
-                        var spellslot = slot.SpellSlot;
-                        if (spellslot != SpellSlot.Unknown &&
-                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
-                        {
-                            if (!AnyWallInBetween(wardJumpPosition))
-                            {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
-                                {
-                                    delay = Game.TickCount + 1000;
-                                }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
-                            }
-                        }
-                    }
-                }
-                if (Player.HasItem(ItemId.WardingTotemTrinket))
-                {
-                    
-                    var items = new[] {ItemId.WardingTotemTrinket};
-                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
-                    if (slot != null)
-                    {
-                    
-                        var spellslot = slot.SpellSlot;
-                        if (spellslot != SpellSlot.Unknown &&
-                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
-                        {
-                            if (!AnyWallInBetween(wardJumpPosition))
-                            {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
-                                {
-                                    delay = Game.TickCount + 1000;
-                                }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
-                            }
-                        }
-                    }
-                }
+            }
+      
+            if (delay < Game.TickCount)
+            {
+
                 if (Player.HasItem(ItemId.RubySightstone))
                 {
                     var items = new[] {ItemId.RubySightstone};
@@ -497,18 +463,27 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
                             }
                         }
                     }
                 }
+            }
+            if (delay < Game.TickCount)
+            {
                 if (Player.HasItem(ItemId.Sightstone))
                 {
                     var items = new[] {ItemId.Sightstone};
@@ -521,22 +496,30 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
                             }
                         }
                     }
                 }
-                if (Player.HasItem(ItemId.EnchantmentWarrior))
+            }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(1408))
                 {
-                    var items = new[] {ItemId.EnchantmentWarrior};
-                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
+                    
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && s.ItemId == 1408);
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -545,22 +528,32 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
                             }
                         }
                     }
                 }
-                if (Player.HasItem(ItemId.EnchantmentCinderhulk))
+                }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(1409))
                 {
-                    var items = new[] {ItemId.EnchantmentCinderhulk};
-                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
+
+
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && s.ItemId == 1409);
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -569,22 +562,31 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
                             }
                         }
                     }
                 }
-                if (Player.HasItem(ItemId.EnchantmentRunicEchoes))
+            }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(1410))
                 {
                     var items = new[] {ItemId.EnchantmentRunicEchoes};
-                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && s.ItemId == 1410);
                     if (slot != null)
                     {
                         var spellslot = slot.SpellSlot;
@@ -593,21 +595,65 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+
+
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
                             }
                         }
                     }
                 }
-                if (Player.HasItem(ItemId.EnchantmentBloodrazor))
+            }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(1418))
                 {
-                    var items = new[] {ItemId.EnchantmentBloodrazor};
+
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && s.ItemId == 1418);
+                    if (slot != null)
+                    {
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            if (!AnyWallInBetween(wardJumpPosition))
+                            {
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
+                                {
+                                    Q.Cast(zz);
+                                }
+                                delay = Game.TickCount + 1000;
+
+
+                            }
+                        }
+                    }
+                }
+            }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(ItemId.ControlWard))
+                {
+                    var items = new[] {ItemId.ControlWard};
                     var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
                     if (slot != null)
                     {
@@ -617,20 +663,61 @@ namespace Jax_By_Kornis
                         {
                             if (!AnyWallInBetween(wardJumpPosition))
                             {
-                                if (Player.SpellBook.CastSpell(spellslot, wardJumpPosition))
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
                                 {
-                                    delay = Game.TickCount + 1000;
+                                    Q.Cast(zz);
                                 }
-                                Q.Cast(ObjectManager.Get<Obj_AI_Base>().ToArray()
-                                    .FirstOrDefault(obj => obj.Position.Distance(wardJumpPosition) < 150 &&
-                                                           obj is Obj_AI_Minion &&
-                                                           obj.Position.Distance(Player.Position) < Q.Range));
+                                delay = Game.TickCount + 1000;
+
+                            }
+                        }
+                    }
+                }
+            }
+            if (delay < Game.TickCount)
+            {
+                if (Player.HasItem(ItemId.WardingTotemTrinket))
+                {
+
+                    var items = new[] { ItemId.WardingTotemTrinket };
+                    var slot = Player.Inventory.Slots.First(s => s.SlotTaken && items.Contains(s.ItemId));
+                    if (slot != null)
+                    {
+
+                        var spellslot = slot.SpellSlot;
+                        if (spellslot != SpellSlot.Unknown &&
+                            Player.SpellBook.GetSpell(spellslot).State == SpellState.Ready)
+                        {
+                            if (!AnyWallInBetween(wardJumpPosition))
+                            {
+
+                                Player.SpellBook.CastSpell(spellslot, wardJumpPosition);
+                                Obj_AI_Base zz = ObjectManager.Get<Obj_AI_Base>().ToArray().FirstOrDefault(obj =>
+                                    obj.Position.Distance(wardJumpPosition) < 150
+                                    && (obj is Obj_AI_Minion || obj is Obj_AI_Base)
+                                    && !obj.IsMe && !obj.IsDead
+                                    && obj.Position.Distance(Player.Position) < Q.Range);
+
+                                if (zz != null)
+                                {
+                                    Q.Cast(zz);
+                                }
+                                delay = Game.TickCount + 1000;
                             }
                         }
                     }
                 }
 
             }
+            
         }
 
 
