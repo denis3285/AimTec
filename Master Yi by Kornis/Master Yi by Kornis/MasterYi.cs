@@ -77,6 +77,12 @@ namespace Master_Yi_By_Kornis
                 FarmMenu.Add(new MenuBool("usee", "Use E to Farm"));
             }
             Menu.Add(FarmMenu);
+            var Killstealmenu = new Menu("killsteal", "Killsteal");
+            {
+                Killstealmenu.Add(new MenuBool("ksq", "Use Q to Killsteal"));
+               
+            }
+            Menu.Add(Killstealmenu);
             var SmiteMenu = new Menu("smite", "Smite Settings");
             {
                 SmiteMenu.Add(new MenuBool("SmiteUse", "Use Smite on Monsters"));
@@ -137,6 +143,7 @@ namespace Master_Yi_By_Kornis
             {
                 return;
             }
+            Killsteal();
             SmiteUse();
             if (Player.HasBuff("Meditate") && Menu["combo"]["waa"].Enabled &&
                 (Orbwalker.Mode.Equals(OrbwalkingMode.Combo) || Orbwalker.Mode.Equals(OrbwalkingMode.Mixed)))
@@ -177,6 +184,32 @@ namespace Master_Yi_By_Kornis
             }
 
 
+        }
+        public static Obj_AI_Hero GetBestKillableHero(Spell spell, DamageType damageType = DamageType.True,
+            bool ignoreShields = false)
+        {
+            return TargetSelector.Implementation.GetOrderedTargets(spell.Range).FirstOrDefault(t => t.IsValidTarget());
+        }
+
+        private void Killsteal()
+        {
+
+            if (Q.Ready &&
+                Menu["killsteal"]["ksq"].Enabled)
+            {
+                var bestTarget = GetBestKillableHero(Q, DamageType.Physical, false);
+                if (bestTarget != null && !bestTarget.IsDead && !bestTarget.HasBuffOfType(BuffType.Invulnerability) &&
+                    !bestTarget.HasBuff("UndyingRage"))
+                {
+                    if (
+                        Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
+                        bestTarget.IsValidTarget(Q.Range))
+                    {
+               
+                        Q.CastOnUnit(bestTarget);
+                    }
+                }
+            }
         }
 
         public void OnPostAttack(object sender, PostAttackEventArgs args)
