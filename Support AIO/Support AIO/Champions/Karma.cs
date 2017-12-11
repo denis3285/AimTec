@@ -42,6 +42,32 @@ namespace Support_AIO.Champions
 
                 return;
             }
+            if (RootMenu["combo"]["forcew"].Enabled)
+            {
+                if (Player.HealthPercent() <= RootMenu["combo"]["forcew"].Value)
+                {
+                    if (R.Ready && W.Ready)
+                    {
+                        if (target.IsValidTarget(W.Range) && useW)
+                        {
+
+                            if (target != null)
+                            {
+                                R.Cast();
+                            }
+                        }
+                    }
+                    if (target.IsValidTarget(W.Range) && useW)
+                    {
+
+                        if (target != null)
+                        {
+                            W.CastOnUnit(target);
+                        }
+                    }
+                }
+            }
+
             if (RootMenu["combo"]["forcee"].Enabled)
             {
                 if (Player.CountAllyHeroesInRange(600) >= RootMenu["forcee"].Value)
@@ -487,8 +513,10 @@ namespace Support_AIO.Champions
                 ComboMenu.Add(new MenuList("combomode", "Combo Mode", new[] { "R - Q", "R - W", "R - E"}, 1));
                 ComboMenu.Add(new MenuBool("useq", "Use Q in Combo"));
                 ComboMenu.Add(new MenuBool("usew", "Use W in Combo"));
+                ComboMenu.Add(new MenuSliderBool("forcew", "^- Force R - W if Lower than X Health", false, 25, 1, 100));
                 ComboMenu.Add(new MenuBool("usee", "Use E in Combo"));
                 ComboMenu.Add(new MenuSliderBool("forcee", "^- Force R - E if X Allies in Range", false, 3, 1, 5));
+
                 ComboMenu.Add(new MenuBool("support", "Support Mode"));
                 ComboMenu.Add(new MenuKeyBind("chase", "Chase Combo", KeyCode.T, KeybindType.Press));
                 ComboMenu.Add(new MenuKeyBind("save", "Survive Combo", KeyCode.Z, KeybindType.Press));

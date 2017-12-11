@@ -176,9 +176,9 @@ namespace Support_AIO.Champions
             var QSet = new Menu("qset", "Q Settings");
             {
                 QSet.Add(new MenuKeyBind("grabq", "Grab Q", KeyCode.T, KeybindType.Press));
-                QSet.Add(new MenuBool("autoq", "Use Auto Q on Dash", true));
+                QSet.Add(new MenuBool("autoq", "Use Auto Q on Dash", false));
                 QSet.Add(new MenuSlider("minq", "Min Q Range", 300, 10, 400));
-                QSet.Add(new MenuSlider("maxq", "Max Q Range", 900, 500, 900));
+                QSet.Add(new MenuSlider("maxq", "Max Q Range", 900, 500, 950));
             }
             RootMenu.Add(QSet);
             WhiteList = new Menu("black", "Black List");
@@ -221,7 +221,7 @@ namespace Support_AIO.Champions
 
         protected override void SetSpells()
         {
-            Q = new Aimtec.SDK.Spell(SpellSlot.Q, 900);
+            Q = new Aimtec.SDK.Spell(SpellSlot.Q, 950);
             W = new Aimtec.SDK.Spell(SpellSlot.W, 0);
             E = new Aimtec.SDK.Spell(SpellSlot.E, 300);
             R = new Aimtec.SDK.Spell(SpellSlot.R, 600);
