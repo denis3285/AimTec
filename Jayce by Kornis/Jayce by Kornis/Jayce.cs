@@ -36,9 +36,9 @@ namespace Jayce_By_Kornis
 
         public void LoadSpells()
         {
-            Q = new Spell(SpellSlot.Q, 590);
-            W = new Spell(SpellSlot.W, 285);
-            E = new Spell(SpellSlot.E, 385);
+            Q = new Spell(SpellSlot.Q, 560);
+            W = new Spell(SpellSlot.W, 265);
+            E = new Spell(SpellSlot.E, 280);
             Q2 = new Spell(SpellSlot.Q, 1050);
             QE = new Spell(SpellSlot.Q, 1550);
             W2 = new Spell(SpellSlot.W, 600);
@@ -745,7 +745,10 @@ namespace Jayce_By_Kornis
                             Player.GetSpellDamage(enemies, SpellSlot.E) > GetQ(enemies) ||
                             Player.GetSpellDamage(enemies, SpellSlot.E) > GetEQ(enemies))
                         {
-                            R.Cast();
+                            if (enemies.Distance(Player) <= Q.Range)
+                            {
+                                R.Cast();
+                            }
                         }
                     }
                     if (Player.HasBuff("jaycestancehammer") && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.E).Cost + 20)
@@ -755,10 +758,7 @@ namespace Jayce_By_Kornis
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetQ(enemies) ||
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetEQ(enemies))
                         {
-                            if (enemies.Distance(Player) <= Q.Range)
-                            {
-                                R.Cast();
-                            }
+                            
                         }
                     }
                     if (Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qmelee"].Enabled &&
@@ -1108,7 +1108,7 @@ namespace Jayce_By_Kornis
                                     {
                                         if (Player.Mana >= 40)
                                         {
-                                            if (timer - Game.ClockTime < 1)
+                                            if (timer - Game.ClockTime < 0.75)
                                             {
                                                 R.Cast();
                                             }
@@ -1125,7 +1125,7 @@ namespace Jayce_By_Kornis
                                     {
                                         if (Player.Mana >= 40)
                                         {
-                                            if (timer - Game.ClockTime < 1)
+                                            if (timer - Game.ClockTime < 0.75)
                                             {
                                                 R.Cast();
                                             }
