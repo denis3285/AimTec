@@ -758,7 +758,7 @@ namespace Jayce_By_Kornis
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetQ(enemies) ||
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetEQ(enemies))
                         {
-                            
+                            R.Cast();
                         }
                     }
                     if (Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qmelee"].Enabled &&
