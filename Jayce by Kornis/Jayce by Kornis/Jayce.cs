@@ -36,7 +36,7 @@ namespace Jayce_By_Kornis
 
         public void LoadSpells()
         {
-            Q = new Spell(SpellSlot.Q, 600);
+            Q = new Spell(SpellSlot.Q, 590);
             W = new Spell(SpellSlot.W, 285);
             E = new Spell(SpellSlot.E, 385);
             Q2 = new Spell(SpellSlot.Q, 1050);
@@ -45,14 +45,15 @@ namespace Jayce_By_Kornis
             E2 = new Spell(SpellSlot.E, 660);
             R = new Spell(SpellSlot.R, 0);
             Q2.SetSkillshot(0.25f, 70f, 1800, true, SkillshotType.Line, false, HitChance.None);
-            QE.SetSkillshot(0.25f, 70f, 2200, true, SkillshotType.Line, false, HitChance.None);
+            QE.SetSkillshot(0.25f, 70f, 2100, true, SkillshotType.Line, false, HitChance.None);
+
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner2, 425);
 
         }
-
+        
         public Jayce()
         {
             Orbwalker.Attach(Menu);
@@ -62,6 +63,8 @@ namespace Jayce_By_Kornis
                 QSet.Add(new MenuBool("melee", "Use Q Melee"));
                 QSet.Add(new MenuBool("ranged", "Use Q Ranged"));
                 QSet.Add(new MenuBool("qerange", "QE Only if out of Q Range", false));
+                QSet.Add(new MenuBool("minions",  "Use Q Splash on Minions"));
+                QSet.Add(new MenuBool("qeonly", "^- Only Q E"));
             }
             var WSet = new Menu("wset", "W Settings");
             {
@@ -89,6 +92,8 @@ namespace Jayce_By_Kornis
                 HarassMenu.Add(new MenuBool("ranged", "Use Q Ranged"));
                 HarassMenu.Add(new MenuBool("qe", "Use Q E"));
                 HarassMenu.Add(new MenuBool("w", "Harass W Ranged"));
+                HarassMenu.Add(new MenuBool("minions", "Use Q Splash on Minions"));
+                HarassMenu.Add(new MenuBool("qeonly", "^- Only Q E"));
             }
             Menu.Add(HarassMenu);
             var FarmMenu = new Menu("farming", "Farming");
@@ -280,6 +285,16 @@ namespace Jayce_By_Kornis
             return damage;
 
         }
+        public static Vector2 something(Vector3 pos)
+        {
+        
+                var dpos = Player.Distance(pos);
+                var v2 = Vector3.Normalize(pos - Player.ServerPosition) * ((dpos < 300) ? dpos + 10 : 300);
+                var bom = new Vector2(v2.X, v2.Y);
+          
+                return Player.ServerPosition.To2D() + bom;
+            
+        }
 
         private void SemiQ()
         {
@@ -290,13 +305,8 @@ namespace Jayce_By_Kornis
             }
             if (!Player.HasBuff("jaycestancehammer"))
             {
-                if (E2.Cast(Player.ServerPosition.Extend(Game.CursorPos, 150)))
-                {
-                    {
-                        QE.Cast(Game.CursorPos);
-
-                    }
-                }
+                QE.Cast(Game.CursorPos);
+                E2.Cast(something(Game.CursorPos));
             }
         }
         private void Render_OnPresent()
@@ -395,7 +405,7 @@ namespace Jayce_By_Kornis
                         .ForEach(
                             unit =>
                             {
-
+                                
                                 var heroUnit = unit as Obj_AI_Hero;
                                 int width = 103;
                                 int height = 8;
@@ -433,6 +443,7 @@ namespace Jayce_By_Kornis
             {
                 return;
             }
+            Killsteal();
             if (Player.HasBuff("jaycestancehammer"))
             {
                 timer = Player.SpellBook.GetSpell(SpellSlot.Q).CooldownEnd;
@@ -464,7 +475,7 @@ namespace Jayce_By_Kornis
             {
                 SemiQ();
             }
-            Killsteal();
+       
         }
 
         public static List<Obj_AI_Minion> GetAllGenericMinionsTargets()
@@ -511,11 +522,11 @@ namespace Jayce_By_Kornis
                                 if (ally != null && ally.Distance(Player) < 1000 && !ally.IsMe &&
                                     helalmoney < Game.TickCount)
                                 {
-                                    if (Flash.Cast(target.ServerPosition.Extend(ally.ServerPosition, -100)))
-                                    {
-                                        E.CastOnUnit(target);
-                                        helalmoney = 0;
-                                    }
+                                    Flash.Cast(target.ServerPosition.Extend(ally.ServerPosition, -200));
+
+                                    E.CastOnUnit(target);
+                                    helalmoney = 0;
+
                                 }
 
                             }
@@ -523,11 +534,11 @@ namespace Jayce_By_Kornis
                             {
                                 if (helalmoney < Game.TickCount)
                                 {
-                                    if (Flash.Cast(target.ServerPosition.Extend(Player.ServerPosition, -100)))
-                                    {
+                                    Flash.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
+                                    
                                         E.CastOnUnit(target);
                                         helalmoney = 0;
-                                    }
+                                    
                                 }
                             }
                         }
@@ -537,20 +548,20 @@ namespace Jayce_By_Kornis
                             {
                                 if (target.Distance(Player) > 380 && target.IsValidTarget(Q.Range))
                                 {
-                                    if (Q.CastOnUnit(target))
-                                    {
-                                        helalmoney = Game.TickCount + 600;
-                                    }
+                                    Q.CastOnUnit(target);
+                                    
+                                        helalmoney = Game.TickCount + 250;
+                                    
                                 }
                             }
                             if (!Menu["insec"]["procq"].Enabled)
                             {
                                 if (target.Distance(Player) > 380 && target.IsValidTarget(Q.Range))
                                 {
-                                    if (Q.CastOnUnit(target))
-                                    {
+                                    Q.CastOnUnit(target);
+                                    
                                         helalmoney = Game.TickCount + 0;
-                                    }
+                                    
                                 }
                             }
                         }
@@ -744,7 +755,10 @@ namespace Jayce_By_Kornis
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetQ(enemies) ||
                             Player.GetSpellDamage(enemies, SpellSlot.E) < GetEQ(enemies))
                         {
-                            R.Cast();
+                            if (enemies.Distance(Player) <= Q.Range)
+                            {
+                                R.Cast();
+                            }
                         }
                     }
                     if (Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qmelee"].Enabled &&
@@ -763,7 +777,7 @@ namespace Jayce_By_Kornis
                         Q2.Cast(enemies);
                     }
                     if (!Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qe"].Enabled &&
-                        GetEQ(enemies) > enemies.Health && enemies.IsValidTarget(QE.Range) && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.E).Cost + Player.SpellBook.GetSpell(SpellSlot.Q).Cost + 30)
+                        GetEQ(enemies) > enemies.Health && enemies.IsValidTarget(QE.Range) && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.E).Cost + Player.SpellBook.GetSpell(SpellSlot.Q).Cost + 30 && Q2.Ready && E2.Ready)
                     {
                         var collisions =
           (IList<Obj_AI_Base>)QE.GetPrediction(enemies).CollisionObjects;
@@ -775,11 +789,18 @@ namespace Jayce_By_Kornis
                             {
 
 
-                                if (E2.Cast(Player.ServerPosition.Extend(enemies.ServerPosition, 150)))
+                                if (QE.GetPrediction(enemies).HitChance != HitChance.Collision)
                                 {
+                                    if (enemies.Distance(Player) >= 300)
                                     {
                                         QE.Cast(enemies);
+                                        E2.Cast(something(enemies.Position));
+                                    }
+                                    if (enemies.Distance(Player) <= 300)
+                                    {
 
+                                        E2.Cast(something(enemies.Position));
+                                        QE.Cast(enemies);
                                     }
                                 }
                             }
@@ -787,12 +808,16 @@ namespace Jayce_By_Kornis
                         if (!collisions.Any())
                         {
 
-                            if (E2.Cast(Player.ServerPosition.Extend(enemies.ServerPosition, 150)))
+                            if (enemies.Distance(Player) >= 300)
                             {
-                                {
-                                    QE.Cast(enemies);
+                                QE.Cast(enemies);
+                                E2.Cast(something(enemies.Position));
+                            }
+                            if (enemies.Distance(Player) <= 300)
+                            {
 
-                                }
+                                E2.Cast(something(enemies.Position));
+                                QE.Cast(enemies);
                             }
                         }
                     }
@@ -833,13 +858,74 @@ namespace Jayce_By_Kornis
         private void OnCombo()
         {
 
+            if (Menu["combo"]["qset"]["minions"].Enabled)
+            {
+                var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
+                PredictionOutput test = QE.GetPrediction(target);
+                if (target.IsValidTarget() && target.IsValidTarget(QE.Range) && E2.Ready && Q2.Ready)
+                {
+
+                    if (test.HitChance == HitChance.Collision)
+                    {
+                        Obj_AI_Base fistCol = test.CollisionObjects
+                            .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
+                        if (fistCol.Distance(test.UnitPosition) < (250 - fistCol.BoundingRadius / 2) &&
+                            fistCol.Distance(target.ServerPosition) < (250 - fistCol.BoundingRadius / 2))
+                        {
+                            if (target.Distance(Player) >= 300)
+                            {
+                           
+                                QE.Cast(test.CastPosition);
+                                E2.Cast(something(test.CastPosition));
+                               
+                            }
+                            if (target.Distance(Player) <= 300)
+                            {
+
+                                E2.Cast(something(test.CastPosition));
+                                QE.Cast(test.CastPosition);
+
+                            }
+
+
+                        }
+                    }
+                }
+                if (!E2.Ready)
+                {
+                    if (!Menu["combo"]["qset"]["qeonly"].Enabled)
+                    {
+                        if (test.HitChance == HitChance.Collision)
+                        {
+                            var targetq = GetBestEnemyHeroTargetInRange(Q2.Range);
+                            PredictionOutput testq = Q2.GetPrediction(target);
+                            if (targetq.IsValidTarget() && targetq.IsValidTarget(Q2.Range))
+                            {
+
+
+                                Obj_AI_Base fistCols = testq.CollisionObjects
+                                    .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
+                                if (fistCols.Distance(testq.UnitPosition) < (180 - fistCols.BoundingRadius / 2) &&
+                                    fistCols.Distance(targetq.ServerPosition) < (180 - fistCols.BoundingRadius / 2))
+                                {
+
+                                    Q.Cast(testq.CastPosition);
+
+                                }
+                            }
+
+                        }
+                    }
+                }
+            }
+            
             if (!Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
             {
-                var target = GetBestEnemyHeroTargetInRange(QE.Range);
+                var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
                 
                 if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
                 {
-
+                    PredictionOutput test = QE.GetPrediction(target);
                     if (!Player.HasBuff("jaycestancehammer") && Q2.Ready && E2.Ready &&
                         Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost + 30 <
                         Player.Mana)
@@ -852,12 +938,19 @@ namespace Jayce_By_Kornis
                             if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
                             {
 
-
-                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                                 {
+                                    if (target.Distance(Player) >= 300)
                                     {
                                         QE.Cast(target);
+                                        E2.Cast(something(test.CastPosition));
+                                     
+                                    }
+                                    if (target.Distance(Player) <= 300)
+                                    {
 
+                                        E2.Cast(something(test.CastPosition));
+                                        QE.Cast(target);
                                     }
                                 }
                             }
@@ -865,11 +958,18 @@ namespace Jayce_By_Kornis
                         if (!collisions.Any())
                         {
 
-                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                             {
+                                if (target.Distance(Player) >= 300)
                                 {
                                     QE.Cast(target);
+                                    E2.Cast(something(test.CastPosition));
 
+                                }
+                                if (target.Distance(Player) <= 300)
+                                {
+                                    E2.Cast(something(test.CastPosition));
+                                    QE.Cast(target);
                                 }
                             }
                         }
@@ -879,7 +979,7 @@ namespace Jayce_By_Kornis
             if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
 
             {
-                var target = GetBestEnemyHeroTargetInRange(QE.Range);
+                var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
 
                 if (target.IsValidTarget() && target.Distance(Player) > Q.Range && target.IsValidTarget(QE.Range))
                 {
@@ -888,32 +988,45 @@ namespace Jayce_By_Kornis
                     Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost + 30 <
                     Player.Mana)
                     {
+                        PredictionOutput test = QE.GetPrediction(target);
                         var collisions =
        (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
                         if (collisions.Any())
                         {
-
+        
                             if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
                             {
-
-
-                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                                 {
+
+                                    if (target.Distance(Player) >= 300)
                                     {
                                         QE.Cast(target);
+                                        E2.Cast(something(test.CastPosition));
+                                    }
+                                    if (target.Distance(Player) <= 300)
+                                    {
 
+                                        E2.Cast(something(test.CastPosition));
+                                        QE.Cast(target);
                                     }
                                 }
                             }
                         }
                         if (!collisions.Any())
                         {
-
-                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                             {
+                                if (target.Distance(Player) >= 300)
                                 {
                                     QE.Cast(target);
+                                    E2.Cast(something(test.CastPosition));
+                                }
+                                if (target.Distance(Player) <= 300)
+                                {
 
+                                    E2.Cast(something(test.CastPosition));
+                                    QE.Cast(target);
                                 }
                             }
                         }
@@ -939,7 +1052,7 @@ namespace Jayce_By_Kornis
             }
             if (!Menu["combo"]["qset"]["qerange"].Enabled && Q2.Ready && !E2.Ready ||
                 (Q2.Ready && !Menu["combo"]["qset"]["qerange"].Enabled && Player.SpellBook.GetSpell(SpellSlot.Q).Cost +
-                 Player.SpellBook.GetSpell(SpellSlot.E).Cost >
+                 Player.SpellBook.GetSpell(SpellSlot.E).Cost+30 >
                  Player.Mana) || Q2.Ready && !Menu["combo"]["qset"]["qerange"].Enabled &&
                 !Menu["combo"]["eset"]["eq"].Enabled)
             {
@@ -993,11 +1106,14 @@ namespace Jayce_By_Kornis
                                 {
                                     if (!W.Ready)
                                     {
-                                        if (timer - Game.ClockTime < 1)
+                                        if (Player.Mana >= 40)
                                         {
-                                            R.Cast();
+                                            if (timer - Game.ClockTime < 1)
+                                            {
+                                                R.Cast();
+                                            }
                                         }
-                                        if (timer - Game.ClockTime > 1 && target.IsValidTarget(265))
+                                        if (target.IsValidTarget(265))
                                         {
                                             R.Cast();
                                         }
@@ -1007,11 +1123,14 @@ namespace Jayce_By_Kornis
                                 {
                                     if (!W.Ready)
                                     {
-                                        if (timer - Game.ClockTime < 1)
+                                        if (Player.Mana >= 40)
                                         {
-                                            R.Cast();
+                                            if (timer - Game.ClockTime < 1)
+                                            {
+                                                R.Cast();
+                                            }
                                         }
-                                        if (timer - Game.ClockTime > 1 && target.Distance(Player) <= 265)
+                                        if (target.Distance(Player) <= 265)
                                         {
                                             R.Cast();
                                         }
@@ -1027,7 +1146,7 @@ namespace Jayce_By_Kornis
                     }
                     if (Player.HasBuff("jaycestancehammer"))
                     {
-                        var target = GetBestEnemyHeroTargetInRange(QE.Range);
+                        var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
 
                         if (target.IsValidTarget())
                         {
@@ -1188,6 +1307,63 @@ namespace Jayce_By_Kornis
             float manapercent = Menu["harass"]["mana"].As<MenuSlider>().Value;
             if (manapercent < Player.ManaPercent())
             {
+                if (Menu["harass"]["minions"].Enabled)
+                {
+
+                    PredictionOutput test = QE.GetPrediction(target);
+                    if (target.IsValidTarget() && target.IsValidTarget(QE.Range-100) && E2.Ready && Q2.Ready)
+                    {
+
+                        if (test.HitChance == HitChance.Collision)
+                        {
+                            Obj_AI_Base fistCol = test.CollisionObjects
+                                .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
+                            if (fistCol.Distance(test.UnitPosition) < (250 - fistCol.BoundingRadius / 2) &&
+                                fistCol.Distance(target.ServerPosition) < (250 - fistCol.BoundingRadius / 2))
+                            {
+
+                                if (target.Distance(Player) >= 300)
+                                {
+                                    QE.Cast(test.CastPosition);
+                                    E2.Cast(something(target.Position));
+                                }
+                                if (target.Distance(Player) <= 300)
+                                {
+
+                                    E2.Cast(something(target.Position));
+                                    QE.Cast(test.CastPosition);
+                                }
+
+                            }
+
+                        }
+                    }
+                    if (!E2.Ready)
+                    {
+                        if (!Menu["harass"]["qeonly"].Enabled)
+                        {
+                            var targetq = GetBestEnemyHeroTargetInRange(Q2.Range);
+                            PredictionOutput testq = Q2.GetPrediction(target);
+                            if (targetq.IsValidTarget() && targetq.IsValidTarget(Q2.Range))
+                            {
+
+                                if (test.HitChance == HitChance.Collision)
+                                {
+                                    Obj_AI_Base fistCols = testq.CollisionObjects
+                                        .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
+                                    if (fistCols.Distance(testq.UnitPosition) < (180 - fistCols.BoundingRadius / 2) &&
+                                        fistCols.Distance(targetq.ServerPosition) < (180 - fistCols.BoundingRadius / 2))
+                                    {
+
+                                        Q.Cast(testq.CastPosition);
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (!target.IsValidTarget())
                 {
                     return;
@@ -1207,24 +1383,30 @@ namespace Jayce_By_Kornis
                         W2.Cast();
                     }
                 }
-                if (useE && target.IsValidTarget(QE.Range) && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost)
+                if (useE && target.IsValidTarget(QE.Range-100) && Player.Mana > Player.SpellBook.GetSpell(SpellSlot.Q).Cost + Player.SpellBook.GetSpell(SpellSlot.E).Cost)
                 {
                     if (target != null)
                     {
                         var collisions =
-        (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                            (IList<Obj_AI_Base>) QE.GetPrediction(target).CollisionObjects;
                         if (collisions.Any())
                         {
 
                             if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
                             {
-
-
-                                if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                                if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                                 {
+
+                                    if (target.Distance(Player) >= 300)
                                     {
                                         QE.Cast(target);
+                                        E2.Cast(something(target.ServerPosition));
+                                    }
+                                    if (target.Distance(Player) <= 300)
+                                    {
 
+                                        E2.Cast(something(target.ServerPosition));
+                                        QE.Cast(target);
                                     }
                                 }
                             }
@@ -1232,14 +1414,22 @@ namespace Jayce_By_Kornis
                         if (!collisions.Any())
                         {
 
-                            if (E2.Cast(Player.ServerPosition.Extend(target.ServerPosition, 150)))
+                            if (QE.GetPrediction(target).HitChance != HitChance.Collision)
                             {
+                                if (target.Distance(Player) >= 300)
                                 {
                                     QE.Cast(target);
+                                    E2.Cast(something(target.Position));
+                                }
+                                if (target.Distance(Player) <= 300)
+                                {
 
+                                    E2.Cast(something(target.Position));
+                                    QE.Cast(target);
                                 }
                             }
                         }
+
                     }
                 }
             }
