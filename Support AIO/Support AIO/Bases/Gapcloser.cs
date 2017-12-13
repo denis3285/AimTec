@@ -944,7 +944,7 @@
 
             Menu = new Menu("Gapcloser", MenuName)
                 {
-                    new MenuBool("GapcloserEnabled", "Enabled"),
+                    new MenuBool("GapcloserEnabled", "Enabled", false),
                     new MenuSeperator("GapcloserSeperator1")
                 };
             mainMenu.Add(Menu);

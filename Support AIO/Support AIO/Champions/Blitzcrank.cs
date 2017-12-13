@@ -45,24 +45,7 @@ namespace Support_AIO.Champions
                     Q.Cast(target);
                 }
             }
-            if (E.Ready && useE)
-            {
-
-                if (target != null)
-                {
-                    if (!RootMenu["combo"]["eq"].Enabled && target.IsValidTarget(E.Range))
-                    {
-                        E.Cast();
-                    }
-                    if (RootMenu["combo"]["eq"].Enabled)
-                    {
-                        if (target.HasBuff("rocketgrab2"))
-                        {
-                            E.Cast();
-                        }
-                    }
-                }
-            }
+      
 
             if (R.Ready && useR && target.IsValidTarget(R.Range))
             {
@@ -70,6 +53,20 @@ namespace Support_AIO.Champions
                 if (target != null && enemies <= Player.CountEnemyHeroesInRange(R.Range))
                 {
                     R.Cast();
+                }
+            }
+        }
+
+        internal override void OnPreAttack(object sender, PreAttackEventArgs e)
+        {
+            if (RootMenu["combo"]["usee"].Enabled && E.Ready)
+            {
+                if (e.Target != null)
+                {
+                    if (e.Target.IsValidTarget())
+                    {
+                        E.Cast();
+                    }
                 }
             }
         }
@@ -168,7 +165,6 @@ namespace Support_AIO.Champions
             {
                 ComboMenu.Add(new MenuBool("useq", "Use Q"));
                 ComboMenu.Add(new MenuBool("usee", "Use E "));
-                ComboMenu.Add(new MenuBool("eq", "^- Only if Q Landed"));
                 ComboMenu.Add(new MenuBool("user", "Use R"));
                 ComboMenu.Add(new MenuSlider("hitr", "^- if Hits X Enemies", 2, 1, 5));
             }
