@@ -41,8 +41,8 @@ namespace Kled_By_Kornis
             Q2 = new Spell(SpellSlot.Q, 700);
             W = new Spell(SpellSlot.W, 0);
             E = new Spell(SpellSlot.E, 550);
-            Q.SetSkillshot(0.25f, 40, 1800, false, SkillshotType.Line, false, HitChance.None);
-            Q2.SetSkillshot(0.25f, 80, 2800, false, SkillshotType.Line, false, HitChance.None);
+            Q.SetSkillshot(0.25f, 40, 1850, false, SkillshotType.Line, false, HitChance.None);
+            Q2.SetSkillshot(0.25f, 80, 3000, false, SkillshotType.Line, false, HitChance.None);
             E.SetSkillshot(0.25f, 60, 2200, false, SkillshotType.Line);
 
         }
@@ -271,6 +271,7 @@ namespace Kled_By_Kornis
                     .ForEach(
                         unit =>
                         {
+                      
                             if (Player.SpellBook.GetSpell(SpellSlot.Q).Name == "KledRiderQ")
                             {
                                 if (Player.SpellBook.GetSpell(SpellSlot.W).Level == 1)
@@ -584,7 +585,10 @@ namespace Kled_By_Kornis
                         Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
                         bestTarget.IsValidTarget(Q.Range))
                     {
-                        Q.Cast(bestTarget);
+                        if (Q.GetPrediction(bestTarget).CastPosition.Distance(Player) < Q.Range - 50)
+                        {
+                            Q.Cast(bestTarget);
+                        }
                     }
                 }
                 if (Menu["killsteal"]["Skaarl"]["usee"].Enabled)
@@ -616,7 +620,10 @@ namespace Kled_By_Kornis
                         Player.GetSpellDamage(bestTarget, SpellSlot.Q, DamageStage.SecondForm) >= bestTarget.Health &&
                         bestTarget.IsValidTarget(Q2.Range))
                     {
-                        Q2.Cast(bestTarget);
+                        if (Q.GetPrediction(bestTarget).CastPosition.Distance(Player) < Q.Range - 100)
+                        {
+                            Q2.Cast(bestTarget);
+                        }
                     }
                 }
 
@@ -687,34 +694,38 @@ namespace Kled_By_Kornis
                             if (Menu["combo"]["Kled"]["gap"].Enabled)
                             {
                                 if (target.Distance(Player) > 400 && target.Distance(Player) < 600 &&
-                                    target.Health < Player.Health-150 &&
+                                    target.Health < Player.Health - 150 &&
                                     !target.IsUnderEnemyTurret() &&
                                     target.Health > Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondCast))
                                 {
                                     Q2.Cast(Player.ServerPosition.Extend(target.ServerPosition, -Q2.Range));
                                 }
                             }
-                            switch (Menu["combo"]["Kled"]["qmode"].As<MenuList>().Value)
+                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 100)
                             {
-                                case 0:
-                                    if (Player.Mana >= 80)
-                                    {
+                                switch (Menu["combo"]["Kled"]["qmode"].As<MenuList>().Value)
+                                {
+
+                                    case 0:
+                                        if (Player.Mana >= 80)
+                                        {
+                                            Q2.Cast(target);
+                                        }
+                                        if (Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) >=
+                                            target.Health)
+                                        {
+                                            Q2.Cast(target);
+                                        }
+                                        if (Player.Health < target.Health && Player.HealthPercent() < 30)
+                                        {
+
+                                            Q2.Cast(target);
+                                        }
+                                        break;
+                                    case 1:
                                         Q2.Cast(target);
-                                    }
-                                    if (Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) >=
-                                        target.Health)
-                                    {
-                                        Q2.Cast(target);
-                                    }
-                                    if (Player.Health < target.Health && Player.HealthPercent() < 30)
-                                    {
-                                  
-                                        Q2.Cast(target);
-                                    }
-                                    break;
-                                case 1:
-                                    Q2.Cast(target);
-                                    break;
+                                        break;
+                                }
                             }
                         }
                     }
@@ -722,18 +733,6 @@ namespace Kled_By_Kornis
             }
             if (Player.SpellBook.GetSpell(SpellSlot.Q).Name == "KledQ")
             {
-                if (useQs)
-                {
-                    if (Q.Ready && target.IsValidTarget(Q.Range))
-                    {
-
-                        if (target != null)
-                        {
-
-                            Q.Cast(target);
-                        }
-                    }
-                }
                 if (useEs)
                 {
                     if (E.Ready && target.IsValidTarget(E.Range))
@@ -743,7 +742,7 @@ namespace Kled_By_Kornis
                         {
 
 
-     
+
                             if (!Player.HasBuff("KledE2"))
                             {
                                 E.Cast(target);
@@ -774,6 +773,21 @@ namespace Kled_By_Kornis
                         }
                     }
                 }
+                if (useQs)
+                {
+                    if (Q.Ready && target.IsValidTarget(Q.Range))
+                    {
+
+                        if (target != null)
+                        {
+                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range-50)
+                            {
+                                Q.Cast(target);
+                            }
+                        }
+                    }
+                }
+                
             }
         }
 
@@ -798,28 +812,10 @@ namespace Kled_By_Kornis
 
                         if (target.IsValidTarget(Q2.Range) && target != null)
                         {
-
-                            Q2.Cast(target);
-
-                        }
-                    }
-
-                }
-            }
-            if (useQ)
-            {
-                if (target != null)
-                {
-
-                    if (Player.SpellBook.GetSpell(SpellSlot.Q).Name == "KledQ")
-                    {
-
-
-                        if (target.IsValidTarget(Q.Range) && target != null)
-                        {
-
-                            Q.Cast(target);
-
+                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 100)
+                            {
+                                Q2.Cast(target);
+                            }
                         }
                     }
 
@@ -845,7 +841,7 @@ namespace Kled_By_Kornis
                                 if (Player.HasBuff("KledE2") &&
                                     Game.ClockTime - Player.BuffManager.GetBuff("KledE2").StartTime > 2.5)
                                 {
-                      
+
                                     E.Cast();
                                 }
                             }
@@ -855,6 +851,29 @@ namespace Kled_By_Kornis
                 }
 
             }
+            if (useQ)
+            {
+                if (target != null)
+                {
+
+                    if (Player.SpellBook.GetSpell(SpellSlot.Q).Name == "KledQ")
+                    {
+
+
+                        if (target.IsValidTarget(Q.Range) && target != null)
+                        {
+
+                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 50)
+                            {
+                                Q.Cast(target);
+                            }
+
+                        }
+                    }
+
+                }
+            }
+           
         }
     }
 }
