@@ -37,10 +37,10 @@ namespace Ahri_By_Kornis
         {
             Q = new Spell(SpellSlot.Q, 880);
             W = new Spell(SpellSlot.W, 700);
-            E = new Spell(SpellSlot.E, 900);
+            E = new Spell(SpellSlot.E, 980);
             R = new Spell(SpellSlot.R, 600);
-            Q.SetSkillshot(0.25f, 70f, 1700, false, SkillshotType.Line);
-            E.SetSkillshot(0.25f, 60, 1550, true, SkillshotType.Line, false, HitChance.High);
+            Q.SetSkillshot(0.25f, 70f, 1700, false, SkillshotType.Line, false, HitChance.None);
+            E.SetSkillshot(0.25f, 60, 1700, true, SkillshotType.Line, false, HitChance.None);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner1).SpellData.Name == "SummonerFlash")
                 Flash = new Spell(SpellSlot.Summoner1, 425);
             if (Player.SpellBook.GetSpell(SpellSlot.Summoner2).SpellData.Name == "SummonerFlash")
@@ -70,7 +70,7 @@ namespace Ahri_By_Kornis
             {
                 RSet.Add(new MenuBool("user", "Use R"));
                 RSet.Add(new MenuList("rusage", "R Usage", new[] {"Always", "Only if Killable"}, 1));
-                RSet.Add(new MenuList("rmode", "R Mode", new[] {"To Side", "To Mouse", "To Target"}, 0));
+                RSet.Add(new MenuList("rmode", "R Mode", new[] {"To Side", "To Mouse", "To Target"}, 1));
                 RSet.Add(new MenuBool("burstr", "Auto R Burst Logic if Killable"));
                 RSet.Add(new MenuKeyBind("under", "R Under-Turret Toggle", KeyCode.Z, KeybindType.Toggle));
                 RSet.Add(new MenuSlider("waster", "Don't Jump in X Enemies", 3, 2, 5));
@@ -138,9 +138,84 @@ namespace Ahri_By_Kornis
 
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
+   
+            Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
+
             LoadSpells();
             Console.WriteLine("Ahri by Kornis - Loaded");
         }
+
+        private void OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                if (args.SpellData.Name == "AhriSeduce")
+                {
+
+                    if (Menu["combo"]["flashe"].Enabled)
+                    {
+
+                        var target = GetBestEnemyHeroTargetInRange(Menu["combo"]["rangee"].As<MenuSlider>().Value);
+
+
+                        if (Flash.Ready && Flash != null && target.IsValidTarget())
+                        {
+
+                            DelayAction.Queue(50, () =>
+                            {
+                                Flash.Cast(target.ServerPosition);
+                            });
+
+
+
+                        }
+                    }
+
+                    if (Orbwalker.Mode == OrbwalkingMode.Combo)
+                    {
+                        
+                        var target = GetBestEnemyHeroTargetInRange(E.Range);
+
+                        if (Menu["combo"]["rset"]["burstr"].Enabled && Menu["combo"]["rset"]["user"].Enabled)
+                        {
+                            if (target != null)
+                            {
+                                if (target.Health <
+                                    Player.GetSpellDamage(target, SpellSlot.Q) +
+                                    Player.GetSpellDamage(target, SpellSlot.W) +
+                                    Player.GetSpellDamage(target, SpellSlot.E) +
+                                    Player.GetSpellDamage(target, SpellSlot.R) * 3)
+                                {
+                                    if (Menu["combo"]["rset"]["waster"].As<MenuSlider>().Value >=
+                                        target.CountEnemyHeroesInRange(600))
+                                    {
+                                        
+                                        if (!Player.HasBuff("AhriTumble"))
+                                        {
+                                          
+                                            if (R.Ready)
+                                            {
+                                                DelayAction.Queue(200, () =>
+                                                    {
+                                                        R.Cast(
+                                                            target.ServerPosition.Extend(Player.ServerPosition, -200));
+                                                    }
+                                                );
+
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+
         private static int IgniteDamages
         {
             get
@@ -285,7 +360,10 @@ namespace Ahri_By_Kornis
                          !Invulnerable.Check(t, DamageType.Magical)))
                 {
 
-                    E.Cast(target);
+                    if (E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
+                    {
+                        E.Cast(target);
+                    }
                 }
 
             }
@@ -320,7 +398,7 @@ namespace Ahri_By_Kornis
             {
                 if (Flash.Ready && Flash != null && target.IsValidTarget())
                 {
-                    if (target.IsValidTarget(Menu["combo"]["rangee"].As<MenuSlider>().Value))
+                    if (target.IsValidTarget(Menu["combo"]["rangee"].As<MenuSlider>().Value) && E.GetPrediction(target).CastPosition.Distance(Player) < Menu["combo"]["rangee"].As<MenuSlider>().Value+100)
                     {
                         if (target.Distance(Player) > E.Range - 100)
                         {
@@ -334,13 +412,9 @@ namespace Ahri_By_Kornis
                                     return;
                                 }
                             }
-                            if (E.Cast(meow.CastPosition))
-                            {
-                                DelayAction.Queue(200, () =>
-                                {
-                                    Flash.Cast(target.ServerPosition);
-                                });
-                            }
+                            E.Cast(meow.CastPosition);
+                            
+                               
                         }
                     }
                 }
@@ -440,7 +514,10 @@ namespace Ahri_By_Kornis
                 {
                     if (target != null)
                     {
-                        E.Cast(target);
+                        if (E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
+                        {
+                            E.Cast(target);
+                        }
                     }
                 }
 
@@ -464,7 +541,10 @@ namespace Ahri_By_Kornis
                     Player.GetSpellDamage(bestTarget, SpellSlot.Q) >= bestTarget.Health &&
                     bestTarget.IsValidTarget(Q.Range))
                 {
-                    Q.Cast(bestTarget);
+                    if (Q.GetPrediction(bestTarget).CastPosition.Distance(Player) < Q.Range - 40)
+                    {
+                        Q.Cast(bestTarget);
+                    }
                 }
             }
             if (
@@ -497,7 +577,10 @@ namespace Ahri_By_Kornis
                     Player.GetSpellDamage(bestTarget, SpellSlot.E) >= bestTarget.Health &&
                     bestTarget.IsValidTarget(E.Range))
                 {
-                    E.CastOnUnit(bestTarget);
+                    if (E.GetPrediction(bestTarget).CastPosition.Distance(Player) < E.Range - 100)
+                    {
+                        E.Cast(bestTarget);
+                    }
                 }
             }
 
@@ -581,16 +664,22 @@ namespace Ahri_By_Kornis
                 {
                     if (!bursting)
                     {
-                        E.Cast(target);
+                        if (E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
+                        {
+                            E.Cast(target);
+                        }
                     }
                     if (bursting && (!R.Ready || Player.SpellBook.GetSpell(SpellSlot.R).Level == 0 || target.Health >
                                      Player.GetSpellDamage(target, SpellSlot.Q) +
                                      Player.GetSpellDamage(target, SpellSlot.W) +
                                      Player.GetSpellDamage(target, SpellSlot.E) +
-                                     Player.GetSpellDamage(target, SpellSlot.R) * 2))
+                                     Player.GetSpellDamage(target, SpellSlot.R) * 3))
                     {
 
-                        E.Cast(target);
+                        if (E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
+                        {
+                            E.Cast(target);
+                        }
 
                     }
                 }
@@ -604,16 +693,15 @@ namespace Ahri_By_Kornis
                         Player.GetSpellDamage(target, SpellSlot.Q) +
                         Player.GetSpellDamage(target, SpellSlot.W) +
                         Player.GetSpellDamage(target, SpellSlot.E) +
-                        Player.GetSpellDamage(target, SpellSlot.R) * 2)
+                        Player.GetSpellDamage(target, SpellSlot.R) * 3)
                     {
                         if (enemies >= target.CountEnemyHeroesInRange(600))
                         {
                             if (R.Ready && E.Ready)
                             {
-                                if (E.Cast(target))
+                                if (E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
                                 {
-                                    R.Cast(target.ServerPosition.Extend(Player.ServerPosition, -200));
-
+                                    E.Cast(target);
                                 }
                             }
                         }
@@ -623,28 +711,31 @@ namespace Ahri_By_Kornis
                             switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
                             {
                                 case 0:
-                                    var meow = Q.GetPredictionInput(target);
-                                    var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
-                                    Vector2 intersec = new Vector2();
-                                    for (int i = 450; i >= 0; i = i - 50)
+                                    if (target.Distance(Player) < R.Range)
                                     {
-                                        for (int j = 50; j <= 450; j = j + 50)
+                                        var meow = Q.GetPredictionInput(target);
+                                        var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
+                                        Vector2 intersec = new Vector2();
+                                        for (int i = 450; i >= 0; i = i - 50)
                                         {
-                                            var vectors =
-                                                Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
-                                                    targetpos, i, j);
-                                            foreach (var x in vectors)
+                                            for (int j = 50; j <= 450; j = j + 50)
                                             {
-                                                if (!AnyWallInBetween(Player.Position, x))
+                                                var vectors =
+                                                    Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
+                                                        targetpos, i, j);
+                                                foreach (var x in vectors)
                                                 {
-                                                    intersec = x;
-                                                    goto ABC;
+                                                    if (!AnyWallInBetween(Player.Position, x))
+                                                    {
+                                                        intersec = x;
+                                                        goto ABC;
+                                                    }
                                                 }
                                             }
                                         }
+                                        ABC:
+                                        R.Cast(intersec.To3D());
                                     }
-                                    ABC:
-                                    R.Cast(intersec.To3D());
                                     break;
                                 case 1:
                                     if (Menu["combo"]["rset"]["under"].Enabled)
@@ -685,29 +776,31 @@ namespace Ahri_By_Kornis
                         switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
                         {
                             case 0:
-
-                                var meow = Q.GetPredictionInput(target);
-                                var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
-                                Vector2 intersec = new Vector2();
-                                for (int i = 450; i >= 0; i = i - 50)
+                                if (target.IsValidTarget(R.Range))
                                 {
-                                    for (int j = 50; j <= 450; j = j + 50)
+                                    var meow = Q.GetPredictionInput(target);
+                                    var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
+                                    Vector2 intersec = new Vector2();
+                                    for (int i = 450; i >= 0; i = i - 50)
                                     {
-                                        var vectors =
-                                            Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
-                                                targetpos, i, j);
-                                        foreach (var x in vectors)
+                                        for (int j = 50; j <= 450; j = j + 50)
                                         {
-                                            if (!AnyWallInBetween(Player.Position, x))
+                                            var vectors =
+                                                Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
+                                                    targetpos, i, j);
+                                            foreach (var x in vectors)
                                             {
-                                                intersec = x;
-                                                goto ABC;
+                                                if (!AnyWallInBetween(Player.Position, x))
+                                                {
+                                                    intersec = x;
+                                                    goto ABC;
+                                                }
                                             }
                                         }
                                     }
+                                    ABC:
+                                    R.Cast(intersec.To3D());
                                 }
-                                ABC:
-                                R.Cast(intersec.To3D());
                                 break;
                             case 1:
                                 if (Menu["combo"]["rset"]["under"].Enabled)
@@ -747,29 +840,31 @@ namespace Ahri_By_Kornis
                             switch (Menu["combo"]["rset"]["rmode"].As<MenuList>().Value)
                             {
                                 case 0:
-
-                                    var meow = Q.GetPredictionInput(target);
-                                    var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
-                                    Vector2 intersec = new Vector2();
-                                    for (int i = 450; i >= 0; i = i - 50)
+                                    if (target.Distance(Player) < R.Range)
                                     {
-                                        for (int j = 50; j <= 450; j = j + 50)
+                                        var meow = Q.GetPredictionInput(target);
+                                        var targetpos = Prediction.Instance.GetPrediction(meow).UnitPosition.To2D();
+                                        Vector2 intersec = new Vector2();
+                                        for (int i = 450; i >= 0; i = i - 50)
                                         {
-                                            var vectors =
-                                                Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
-                                                    targetpos, i, j);
-                                            foreach (var x in vectors)
+                                            for (int j = 50; j <= 450; j = j + 50)
                                             {
-                                                if (!AnyWallInBetween(Player.Position, x))
+                                                var vectors =
+                                                    Vector2Extensions.CircleCircleIntersection(Player.Position.To2D(),
+                                                        targetpos, i, j);
+                                                foreach (var x in vectors)
                                                 {
-                                                    intersec = x;
-                                                    goto ABC;
+                                                    if (!AnyWallInBetween(Player.Position, x))
+                                                    {
+                                                        intersec = x;
+                                                        goto ABC;
+                                                    }
                                                 }
                                             }
                                         }
+                                        ABC:
+                                        R.Cast(intersec.To3D());
                                     }
-                                    ABC:
-                                    R.Cast(intersec.To3D());
                                     break;
                                 case 1:
                                     if (Menu["combo"]["rset"]["under"].Enabled)
@@ -809,15 +904,24 @@ namespace Ahri_By_Kornis
                 {
                     if (!Menu["combo"]["eq"].Enabled)
                     {
-                        Q.Cast(target);
+                        if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 40)
+                        {
+                            Q.Cast(target);
+                        }
                     }
                     if (Menu["combo"]["eq"].Enabled && target.HasBuff("AhriSeduce"))
                     {
-                        Q.Cast(target);
+                        if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 40)
+                        {
+                            Q.Cast(target);
+                        }
                     }
                     if (Menu["combo"]["eq"].Enabled && !E.Ready)
                     {
-                        Q.Cast(target);
+                        if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 40)
+                        {
+                            Q.Cast(target);
+                        }
                     }
                 }
             }
@@ -850,7 +954,10 @@ namespace Ahri_By_Kornis
                 {
                     if (target != null)
                     {
-                        E.Cast(target);
+                        if(E.GetPrediction(target).CastPosition.Distance(Player) < E.Range - 100)
+                        {
+                            E.Cast(target);
+                        }
                     }
                 }
                 if (Q.Ready && useQ && target.IsValidTarget(Q.Range))
@@ -858,7 +965,10 @@ namespace Ahri_By_Kornis
 
                     if (target != null)
                     {
-                        Q.Cast(target);
+                        if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range - 40)
+                        {
+                            Q.Cast(target);
+                        }
                     }
                 }
                 if (W.Ready && useW && target.IsValidTarget(W.Range-100))
