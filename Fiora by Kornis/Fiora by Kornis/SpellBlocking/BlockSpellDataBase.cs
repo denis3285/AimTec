@@ -73,6 +73,16 @@
                 });
 
             #endregion Chogath
+            #region Poppy
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Poppy",
+                    SpellSlot = SpellSlot.E
+                });
+
+            #endregion Poppy
 
             #region Darius
 

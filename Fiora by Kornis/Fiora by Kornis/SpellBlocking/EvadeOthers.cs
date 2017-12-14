@@ -305,6 +305,15 @@ namespace Fiora_By_Kornis.SpellBlocking
                             }
 
                             break;
+                        case "Poppy":
+                            if (x.SpellSlot == SpellSlot.E)
+                            {
+                                if (Args.Target.IsMe)
+                                {
+                                    CastW("Poppy", x.SpellSlot);
+                                }
+                            }
+                            break;
                         case "Chogath":
                             if (x.SpellSlot == SpellSlot.R)
                             {
