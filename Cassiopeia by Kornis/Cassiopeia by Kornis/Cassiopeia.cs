@@ -669,7 +669,7 @@ namespace Cassiopeia_By_Kornis
                     {
                         foreach (var minion in GetEnemyLaneMinionsTargetsInRange(E.Range))
                         {
-
+                           
                             if (minion.IsValidTarget(E.Range) && minion != null)
                             {
                                 if (poisonE && (minion.HasBuffOfType(BuffType.Poison) || minion.HasBuff("twitchdeadlyvenom")))
@@ -678,7 +678,15 @@ namespace Cassiopeia_By_Kornis
                                 }
                                 if (!poisonE)
                                 {
-                                    E.CastOnUnit(minion);
+                                    if ((minion.HasBuffOfType(BuffType.Poison) || minion.HasBuff("twitchdeadlyvenom")))
+                                    {
+                                        E.CastOnUnit(minion);
+
+                                    }
+                                    if(GetEnemyLaneMinionsTargetsInRange(E.Range).Where(x => x != null && (x.HasBuffOfType(BuffType.Poison))).Count() == 0)
+                                    {
+                                        E.CastOnUnit(minion);
+                                    }
                                 }
 
                             }
