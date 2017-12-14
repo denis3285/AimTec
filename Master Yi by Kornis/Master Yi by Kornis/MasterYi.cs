@@ -508,10 +508,11 @@ namespace Master_Yi_By_Kornis
                     {
                         Q.CastOnUnit(minion);
                     }
-                    if (useE && minion.IsValidTarget(300))
-                    {
-                        E.Cast();
-                    }
+               
+                }
+                if (useE && minion.IsValidTarget(300))
+                {
+                    E.Cast();
                 }
             }
         }
@@ -548,10 +549,11 @@ namespace Master_Yi_By_Kornis
                     {
                         Q.CastOnUnit(jungleTarget);
                     }
-                    if (useE && jungleTarget.IsValidTarget(300))
-                    {
-                        E.Cast();
-                    }
+
+                }
+                if (useE && jungleTarget.IsValidTarget(300))
+                {
+                    E.Cast();
                 }
 
             }
