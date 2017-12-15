@@ -68,7 +68,7 @@ namespace Support_AIO.Champions
                 {
 
 
-                    if (ally != null && !ally.IsDead)
+                    if (ally != null && !ally.IsDead && !Player.IsRecalling())
                     {
                         W.Cast(ally);
                     }
