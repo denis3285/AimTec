@@ -84,6 +84,17 @@
 
             #endregion Poppy
 
+            #region Ornn
+
+            Spells.Add(
+                new BlockSpellData
+                {
+                    ChampionName = "Ornn",
+                    SpellSlot = SpellSlot.Unknown,
+                    
+                });
+
+            #endregion Ornn
             #region Darius
 
             Spells.Add(

@@ -765,6 +765,29 @@ namespace Fiora_By_Kornis.SpellBlocking
                 });
 
             #endregion Cassiopeia
+            #region Orn
+
+            Spells.Add(
+                new SpellData
+                {
+                    ChampionName = "Ornn",
+                    SpellName = "OrnnE",
+                    Slot = SpellSlot.E,
+                    Type = SkillShotType.SkillshotLine,
+                    Delay = 250,
+                    Range = 800,
+                    Radius = 150,
+                    MissileSpeed = 1800,
+                    FixedRange = true,
+                    AddHitbox = true,
+                    DangerValue = 3,
+                    IsDangerous = false,
+                    MissileSpellName = "OrnnE",
+                });
+
+ 
+            
+            #endregion Ornn
 
             #region Chogath
 

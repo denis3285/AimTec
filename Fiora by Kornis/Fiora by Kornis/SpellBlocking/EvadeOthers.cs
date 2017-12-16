@@ -40,6 +40,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                 GameObjects.EnemyHeroes.Where(
                     i => BlockSpellDataBase.Spells.Any(a => a.ChampionName == i.ChampionName)))
             {
+                
                 var heroMenu = new Menu("Block" + hero.ChampionName.ToLower(), hero.ChampionName);
                 Menu.Add(heroMenu);
             }
@@ -54,7 +55,17 @@ namespace Fiora_By_Kornis.SpellBlocking
                                      StringComparison.CurrentCultureIgnoreCase))))
             {
                 var heroMenu = Menu["Block" + spell.ChampionName.ToLower()].As<Menu>();
-                heroMenu.Add(new MenuBool("BlockSpell" + spell.SpellSlot, spell.ChampionName + " " + spell.SpellSlot));
+                if (spell.ChampionName == "Ornn")
+                {
+                    heroMenu.Add(new MenuBool("BlockSpell" + spell.SpellSlot,
+                        spell.ChampionName + " " + "Passive Attack"));
+                }
+                if (spell.ChampionName != "Ornn")
+                {
+
+                    heroMenu.Add(new MenuBool("BlockSpell" + spell.SpellSlot,
+                        spell.ChampionName + " " + spell.SpellSlot));
+                }
             }
             evadeMenu.Add(Menu);
 
@@ -242,6 +253,51 @@ namespace Fiora_By_Kornis.SpellBlocking
                     }
                 }
             }
+
+            if (target != null && target.Team != ObjectManager.GetLocalPlayer().Team && target.IsValid &&
+                Args.Target != null &&
+              Args.SpellData.Name != "RenektonCleave" && Args.SpellData.Name != "AlistarE" &&
+                Args.SpellData.Name != "ChogathEAttack" &&
+                Args.SpellData.Name != "FerociousHowl" && Args.SpellData.Name != "NasusE" &&
+                Args.SpellData.Name != "GarenQAttack"
+                )
+            {
+
+                if (target.ChampionName == "Ornn")
+                {
+                    var spell =
+                        BlockSpellDataBase.Spells.Where(
+                            x =>
+                                string.Equals(x.ChampionName, target.ChampionName,
+                                    StringComparison.CurrentCultureIgnoreCase) &&
+                                Menu["Block" + target.ChampionName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()] !=
+                                null &&
+                                Menu["Block" + target.ChampionName.ToLower()]["BlockSpell" + x.SpellSlot.ToString()]
+                                    .Enabled).ToArray();
+
+                    if (spell.Any())
+                    {
+                        foreach (var x in spell)
+                        {
+                            switch (x.ChampionName)
+                            {
+                                case "Ornn":
+                                   
+                                        if (ObjectManager.GetLocalPlayer().HasBuff("OrnnVulnerableDebuff") && Args.SpellData.Name.Contains("BasicAttack"))
+                                        {
+                                            
+
+                                        CastW("Ornn", x.SpellSlot);
+                                            
+                                        }
+
+                                    
+                                    break;
+                            }
+                        }
+                    }
+                }
+            }
             if (target == null || target.Team == ObjectManager.GetLocalPlayer().Team || !target.IsValid ||
                 Args.Target == null || string.IsNullOrEmpty(Args.SpellData.Name) ||
                 Args.SpellData.Name == "RenektonCleave" || Args.SpellData.Name == "AlistarE" ||
@@ -332,6 +388,7 @@ namespace Fiora_By_Kornis.SpellBlocking
                                 }
                             }
                             break;
+                  
                         case "Darius":
                             if (x.SpellSlot == SpellSlot.R)
                             {
