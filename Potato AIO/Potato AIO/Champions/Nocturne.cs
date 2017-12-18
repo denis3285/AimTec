@@ -98,7 +98,7 @@ namespace Potato_AIO.Champions
 
             if (manapercent < Player.ManaPercent())
             {
-                if (Q.Ready)
+                if (Q.Ready && RootMenu["farming"]["lane"]["useQ"].Enabled)
                 {
                     foreach (var minion in Bases.Extensions.GetEnemyLaneMinionsTargetsInRange(Q.Range))
                     {
@@ -231,7 +231,7 @@ namespace Potato_AIO.Champions
 
             if (manapercent < Player.ManaPercent())
             {
-                if (E.Ready && RootMenu["combo"]["usee"].Enabled)
+                if (E.Ready && RootMenu["harass"]["usee"].Enabled)
                 {
                     var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(E.Range);
                     if (target.IsValidTarget(E.Range))
@@ -247,7 +247,7 @@ namespace Potato_AIO.Champions
 
 
                 }
-                if (Q.Ready && RootMenu["combo"]["useq"].Enabled)
+                if (Q.Ready && RootMenu["harass"]["useq"].Enabled)
                 {
                     var target = Bases.Extensions.GetBestEnemyHeroTargetInRange(Q.Range);
                     if (target.IsValidTarget(Q.Range))
