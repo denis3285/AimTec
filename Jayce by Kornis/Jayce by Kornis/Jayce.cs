@@ -38,7 +38,7 @@ namespace Jayce_By_Kornis
         {
             Q = new Spell(SpellSlot.Q, 560);
             W = new Spell(SpellSlot.W, 265);
-            E = new Spell(SpellSlot.E, 280);
+            E = new Spell(SpellSlot.E, 300);
             Q2 = new Spell(SpellSlot.Q, 1050);
             QE = new Spell(SpellSlot.Q, 1550);
             W2 = new Spell(SpellSlot.W, 600);
@@ -187,6 +187,7 @@ namespace Jayce_By_Kornis
             Obj_AI_Base.OnProcessSpellCast += OnProcessSpellCast;
             Gapcloser.OnGapcloser += OnGapcloser;
             Orbwalker.PostAttack += OnPostAttack;
+            
             LoadSpells();
             Console.WriteLine("Jayce by Kornis - Loaded");
         }
@@ -250,20 +251,183 @@ namespace Jayce_By_Kornis
         {
             if (sender.IsMe)
             {
-                if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo) || Orbwalker.Mode.Equals(OrbwalkingMode.Mixed) ||
-                    Menu["combo"]["key"].Enabled)
-
-                {
-                    return;
-                }
                 var spellName = args.SpellData.Name;
-                if (spellName.Equals("JayceShockBlast") && Menu["misc"]["autoe"].Enabled)
+                if (spellName.Equals("JayceShockBlast"))
                 {
-                    DelayAction.Queue(200, () =>
+                    var enemies = GetBestKillableHero(QE, DamageType.Physical, false);
+                    if (enemies != null)
                     {
-                        E2.Cast(Player.ServerPosition.Extend(args.End, 150));
-                    });
 
+                        PredictionOutput test = QE.GetPrediction(enemies);
+                        if (!Player.HasBuff("jaycestancehammer") && Menu["killsteal"]["qe"].Enabled &&
+                            GetEQ(enemies) > enemies.Health && enemies.IsValidTarget(QE.Range) &&
+                             E2.Ready)
+                        {
+                           
+                                E2.Cast(something(test.CastPosition));
+
+                            
+                        }
+
+                    }
+                    if (Orbwalker.Mode.Equals(OrbwalkingMode.Mixed))
+                    {
+                        if (Menu["harass"]["qset"]["minions"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range);
+                            PredictionOutput test = QE.GetPrediction(target);
+                            if (target.IsValidTarget() && target.IsValidTarget(QE.Range) && E2.Ready)
+                            {
+
+                                
+                                    DelayAction.Queue(200, () =>
+                                            {
+                                                E2.Cast(something(test.CastPosition));
+                                            });
+
+
+
+
+                                    
+                                
+                            }
+                        }
+                        if (!Menu["harass"]["qset"]["qerange"].Enabled && Menu["harass"]["eset"]["eq"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range );
+
+                            if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
+                            {
+                                PredictionOutput test = QE.GetPrediction(target);
+                                if (!Player.HasBuff("jaycestancehammer") && E2.Ready)
+                                {
+                                    var collisions =
+                   (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                                    
+
+                                            DelayAction.Queue(200, () =>
+                                            {
+                                                E2.Cast(something(test.CastPosition));
+                                            });
+
+
+                                       
+                                    
+                                }
+                            }
+                        }
+                        if (Menu["harass"]["qset"]["qerange"].Enabled && Menu["harass"]["eset"]["eq"].Enabled)
+
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range);
+
+                            if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
+                            {
+
+                                if (!Player.HasBuff("jaycestancehammer") && E2.Ready)
+                                {
+                                    PredictionOutput test = QE.GetPrediction(target);
+                                    
+                                    
+                                            DelayAction.Queue(200, () =>
+                                            {
+                                                E2.Cast(something(test.CastPosition));
+                                            });
+
+
+                                        
+                                    
+                                }
+                            }
+                        }
+
+                    }
+                    if (Orbwalker.Mode.Equals(OrbwalkingMode.Combo))
+                    {
+                        if (Menu["combo"]["qset"]["minions"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range);
+                            PredictionOutput test = QE.GetPrediction(target);
+                            if (target.IsValidTarget() && target.IsValidTarget(QE.Range) && E2.Ready)
+                            {
+
+                               
+
+                                        DelayAction.Queue(200, () =>
+                                        {
+                                            E2.Cast(something(test.CastPosition));
+                                        });
+
+
+
+
+                                    
+                                
+                            }
+                        }
+                        if (!Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
+                        {
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range);
+
+                            if (target.IsValidTarget() && target.IsValidTarget(QE.Range))
+                            {
+                                PredictionOutput test = QE.GetPrediction(target);
+                                if (!Player.HasBuff("jaycestancehammer") && E2.Ready)
+                                {
+                                   
+                                            DelayAction.Queue(200, () =>
+                                            {
+                                                E2.Cast(something(test.CastPosition));
+                                            });
+
+
+                                        
+                                    
+                                }
+                            }
+                        }
+                        if (Menu["combo"]["qset"]["qerange"].Enabled && Menu["combo"]["eset"]["eq"].Enabled)
+
+                        {
+
+                            var target = GetBestEnemyHeroTargetInRange(QE.Range);
+
+                            if (target.IsValidTarget() && target.Distance(Player) > Q.Range && target.IsValidTarget(QE.Range))
+                            {
+
+                                if (!Player.HasBuff("jaycestancehammer")  && E2.Ready)
+                                {
+                                    PredictionOutput test = QE.GetPrediction(target);
+
+                                    DelayAction.Queue(200, () =>
+                                                {
+                                                    E2.Cast(something(test.CastPosition));
+                                                });
+                                            
+                                    
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+            if (sender.IsMe)
+            {
+                if (!Orbwalker.Mode.Equals(OrbwalkingMode.Combo) && !Orbwalker.Mode.Equals(OrbwalkingMode.Mixed) &&
+                    !Menu["combo"]["key"].Enabled)
+
+                {
+
+                    var spellName = args.SpellData.Name;
+                    if (spellName.Equals("JayceShockBlast") && Menu["misc"]["autoe"].Enabled)
+                    {
+                        DelayAction.Queue(200, () =>
+                        {
+                            E2.Cast(Player.ServerPosition.Extend(args.End, 150));
+                        });
+
+                    }
                 }
             }
         }
@@ -929,8 +1093,8 @@ namespace Jayce_By_Kornis
                     {
                         Obj_AI_Base fistCol = test.CollisionObjects
                             .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
-                        if (fistCol.Distance(test.UnitPosition) < (250 - fistCol.BoundingRadius / 2) &&
-                            fistCol.Distance(target.ServerPosition) < (250 - fistCol.BoundingRadius / 2))
+                        if (fistCol.Distance(test.UnitPosition) < (240 - fistCol.BoundingRadius / 2) &&
+                            fistCol.Distance(target.ServerPosition) < (240 - fistCol.BoundingRadius / 2))
                         {
                             if (target.Distance(Player) >= 300)
                             {
@@ -965,8 +1129,8 @@ namespace Jayce_By_Kornis
 
                                 Obj_AI_Base fistCols = testq.CollisionObjects
                                     .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
-                                if (fistCols.Distance(testq.UnitPosition) < (180 - fistCols.BoundingRadius / 2) &&
-                                    fistCols.Distance(targetq.ServerPosition) < (180 - fistCols.BoundingRadius / 2))
+                                if (fistCols.Distance(testq.UnitPosition) < (140 - fistCols.BoundingRadius / 2) &&
+                                    fistCols.Distance(targetq.ServerPosition) < (140 - fistCols.BoundingRadius / 2))
                                 {
 
                                     Q.Cast(testq.CastPosition);
@@ -1133,104 +1297,6 @@ namespace Jayce_By_Kornis
                 }
 
             }
-         
-            if (R.Ready && Menu["combo"]["user"].Enabled)
-            {
-
-
-                {
-                    if (!Player.HasBuff("jaycestancehammer"))
-                    {
-                        var target = GetBestEnemyHeroTargetInRange(Q.Range);
-
-                        if (target.IsValidTarget())
-                        {
-                            if (target.IsValidTarget(Q.Range))
-                            {
-                                if (Menu["combo"]["wset"]["wait"].Enabled && !Player.HasBuff("JayceHyperCharge"))
-                                {
-                                    if (!W.Ready)
-                                    {
-                                        if (Player.Mana >= 40)
-                                        {
-                                            if (timer - Game.ClockTime < 0.75)
-                                            {
-                                                R.Cast();
-                                            }
-                                        }
-                                        if (target.IsValidTarget(265))
-                                        {
-                                            R.Cast();
-                                        }
-                                    }
-                                }
-                                if (!Menu["combo"]["wset"]["wait"].Enabled)
-                                {
-                                    if (!W.Ready)
-                                    {
-                                        if (Player.Mana >= 40)
-                                        {
-                                            if (timer - Game.ClockTime < 0.75)
-                                            {
-                                                R.Cast();
-                                            }
-                                        }
-                                        if (target.Distance(Player) <= 265)
-                                        {
-                                            R.Cast();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (!Q.Ready && !W.Ready && Player.HasBuff("jaycestancehammer"))
-                    {
-                        R.Cast();
-                    }
-                    if (Player.HasBuff("jaycestancehammer"))
-                    {
-                        var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
-
-                        if (target.IsValidTarget())
-                        {
-                            if (target.IsValidTarget(QE.Range))
-                            {
-                                if (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E) >
-                           target.Health)
-                                {
-
-                                    R.Cast();
-                                }
-                            }
-                        }
-                    }
-                    if (
-                        Player.HasBuff("jaycestancehammer"))
-                    {
-                        var target = GetBestEnemyHeroTargetInRange(1200);
-
-                        if (target.IsValidTarget())
-                        {
-                            if (target.IsValidTarget(1200) && target.Distance(Player) > Q.Range + 200)
-                            {
-                                var collisions =
-                            (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
-                                if (collisions.Any())
-                                {
-                                    if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
-                                    {
-                                        return;
-                                    }
-                                }
-                                R.Cast();
-                            }
-                        }
-                    }
-
-                }
-            }
             switch (Menu["combo"]["eset"]["emode"].As<MenuList>().Value)
             {
                 case 0:
@@ -1341,6 +1407,104 @@ namespace Jayce_By_Kornis
                     }
                 }
             }
+            if (R.Ready && Menu["combo"]["user"].Enabled)
+            {
+
+
+                {
+                    if (!Player.HasBuff("jaycestancehammer"))
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(Q.Range))
+                            {
+                                if (Menu["combo"]["wset"]["wait"].Enabled && !Player.HasBuff("JayceHyperCharge"))
+                                {
+                                    if (!W.Ready)
+                                    {
+                                        if (Player.Mana >= 40)
+                                        {
+                                            if (timer - Game.ClockTime < 0.75)
+                                            {
+                                                R.Cast();
+                                            }
+                                        }
+                                        if (target.IsValidTarget(265))
+                                        {
+                                            R.Cast();
+                                        }
+                                    }
+                                }
+                                if (!Menu["combo"]["wset"]["wait"].Enabled)
+                                {
+                                    if (!W.Ready)
+                                    {
+                                        if (Player.Mana >= 40)
+                                        {
+                                            if (timer - Game.ClockTime < 0.75)
+                                            {
+                                                R.Cast();
+                                            }
+                                        }
+                                        if (target.Distance(Player) <= 265)
+                                        {
+                                            R.Cast();
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!Q.Ready && !W.Ready && Player.HasBuff("jaycestancehammer"))
+                    {
+                        R.Cast();
+                    }
+                    if (Player.HasBuff("jaycestancehammer"))
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(QE.Range-100);
+
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(QE.Range))
+                            {
+                                if (Player.GetSpellDamage(target, SpellSlot.Q) + Player.GetSpellDamage(target, SpellSlot.E) >
+                           target.Health)
+                                {
+
+                                    R.Cast();
+                                }
+                            }
+                        }
+                    }
+                    if (
+                        Player.HasBuff("jaycestancehammer"))
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(1200);
+
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(1200) && target.Distance(Player) > Q.Range + 200)
+                            {
+                                var collisions =
+                            (IList<Obj_AI_Base>)QE.GetPrediction(target).CollisionObjects;
+                                if (collisions.Any())
+                                {
+                                    if (!collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                    {
+                                        return;
+                                    }
+                                }
+                                R.Cast();
+                            }
+                        }
+                    }
+
+                }
+            }
+            
         }
 
         private void OnHarass()
@@ -1356,8 +1520,8 @@ namespace Jayce_By_Kornis
                     {
                         Obj_AI_Base fistCol = test.CollisionObjects
                             .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
-                        if (fistCol.Distance(test.UnitPosition) < (250 - fistCol.BoundingRadius / 2) &&
-                            fistCol.Distance(target.ServerPosition) < (250 - fistCol.BoundingRadius / 2))
+                        if (fistCol.Distance(test.UnitPosition) < (240 - fistCol.BoundingRadius / 2) &&
+                            fistCol.Distance(target.ServerPosition) < (240 - fistCol.BoundingRadius / 2))
                         {
                             if (target.Distance(Player) >= 300)
                             {
@@ -1392,8 +1556,8 @@ namespace Jayce_By_Kornis
 
                                 Obj_AI_Base fistCols = testq.CollisionObjects
                                     .OrderBy(unit => unit.Distance(Player.ServerPosition)).First();
-                                if (fistCols.Distance(testq.UnitPosition) < (180 - fistCols.BoundingRadius / 2) &&
-                                    fistCols.Distance(targetq.ServerPosition) < (180 - fistCols.BoundingRadius / 2))
+                                if (fistCols.Distance(testq.UnitPosition) < (140 - fistCols.BoundingRadius / 2) &&
+                                    fistCols.Distance(targetq.ServerPosition) < (140 - fistCols.BoundingRadius / 2))
                                 {
 
                                     Q.Cast(testq.CastPosition);
@@ -1436,7 +1600,7 @@ namespace Jayce_By_Kornis
                                     if (target.Distance(Player) <= 300)
                                     {
 
-                                        E2.Cast(something(test.CastPosition));
+                                       E2.Cast(something(test.CastPosition));
                                         QE.Cast(target);
                                     }
                                 }
@@ -1634,6 +1798,42 @@ namespace Jayce_By_Kornis
                     }
                     break;
             }
+            if (Player.HasBuff("jaycestancehammer"))
+            {
+                if (Q.Ready)
+                {
+                    var target = GetBestEnemyHeroTargetInRange(Q.Range);
+
+                    if (target.IsValidTarget())
+                    {
+                        if (target.IsValidTarget(Q.Range))
+                        {
+                            if (Menu["harass"]["qset"]["melee"].Enabled && target.IsValidTarget(Q.Range))
+                            {
+                                Q.CastOnUnit(target);
+                            }
+                        }
+                    }
+                }
+            }
+            if (Player.HasBuff("jaycestancehammer"))
+            {
+                if (W.Ready)
+                {
+                    var target = GetBestEnemyHeroTargetInRange(W.Range);
+
+                    if (target.IsValidTarget())
+                    {
+                        if (target.IsValidTarget(W.Range))
+                        {
+                            if (Menu["harass"]["wset"]["melee"].Enabled && target.IsValidTarget(W.Range))
+                            {
+                                W.Cast();
+                            }
+                        }
+                    }
+                }
+            }
             if (R.Ready && Menu["harass"]["user"].Enabled)
             {
 
@@ -1731,42 +1931,7 @@ namespace Jayce_By_Kornis
 
                 }
             }
-            if (Player.HasBuff("jaycestancehammer"))
-            {
-                if (Q.Ready)
-                {
-                    var target = GetBestEnemyHeroTargetInRange(Q.Range);
-
-                    if (target.IsValidTarget())
-                    {
-                        if (target.IsValidTarget(Q.Range))
-                        {
-                            if (Menu["harass"]["qset"]["melee"].Enabled && target.IsValidTarget(Q.Range))
-                            {
-                                Q.CastOnUnit(target);
-                            }
-                        }
-                    }
-                }
-            }
-            if (Player.HasBuff("jaycestancehammer"))
-            {
-                if (W.Ready)
-                {
-                    var target = GetBestEnemyHeroTargetInRange(W.Range);
-
-                    if (target.IsValidTarget())
-                    {
-                        if (target.IsValidTarget(W.Range))
-                        {
-                            if (Menu["harass"]["wset"]["melee"].Enabled && target.IsValidTarget(W.Range))
-                            {
-                                W.Cast();
-                            }
-                        }
-                    }
-                }
-            }
+            
         }
     }
 
