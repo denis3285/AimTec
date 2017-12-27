@@ -43,11 +43,14 @@ namespace Gnar_By_Kornis
             E = new Spell(SpellSlot.E, 475);
             E2 = new Spell(SpellSlot.E, 600);
             R = new Spell(SpellSlot.R, 480);
-            Q.SetSkillshot(0.25f, 60, 1400, true, SkillshotType.Line);
+            Q.SetSkillshot(0.25f, 60, 1400, true, SkillshotType.Line, false, HitChance.None);
             Q2.SetSkillshot(0.25f, 60, 1200, true, SkillshotType.Line, false, HitChance.None);
             W.SetSkillshot(0.25f, 80, 1200, false, SkillshotType.Line, false, HitChance.None);
             E.SetSkillshot(0.5f, 150, float.MaxValue, false, SkillshotType.Circle);
             E2.SetSkillshot(0.6f, 60, 1500, false, SkillshotType.Circle, false, HitChance.None);
+            R.Delay = 0.25f;
+            R.Speed = int.MaxValue;
+            R.Width = 500;
 
         }
 
@@ -94,13 +97,13 @@ namespace Gnar_By_Kornis
             var FarmMenu = new Menu("farming", "Farming");
             {
                 var Mega = new Menu("mega", "Mega-Gnar Settings");
-                Mega.Add(new MenuBool("useq", "Use Q in Combo"));
-                Mega.Add(new MenuBool("usew", "Use W in Combo"));
+                Mega.Add(new MenuBool("useq", "Use Q to Clear"));
+                Mega.Add(new MenuBool("usew", "Use W to Clear"));
                 Mega.Add(new MenuSlider("hitw", "^- Only if Hits X", 3, 1, 5));
 
                 FarmMenu.Add(Mega);
                 var Mini = new Menu("mini", "Mini-Gnar Settings");
-                Mini.Add(new MenuBool("useq", "Use Q in Combo"));
+                Mini.Add(new MenuBool("useq", "Use Q to Clear"));
                 FarmMenu.Add(Mini);
             }
             Menu.Add(FarmMenu);
@@ -124,12 +127,18 @@ namespace Gnar_By_Kornis
                 DrawMenu.Add(new MenuBool("drawr", "Draw R Range"));
                 DrawMenu.Add(new MenuBool("drawdamage", "Draw Damage"));
             }
+
             Menu.Add(DrawMenu);
             Menu.Attach();
 
+
+
+
             Render.OnPresent += Render_OnPresent;
             Game.OnUpdate += Game_OnUpdate;
-
+            SpellBook.OnCastSpell += Spellbook_OnCastSpell;
+            SpellBook.OnStopCast += Spellbook_OnStopCast;
+            Obj_AI_Base.OnProcessSpellCast += Obj_AI_Base_OnProcessSpellCast;
             LoadSpells();
             Console.WriteLine("Gnar by Kornis - Loaded");
         }
@@ -196,6 +205,92 @@ namespace Gnar_By_Kornis
         }
 
 
+        private static int sendTime = 0;
+
+        private static int TickCount;
+        private static void Spellbook_OnStopCast(Obj_AI_Base sender, SpellBookStopCastEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+               
+                IsCasting = false;
+            }
+        }
+        private static void Obj_AI_Base_OnProcessSpellCast(Obj_AI_Base sender, Obj_AI_BaseMissileClientDataEventArgs args)
+        {
+           
+            if (sender.IsMe && !args.SpellData.Name.Contains("BasicAttack"))
+            {
+                
+                IsCasting = false;
+            }
+        }
+        private static void Spellbook_OnCastSpell(Obj_AI_Base sender, SpellBookCastSpellEventArgs args)
+        {
+            if (sender.IsMe)
+            {
+                switch (args.Slot)
+                {
+                    case SpellSlot.Q:
+                    case SpellSlot.W:
+                    case SpellSlot.E:
+                    case SpellSlot.R:
+
+                        if (!IsCasting)
+                        {
+                            
+                            sendTime = TickCount;
+                        }
+                        else
+                        {
+                         
+                            args.Process = false;
+                        }
+                        break;
+                }
+            }
+        }
+        public static bool IsCasting
+        {
+            get
+            {
+                var busy =
+                    sendTime > 0 && sendTime + Game.Ping + 200 - TickCount > 0 ||
+                    Player.SpellBook.IsCastingSpell ||
+                    Player.SpellBook.IsChanneling ||
+                    Player.SpellBook.IsCharging;
+
+                IsCasting = busy;
+
+                return busy;
+            }
+            private set
+            {
+                if (!value)
+                {
+                    sendTime = 0;
+                }
+            }
+        }
+
+        
+
+    public static Vector3? GetFirstWallPoint(Vector3 from, Vector3 to, float step = 25)
+        {
+            var direction = (to - from).Normalized();
+
+            for (float d = 0; d < from.Distance(to); d = d + step)
+            {
+                var testPoint = from + d * direction;
+                if (IsWall(testPoint))
+                {
+                    return from + d * direction;
+                }
+            }
+
+            return null;
+        }
+
         public static readonly List<string> SpecialChampions = new List<string> {"Annie", "Jhin"};
         private Vector3 hello2;
         private Vector3 hello;
@@ -212,11 +307,14 @@ namespace Gnar_By_Kornis
 
         private void Render_OnPresent()
         {
+
             if (!Player.HasBuff("gnartransform"))
             {
+
                 if (Menu["drawings"]["drawq"].Enabled)
                 {
                     Render.Circle(Player.Position, Q.Range, 40, Color.CornflowerBlue);
+
                 }
 
                 if (Menu["drawings"]["drawe"].Enabled)
@@ -224,26 +322,32 @@ namespace Gnar_By_Kornis
                     Render.Circle(Player.Position, E.Range, 40, Color.Crimson);
                 }
             }
+
             if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
             {
                 if (Menu["drawings"]["drawq"].Enabled)
                 {
                     Render.Circle(Player.Position, Q2.Range, 40, Color.CornflowerBlue);
+                   
                 }
+
 
                 if (Menu["drawings"]["drawe"].Enabled)
                 {
                     Render.Circle(Player.Position, E2.Range, 40, Color.Crimson);
                 }
+
                 if (Menu["drawings"]["draww"].Enabled)
                 {
                     Render.Circle(Player.Position, W.Range, 40, Color.Crimson);
                 }
+
                 if (Menu["drawings"]["drawr"].Enabled)
                 {
                     Render.Circle(Player.Position, R.Range, 40, Color.CornflowerBlue);
                 }
             }
+
             Vector2 maybeworks;
             var heropos = Render.WorldToScreen(Player.Position, out maybeworks);
             var xaOffset = (int) maybeworks.X;
@@ -254,11 +358,13 @@ namespace Gnar_By_Kornis
                 Render.Text(xaOffset - 60, yaOffset + 30, Color.Wheat, "Use Under-Turret: ON",
                     RenderTextFlags.VerticalCenter);
             }
+
             if (!Menu["misc"]["toggle"].Enabled)
             {
                 Render.Text(xaOffset - 60, yaOffset + 30, Color.Wheat, "Use Under-Turret: OFF",
                     RenderTextFlags.VerticalCenter);
             }
+
             if (Menu["drawings"]["drawdamage"].Enabled)
             {
                 double QDamage = 0;
@@ -271,19 +377,23 @@ namespace Gnar_By_Kornis
                     .ToList()
                     .ForEach(
                         unit =>
-                        { 
+                        {
+
+
                             if (!Player.HasBuff("gnartransform"))
                             {
                                 QDamage = Player.GetSpellDamage(unit, SpellSlot.Q);
                                 EDamage = Player.GetSpellDamage(unit, SpellSlot.E);
                             }
+
                             if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
-                            { 
+                            {
                                 QDamage = Player.GetSpellDamage(unit, SpellSlot.Q, DamageStage.SecondForm);
                                 EDamage = Player.GetSpellDamage(unit, SpellSlot.E, DamageStage.SecondForm);
                                 WDamage = Player.GetSpellDamage(unit, SpellSlot.W, DamageStage.SecondForm);
                                 RDamage = Player.GetSpellDamage(unit, SpellSlot.R, DamageStage.Collision);
                             }
+
                             var heroUnit = unit as Obj_AI_Hero;
                             int width = 103;
                             int height = 8;
@@ -311,10 +421,14 @@ namespace Gnar_By_Kornis
 
         private void Game_OnUpdate()
         {
+
+
+
             if (Player.IsDead || MenuGUI.IsChatOpen())
             {
                 return;
             }
+
             Killsteal();
 
             switch (Orbwalker.Mode)
@@ -332,85 +446,81 @@ namespace Gnar_By_Kornis
                     break;
 
             }
+
             if (Menu["combo"]["mega"]["autor"].Enabled)
             {
-                var target = GetBestEnemyHeroTargetInRange(R.Range);
-                if (!target.IsValidTarget())
-                {
-                    return;
-                }
-                if (target == null)
-                {
-                    return;
-                }
-                if (target.IsValidTarget(520) && Player.CountEnemyHeroesInRange(470) >=
-                    Menu["combo"]["mega"]["hitr"].As<MenuSlider>().Value)
+                var zzz =
+                    Aimtec.SDK.Util.Cache.GameObjects.EnemyHeroes.Where(x => x != null && x.IsValidTarget(R.Range));
+
+                foreach (var target in zzz)
                 {
 
-                    if (Player.Distance(target) <= 490)
+
+                    if (!target.IsValidTarget())
                     {
-
-                        var pushdistance = 500;
-                        var targetpos = target.ServerPosition;
-                        var pushidrection =
-                            (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                            .Normalized();
-                        var checkdistance = pushdistance / 40;
-                        for (var i = 0; i <= 37; i++)
-                        {
-
-                            var finalpos = targetpos + (pushidrection * checkdistance * i);
-                            if (IsWall(finalpos, true))
-                            {
-
-                                hello = finalpos;
-
-                            }
-                            else hello = new Vector3(0, 0, 0);
-                        }
-                        var pushdistance2 = 500;
-                        var targetpos2 = target.ServerPosition;
-                        var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                        var checkdistance2 = pushdistance2 / 40;
-                        for (var i = 0; i <= 37; i++)
-                        {
-
-                            var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                            if (IsWall(finalpos2, true))
-                            {
-                                hello2 = finalpos2;
-
-                            }
-                            else hello2 = new Vector3(0, 0, 0);
-                        }
-                        if (!hello.IsZero && !hello2.IsZero)
-                        {
-                            if (hello.Distance(Player) > hello2.Distance(Player))
-                            {
-                                R.Cast(hello2);
-                            }
-                            if (hello.Distance(Player) < hello2.Distance(Player))
-                            {
-                                R.Cast(hello);
-                            }
-                        }
-                        if (hello2.IsZero && !hello.IsZero)
-                        {
-
-                            R.Cast(hello);
-                        }
-                        if (hello.IsZero && !hello2.IsZero)
-                        {
-
-                            R.Cast(hello2);
-                        }
+                        return;
                     }
 
+                    if (target == null)
+                    {
+                        return;
+                    }
+
+                    if (target.IsValidTarget(R.Range) && Player.CountEnemyHeroesInRange(R.Range) >=
+                        Menu["combo"]["mega"]["hitr"].As<MenuSlider>().Value)
+                    {
+                        var meow = R.GetPredictionInput(target);
+                        var prediction = Prediction.Instance.GetPrediction(meow).UnitPosition;
+                        if (prediction.Distance(Player) <= R.Range)
+                        {
+                            var direction = (Player.ServerPosition - prediction).Normalized();
+                            var maxAngle = 180f;
+                            var step = maxAngle / 6f;
+                            var currentAngle = 0f;
+                            var currentStep = 0f;
+                            while (true)
+                            {
+
+                                if (currentStep > maxAngle && currentAngle < 0)
+                                    break;
+
+
+                                if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                {
+                                    currentAngle = (currentStep) * (float) Math.PI / 180;
+                                    currentStep += step;
+                                }
+                                else if (currentAngle > 0)
+                                    currentAngle = -currentAngle;
+
+                                Vector3 checkPoint;
+                                if (currentStep == 0)
+                                {
+                                    currentStep = step;
+                                    checkPoint = prediction + 450 * direction;
+                                }
+                                else
+                                    checkPoint = prediction + 450 * direction.Rotated(currentAngle);
+
+                                if (GetFirstWallPoint(prediction, checkPoint).HasValue)
+                                {
+
+                                    R.Cast(Player.Position + 450 * (checkPoint - prediction).Normalized());
+
+                                }
+                            }
+                        }
+
+
+                    }
+
+
                 }
-
             }
-
         }
+
+
+
 
         public static List<Obj_AI_Minion> GetEnemyLaneMinionsTargets()
         {
@@ -442,6 +552,7 @@ namespace Gnar_By_Kornis
                     }
                 }
             }
+
             if (Player.HasBuff("gnartransform"))
             {
                 if (Menu["farming"]["mega"]["useq"].Enabled)
@@ -455,6 +566,7 @@ namespace Gnar_By_Kornis
                         }
                     }
                 }
+
                 if (Menu["farming"]["mega"]["usew"].Enabled)
                 {
                     foreach (var minion in GetEnemyLaneMinionsTargetsInRange(W.Range))
@@ -485,17 +597,17 @@ namespace Gnar_By_Kornis
 
         private void Jungle()
         {
-           
-            foreach (var minion in GetGenericJungleMinionsTargetsInRange(Q.Range-300))
+
+            foreach (var minion in GetGenericJungleMinionsTargetsInRange(Q.Range - 300))
             {
-             
+
                 if (!Player.HasBuff("gnartransform"))
                 {
-                   
+
                     if (Menu["farming"]["mini"]["useq"].Enabled)
                     {
 
-                        
+
                         if (minion.IsValidTarget(Q.Range) && minion != null)
                         {
                             Q.Cast(minion);
@@ -503,6 +615,7 @@ namespace Gnar_By_Kornis
 
                     }
                 }
+
                 if (Player.HasBuff("gnartransform"))
                 {
                     if (Menu["farming"]["mega"]["useq"].Enabled)
@@ -514,6 +627,7 @@ namespace Gnar_By_Kornis
                         }
 
                     }
+
                     if (Menu["farming"]["mega"]["usew"].Enabled)
                     {
 
@@ -592,6 +706,7 @@ namespace Gnar_By_Kornis
                                                     }
                                                 }
                                             }
+
                                             foreach (var m in GameObjects.Jungle.Where(x =>
                                                 x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                             {
@@ -608,6 +723,7 @@ namespace Gnar_By_Kornis
                                             }
 
                                         }
+
                                         if (bestTarget.Distance(Player) < 700 && bestTarget.Distance(Player) < 1000)
                                         {
                                             foreach (var m in GameObjects.EnemyMinions.Where(x =>
@@ -625,6 +741,7 @@ namespace Gnar_By_Kornis
                                                 }
 
                                             }
+
                                             foreach (var m in GameObjects.Jungle.Where(x =>
                                                 x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                             {
@@ -649,8 +766,9 @@ namespace Gnar_By_Kornis
                     }
                 }
             }
+
             if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
-            { 
+            {
                 if (Q2.Ready &&
                     Menu["killsteal"]["ksq"].Enabled)
                 {
@@ -662,7 +780,7 @@ namespace Gnar_By_Kornis
                             bestTarget.IsValidTarget(Q2.Range))
                         {
                             var collisions =
-                                (IList<Obj_AI_Base>)E.GetPrediction(bestTarget).CollisionObjects;
+                                (IList<Obj_AI_Base>) E.GetPrediction(bestTarget).CollisionObjects;
                             if (collisions.Any())
                             {
                                 if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
@@ -670,11 +788,17 @@ namespace Gnar_By_Kornis
                                     return;
                                 }
                             }
-                            Q2.Cast(bestTarget);
+
+                            if (Q2.GetPrediction(bestTarget).CastPosition.Distance(Player) < Q2.Range + 250)
+                            {
+                                Q2.Cast(bestTarget);
+
+                            }
 
                         }
                     }
                 }
+
                 if (W.Ready &&
                     Menu["killsteal"]["ksw"].Enabled)
                 {
@@ -685,7 +809,10 @@ namespace Gnar_By_Kornis
                             bestTarget.Health &&
                             bestTarget.IsValidTarget(W.Range))
                         {
-                            W.Cast(bestTarget);
+                            if (W.GetPrediction(bestTarget).CastPosition.Distance(Player) < W.Range + 30)
+                            {
+                                W.Cast(bestTarget);
+                            }
                         }
                     }
                 }
@@ -717,10 +844,12 @@ namespace Gnar_By_Kornis
 
             return null;
         }
+
         public static List<Obj_AI_Base> GetAllGenericUnitTargets()
         {
             return GetAllGenericUnitTargetsInRange(float.MaxValue);
         }
+
         public static List<Obj_AI_Minion> GetAllGenericMinionsTargets()
         {
             return GetAllGenericMinionsTargetsInRange(float.MaxValue);
@@ -728,12 +857,16 @@ namespace Gnar_By_Kornis
 
         public static List<Obj_AI_Minion> GetAllGenericMinionsTargetsInRange(float range)
         {
-            return GetEnemyLaneMinionsTargetsInRange(range).Concat(GetGenericJungleMinionsTargetsInRange(range)).ToList();
+            return GetEnemyLaneMinionsTargetsInRange(range).Concat(GetGenericJungleMinionsTargetsInRange(range))
+                .ToList();
         }
+
         public static List<Obj_AI_Base> GetAllGenericUnitTargetsInRange(float range)
         {
-            return GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(range)).Concat<Obj_AI_Base>(GetAllGenericMinionsTargetsInRange(range)).ToList();
+            return GameObjects.EnemyHeroes.Where(h => h.IsValidTarget(range))
+                .Concat<Obj_AI_Base>(GetAllGenericMinionsTargetsInRange(range)).ToList();
         }
+
         public static bool IsWall(Vector3 pos, bool includeBuildings = false)
         {
             var point = NavMesh.WorldToCell(pos).Flags;
@@ -749,80 +882,71 @@ namespace Gnar_By_Kornis
                 if (Menu["combo"]["mega"]["user"].Enabled)
                 {
                     var targets = GetBestEnemyHeroTargetInRange(R.Range);
-                    if (targets.IsValidTarget())
+                    if (targets.IsValidTarget() && targets != null)
                     {
-
+                        var meow = R.GetPredictionInput(targets);
+                        var prediction = Prediction.Instance.GetPrediction(meow).UnitPosition;
                         switch (Menu["combo"]["mega"]["rmode"].As<MenuList>().Value)
                         {
                             case 0:
 
-                                if (targets.IsValidTarget(520))
+                                if (targets.IsValidTarget(R.Range))
                                 {
                                     if (targets.HealthPercent() <= Menu["combo"]["mega"]["hp"].As<MenuSlider>().Value)
                                     {
-                                        if (Player.Distance(targets) <= 490)
+
+                                        if (targets.IsValidTarget(R.Range))
                                         {
 
-                                            var pushdistance = 500;
-                                            var targetpos = targets.ServerPosition;
-                                            var pushidrection =
-                                                (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                                .Normalized();
-                                            var checkdistance = pushdistance / 40;
-                                            for (var i = 0; i <= 37; i++)
+                                            if (targets.Distance(Player) <= R.Range)
                                             {
-
-                                                var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                                if (IsWall(finalpos, true))
+                                                var direction = (Player.ServerPosition - prediction).Normalized();
+                                                var maxAngle = 180f;
+                                                var step = maxAngle / 6f;
+                                                var currentAngle = 0f;
+                                                var currentStep = 0f;
+                                                while (true)
                                                 {
 
-                                                    hello = finalpos;
+                                                    if (currentStep > maxAngle && currentAngle < 0)
+                                                        break;
 
+
+                                                    if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                                    {
+                                                        currentAngle = (currentStep) * (float) Math.PI / 180;
+                                                        currentStep += step;
+                                                    }
+                                                    else if (currentAngle > 0)
+                                                        currentAngle = -currentAngle;
+
+                                                    Vector3 checkPoint;
+                                                    if (currentStep == 0)
+                                                    {
+                                                        currentStep = step;
+                                                        checkPoint = prediction + 450 * direction;
+                                                    }
+                                                    else
+                                                        checkPoint = prediction + 450 * direction.Rotated(currentAngle);
+
+                                                    if (GetFirstWallPoint(prediction, checkPoint).HasValue)
+                                                    {
+
+                                                        R.Cast(Player.Position +
+                                                               450 * (checkPoint - prediction).Normalized());
+
+                                                    }
                                                 }
-                                                else hello = new Vector3(0, 0, 0);
                                             }
-                                            var pushdistance2 = 500;
-                                            var targetpos2 = targets.ServerPosition;
-                                            var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                            var checkdistance2 = pushdistance2 / 40;
-                                            for (var i = 0; i <= 37; i++)
-                                            {
 
-                                                var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                                if (IsWall(finalpos2, true))
-                                                {
-                                                    hello2 = finalpos2;
 
-                                                }
-                                                else hello2 = new Vector3(0, 0, 0);
-                                            }
-                                            if (!hello.IsZero && !hello2.IsZero)
-                                            {
-                                                if (hello.Distance(Player) > hello2.Distance(Player))
-                                                {
-                                                    R.Cast(hello2);
-                                                }
-                                                if (hello.Distance(Player) < hello2.Distance(Player))
-                                                {
-                                                    R.Cast(hello);
-                                                }
-                                            }
-                                            if (hello2.IsZero && !hello.IsZero)
-                                            {
-
-                                                R.Cast(hello);
-                                            }
-                                            if (hello.IsZero && !hello2.IsZero)
-                                            {
-
-                                                R.Cast(hello2);
-                                            }
                                         }
                                     }
                                 }
+
                                 break;
                             case 1:
-                                if (targets.IsValidTarget(520))
+                                if (targets.IsValidTarget(R.Range))
                                 {
                                     if (targets.Health <= Player.GetSpellDamage(targets, SpellSlot.Q,
                                             DamageStage.SecondForm) +
@@ -830,73 +954,123 @@ namespace Gnar_By_Kornis
                                         Player.GetSpellDamage(targets, SpellSlot.E, DamageStage.SecondForm) +
                                         Player.GetSpellDamage(targets, SpellSlot.R, DamageStage.Collision))
                                     {
-                                        if (Player.Distance(targets) <= 490)
+                                        if (targets.IsValidTarget(R.Range))
                                         {
 
-                                            var pushdistance = 500;
-                                            var targetpos = targets.ServerPosition;
-                                            var pushidrection =
-                                                (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                                .Normalized();
-                                            var checkdistance = pushdistance / 40;
-                                            for (var i = 0; i <= 37; i++)
+                                            if (prediction.Distance(Player) <= R.Range)
                                             {
-
-                                                var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                                if (IsWall(finalpos, true))
+                                                var direction = (Player.ServerPosition - prediction).Normalized();
+                                                var maxAngle = 180f;
+                                                var step = maxAngle / 6f;
+                                                var currentAngle = 0f;
+                                                var currentStep = 0f;
+                                                while (true)
                                                 {
 
-                                                    hello = finalpos;
+                                                    if (currentStep > maxAngle && currentAngle < 0)
+                                                        break;
 
+
+                                                    if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                                    {
+                                                        currentAngle = (currentStep) * (float) Math.PI / 180;
+                                                        currentStep += step;
+                                                    }
+                                                    else if (currentAngle > 0)
+                                                        currentAngle = -currentAngle;
+
+                                                    Vector3 checkPoint;
+                                                    if (currentStep == 0)
+                                                    {
+                                                        currentStep = step;
+                                                        checkPoint = prediction + 450 * direction;
+                                                    }
+                                                    else
+                                                        checkPoint = prediction + 450 * direction.Rotated(currentAngle);
+
+                                                    if (GetFirstWallPoint(prediction, checkPoint).HasValue)
+                                                    {
+
+                                                        R.Cast(Player.Position +
+                                                               450 * (checkPoint - prediction).Normalized());
+
+                                                    }
                                                 }
-                                                else hello = new Vector3(0, 0, 0);
                                             }
-                                            var pushdistance2 = 500;
-                                            var targetpos2 = targets.ServerPosition;
-                                            var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                            var checkdistance2 = pushdistance2 / 40;
-                                            for (var i = 0; i <= 37; i++)
-                                            {
 
-                                                var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                                if (IsWall(finalpos2, true))
-                                                {
-                                                    hello2 = finalpos2;
 
-                                                }
-                                                else hello2 = new Vector3(0, 0, 0);
-                                            }
-                                            if (!hello.IsZero && !hello2.IsZero)
-                                            {
-                                                if (hello.Distance(Player) > hello2.Distance(Player))
-                                                {
-                                                    R.Cast(hello2);
-                                                }
-                                                if (hello.Distance(Player) < hello2.Distance(Player))
-                                                {
-                                                    R.Cast(hello);
-                                                }
-                                            }
-                                            if (hello2.IsZero && !hello.IsZero)
-                                            {
-
-                                                R.Cast(hello);
-                                            }
-                                            if (hello.IsZero && !hello2.IsZero)
-                                            {
-
-                                                R.Cast(hello2);
-                                            }
                                         }
                                     }
                                 }
+
                                 break;
                         }
                     }
                 }
+
                 if (Player.HasBuff("gnartransform") || Player.HasBuff("gnartransformsoon"))
                 {
 
+                    
+
+                    if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled)
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(W.Range);
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(W.Range))
+                            {
+
+
+                                if (target != null)
+                                {
+
+                                    if (W.GetPrediction(target).CastPosition.Distance(Player) < W.Range + 30)
+                                    {
+                                        W.Cast(target);
+                                    }
+
+
+                                }
+                            }
+                        }
+                    }
+
+                    if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled)
+                    {
+                        var target = GetBestEnemyHeroTargetInRange(Q2.Range);
+                        if (target.IsValidTarget())
+                        {
+                            if (target.IsValidTarget(Q2.Range))
+                            {
+
+
+                                if (target != null)
+                                {
+
+                                    var collisions =
+                                        (IList<Obj_AI_Base>) E.GetPrediction(target).CollisionObjects;
+                                    if (collisions.Any())
+                                    {
+                                        if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
+                                        {
+                                            return;
+                                        }
+                                    }
+
+                                    if (Q2.GetPrediction(target).CastPosition.Distance(Player) < Q2.Range + 250)
+                                    {
+                                        Q2.Cast(target);
+
+                                    }
+
+
+
+                                }
+                            }
+
+                        }
+                    }
                     if (Menu["combo"]["mega"]["usee"].Enabled)
                     {
 
@@ -915,6 +1089,7 @@ namespace Gnar_By_Kornis
 
                                         E2.Cast(target);
                                     }
+
                                     if (!Menu["misc"]["toggle"].Enabled)
                                     {
                                         if (!target.IsUnderEnemyTurret())
@@ -924,57 +1099,6 @@ namespace Gnar_By_Kornis
                                     }
                                 }
                             }
-                        }
-                    }
-
-                    if (W.Ready && Menu["combo"]["mega"]["usew"].Enabled)
-                    {
-                        var target = GetBestEnemyHeroTargetInRange(W.Range);
-                        if (target.IsValidTarget())
-                        {
-                            if (target.IsValidTarget(W.Range))
-                            {
-
-
-                                if (target != null)
-                                {
-
-
-                                    W.Cast(target);
-
-
-                                }
-                            }
-                        }
-                    }
-                    if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled)
-                    {
-                        var target = GetBestEnemyHeroTargetInRange(Q2.Range);
-                        if (target.IsValidTarget())
-                        {
-                            if (target.IsValidTarget(Q2.Range))
-                            {
-
-
-                                if (target != null)
-                                {
-
-                                    var collisions =
-                                        (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
-                                    if (collisions.Any())
-                                    {
-                                        if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
-                                        {
-                                            return;
-                                        }
-                                    }
-                                    Q2.Cast(target);
-
-
-
-                                }
-                            }
-
                         }
                     }
                 }
@@ -992,10 +1116,14 @@ namespace Gnar_By_Kornis
 
                                 if (target != null)
                                 {
-                                    Q.Cast(target);
+                                    if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range + 30)
+                                    {
 
+                                        Q.Cast(target);
+                                    }
 
                                 }
+
                                 var pred = Q.GetPrediction(target);
 
 
@@ -1005,9 +1133,9 @@ namespace Gnar_By_Kornis
                                     var colliding = pred.CollisionObjects.OrderBy(o => o.Distance(Player)).ToList();
                                     var test = target.ServerPosition.Extend(Player.ServerPosition,
                                         target.Distance(Player) - 60 * i);
-                             
+
                                     if (colliding.Count > 0)
-                                        {
+                                    {
 
                                         if (target.Distance(Player) > 700 && target.Distance(Player) < 1000)
                                         {
@@ -1020,19 +1148,22 @@ namespace Gnar_By_Kornis
                                                 if (m != null)
                                                 {
 
-                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                        m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
                                                     {
                                                         Q.Cast(pred.CastPosition);
                                                     }
                                                 }
                                             }
+
                                             foreach (var m in GameObjects.Jungle.Where(x =>
                                                 x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                             {
                                                 if (m != null)
                                                 {
 
-                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                        m.Distance(target) < 310 && colliding[0].Distance(target) < 310)
                                                     {
                                                         Q.Cast(pred.CastPosition);
                                                     }
@@ -1040,28 +1171,32 @@ namespace Gnar_By_Kornis
                                             }
 
                                         }
+
                                         if (target.Distance(Player) < 700 && target.Distance(Player) < 1000)
                                         {
                                             foreach (var m in GameObjects.EnemyMinions.Where(x =>
-                                               x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                                x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                             {
                                                 if (m != null)
                                                 {
 
-                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                        m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
                                                     {
                                                         Q.Cast(pred.CastPosition);
                                                     }
                                                 }
 
                                             }
+
                                             foreach (var m in GameObjects.Jungle.Where(x =>
                                                 x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                             {
                                                 if (m != null)
                                                 {
 
-                                                    if (test.Distance(m) <= 100 + target.BoundingRadius && m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
+                                                    if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                        m.Distance(target) < 350 && colliding[0].Distance(target) < 350)
                                                     {
                                                         Q.Cast(pred.CastPosition);
                                                     }
@@ -1092,12 +1227,14 @@ namespace Gnar_By_Kornis
                                     {
                                         if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
-                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >=
+                                                target.CountEnemyHeroesInRange(800))
                                             {
                                                 E.Cast(target.ServerPosition);
 
                                             }
                                         }
+
                                         if (Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
                                             if (target.Health <=
@@ -1107,13 +1244,15 @@ namespace Gnar_By_Kornis
                                             {
                                                 if (target.Distance(Player) > 500)
                                                 {
-                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                            .Value >= target.CountEnemyHeroesInRange(800))
                                                     {
                                                         E.Cast(target.ServerPosition);
 
                                                     }
                                                 }
                                             }
+
                                             if (target.Health <=
                                                 Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
                                                 Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
@@ -1121,7 +1260,8 @@ namespace Gnar_By_Kornis
                                                 Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
                                             {
 
-                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >=
+                                                    target.CountEnemyHeroesInRange(800))
                                                 {
                                                     E.Cast(target.ServerPosition);
 
@@ -1130,16 +1270,19 @@ namespace Gnar_By_Kornis
                                             }
                                         }
                                     }
+
                                     if (!Menu["misc"]["toggle"].Enabled)
                                     {
                                         if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
-                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >=
+                                                target.CountEnemyHeroesInRange(800))
                                             {
                                                 E.Cast(target.ServerPosition);
 
                                             }
                                         }
+
                                         if (Menu["combo"]["mini"]["usegap"].Enabled)
                                         {
                                             if (target.Health <=
@@ -1151,7 +1294,8 @@ namespace Gnar_By_Kornis
                                                 {
                                                     if (!target.IsUnderEnemyTurret())
                                                     {
-                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                                .Value >= target.CountEnemyHeroesInRange(800))
                                                         {
                                                             E.Cast(target.ServerPosition);
 
@@ -1159,6 +1303,7 @@ namespace Gnar_By_Kornis
                                                     }
                                                 }
                                             }
+
                                             if (target.Health <=
                                                 Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
                                                 Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
@@ -1168,7 +1313,8 @@ namespace Gnar_By_Kornis
 
                                                 if (!target.IsUnderEnemyTurret())
                                                 {
-                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                            .Value >= target.CountEnemyHeroesInRange(800))
                                                     {
                                                         E.Cast(target.ServerPosition);
 
@@ -1186,6 +1332,7 @@ namespace Gnar_By_Kornis
                     }
                 }
             }
+
             if (Menu["combo"]["block"].Enabled)
             {
                 if (Player.Mana < 100)
@@ -1195,78 +1342,70 @@ namespace Gnar_By_Kornis
                         var targets = GetBestEnemyHeroTargetInRange(R.Range);
                         if (targets.IsValidTarget())
                         {
-
+                            var meow = R.GetPredictionInput(targets);
+                            var prediction = Prediction.Instance.GetPrediction(meow).UnitPosition;
                             switch (Menu["combo"]["mega"]["rmode"].As<MenuList>().Value)
                             {
                                 case 0:
 
-                                    if (targets.IsValidTarget(520))
+                                    if (targets.IsValidTarget(R.Range))
                                     {
-                                        if (targets.HealthPercent() <= Menu["combo"]["mega"]["hp"].As<MenuSlider>().Value)
+                                        if (targets.HealthPercent() <=
+                                            Menu["combo"]["mega"]["hp"].As<MenuSlider>().Value)
                                         {
-                                            if (Player.Distance(targets) <= 490)
+                                            if (targets.IsValidTarget(R.Range))
                                             {
 
-                                                var pushdistance = 500;
-                                                var targetpos = targets.ServerPosition;
-                                                var pushidrection =
-                                                    (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                                    .Normalized();
-                                                var checkdistance = pushdistance / 40;
-                                                for (var i = 0; i <= 37; i++)
+                                                if (prediction.Distance(Player) <= R.Range)
                                                 {
-
-                                                    var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                                    if (IsWall(finalpos, true))
+                                                    var direction = (Player.ServerPosition - prediction).Normalized();
+                                                    var maxAngle = 180f;
+                                                    var step = maxAngle / 6f;
+                                                    var currentAngle = 0f;
+                                                    var currentStep = 0f;
+                                                    while (true)
                                                     {
 
-                                                        hello = finalpos;
+                                                        if (currentStep > maxAngle && currentAngle < 0)
+                                                            break;
 
+
+                                                        if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                                        {
+                                                            currentAngle = (currentStep) * (float) Math.PI / 180;
+                                                            currentStep += step;
+                                                        }
+                                                        else if (currentAngle > 0)
+                                                            currentAngle = -currentAngle;
+
+                                                        Vector3 checkPoint;
+                                                        if (currentStep == 0)
+                                                        {
+                                                            currentStep = step;
+                                                            checkPoint = prediction + 450 * direction;
+                                                        }
+                                                        else
+                                                            checkPoint =
+                                                                prediction + 450 * direction.Rotated(currentAngle);
+
+                                                        if (GetFirstWallPoint(prediction, checkPoint).HasValue)
+                                                        {
+
+                                                            R.Cast(Player.Position +
+                                                                   450 * (checkPoint - prediction).Normalized());
+
+                                                        }
                                                     }
-                                                    else hello = new Vector3(0, 0, 0);
                                                 }
-                                                var pushdistance2 = 500;
-                                                var targetpos2 = targets.ServerPosition;
-                                                var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                                var checkdistance2 = pushdistance2 / 40;
-                                                for (var i = 0; i <= 37; i++)
-                                                {
 
-                                                    var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                                    if (IsWall(finalpos2, true))
-                                                    {
-                                                        hello2 = finalpos2;
 
-                                                    }
-                                                    else hello2 = new Vector3(0, 0, 0);
-                                                }
-                                                if (!hello.IsZero && !hello2.IsZero)
-                                                {
-                                                    if (hello.Distance(Player) > hello2.Distance(Player))
-                                                    {
-                                                        R.Cast(hello2);
-                                                    }
-                                                    if (hello.Distance(Player) < hello2.Distance(Player))
-                                                    {
-                                                        R.Cast(hello);
-                                                    }
-                                                }
-                                                if (hello2.IsZero && !hello.IsZero)
-                                                {
-
-                                                    R.Cast(hello);
-                                                }
-                                                if (hello.IsZero && !hello2.IsZero)
-                                                {
-
-                                                    R.Cast(hello2);
-                                                }
                                             }
                                         }
                                     }
+
                                     break;
                                 case 1:
-                                    if (targets.IsValidTarget(520))
+                                    if (targets.IsValidTarget(R.Range))
                                     {
                                         if (targets.Health <= Player.GetSpellDamage(targets, SpellSlot.Q,
                                                 DamageStage.SecondForm) +
@@ -1274,70 +1413,61 @@ namespace Gnar_By_Kornis
                                             Player.GetSpellDamage(targets, SpellSlot.E, DamageStage.SecondForm) +
                                             Player.GetSpellDamage(targets, SpellSlot.R, DamageStage.Collision))
                                         {
-                                            if (Player.Distance(targets) <= 490)
+                                            if (targets.IsValidTarget(R.Range))
                                             {
 
-                                                var pushdistance = 500;
-                                                var targetpos = targets.ServerPosition;
-                                                var pushidrection =
-                                                    (targetpos - Player.ServerPosition.Extend(targetpos, pushdistance))
-                                                    .Normalized();
-                                                var checkdistance = pushdistance / 40;
-                                                for (var i = 0; i <= 37; i++)
+                                                if (prediction.Distance(Player) <= R.Range)
                                                 {
-
-                                                    var finalpos = targetpos + (pushidrection * checkdistance * i);
-                                                    if (IsWall(finalpos, true))
+                                                    var direction = (Player.ServerPosition - prediction).Normalized();
+                                                    var maxAngle = 180f;
+                                                    var step = maxAngle / 6f;
+                                                    var currentAngle = 0f;
+                                                    var currentStep = 0f;
+                                                    while (true)
                                                     {
 
-                                                        hello = finalpos;
+                                                        if (currentStep > maxAngle && currentAngle < 0)
+                                                            break;
 
+
+                                                        if ((currentAngle == 0 || currentAngle < 0) && currentStep != 0)
+                                                        {
+                                                            currentAngle = (currentStep) * (float) Math.PI / 180;
+                                                            currentStep += step;
+                                                        }
+                                                        else if (currentAngle > 0)
+                                                            currentAngle = -currentAngle;
+
+                                                        Vector3 checkPoint;
+                                                        if (currentStep == 0)
+                                                        {
+                                                            currentStep = step;
+                                                            checkPoint = prediction + 450 * direction;
+                                                        }
+                                                        else
+                                                            checkPoint =
+                                                                prediction + 450 * direction.Rotated(currentAngle);
+
+                                                        if (GetFirstWallPoint(prediction, checkPoint).HasValue)
+                                                        {
+
+                                                            R.Cast(Player.Position +
+                                                                   450 * (checkPoint - prediction).Normalized());
+
+                                                        }
                                                     }
-                                                    else hello = new Vector3(0, 0, 0);
                                                 }
-                                                var pushdistance2 = 500;
-                                                var targetpos2 = targets.ServerPosition;
-                                                var pushidrection2 = (targetpos2 - Player.ServerPosition).Normalized();
-                                                var checkdistance2 = pushdistance2 / 40;
-                                                for (var i = 0; i <= 37; i++)
-                                                {
 
-                                                    var finalpos2 = targetpos2 + (pushidrection2 * checkdistance2 * i);
-                                                    if (IsWall(finalpos2, true))
-                                                    {
-                                                        hello2 = finalpos2;
 
-                                                    }
-                                                    else hello2 = new Vector3(0, 0, 0);
-                                                }
-                                                if (!hello.IsZero && !hello2.IsZero)
-                                                {
-                                                    if (hello.Distance(Player) > hello2.Distance(Player))
-                                                    {
-                                                        R.Cast(hello2);
-                                                    }
-                                                    if (hello.Distance(Player) < hello2.Distance(Player))
-                                                    {
-                                                        R.Cast(hello);
-                                                    }
-                                                }
-                                                if (hello2.IsZero && !hello.IsZero)
-                                                {
-
-                                                    R.Cast(hello);
-                                                }
-                                                if (hello.IsZero && !hello2.IsZero)
-                                                {
-
-                                                    R.Cast(hello2);
-                                                }
                                             }
                                         }
                                     }
+
                                     break;
                             }
                         }
                     }
+
                     if (Player.HasBuff("gnartransform"))
                     {
                         if (E2.Ready && Menu["combo"]["mega"]["usee"].Enabled)
@@ -1355,6 +1485,7 @@ namespace Gnar_By_Kornis
                                         {
                                             E2.Cast(target);
                                         }
+
                                         if (!Menu["misc"]["toggle"].Enabled)
                                         {
                                             if (!target.IsUnderEnemyTurret())
@@ -1379,13 +1510,17 @@ namespace Gnar_By_Kornis
                                     if (target != null)
                                     {
 
-                                        W.Cast(target);
+                                        if (W.GetPrediction(target).CastPosition.Distance(Player) < W.Range + 30)
+                                        {
+                                            W.Cast(target);
+                                        }
 
 
                                     }
                                 }
                             }
                         }
+
                         if (Q2.Ready && Menu["combo"]["mega"]["useq"].Enabled)
                         {
                             var target = GetBestEnemyHeroTargetInRange(Q2.Range);
@@ -1400,7 +1535,7 @@ namespace Gnar_By_Kornis
 
 
                                         var collisions =
-                                            (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
+                                            (IList<Obj_AI_Base>) E.GetPrediction(target).CollisionObjects;
                                         if (collisions.Any())
                                         {
                                             if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
@@ -1408,7 +1543,12 @@ namespace Gnar_By_Kornis
                                                 return;
                                             }
                                         }
-                                        Q2.Cast(target);
+
+                                        if (Q2.GetPrediction(target).CastPosition.Distance(Player) < Q2.Range + 250)
+                                        {
+                                            Q2.Cast(target);
+
+                                        }
 
 
 
@@ -1417,6 +1557,7 @@ namespace Gnar_By_Kornis
                             }
                         }
                     }
+
                     if (!Player.HasBuff("gnartransform"))
                     {
                         if (Q.Ready && Menu["combo"]["mini"]["useq"].Enabled)
@@ -1430,8 +1571,104 @@ namespace Gnar_By_Kornis
 
                                     if (target != null)
                                     {
-                                        Q.Cast(target);
+                                        if (target != null)
+                                        {
+                                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range + 30)
+                                            {
 
+                                                Q.Cast(target);
+                                            }
+
+                                        }
+
+                                        var pred = Q.GetPrediction(target);
+
+
+                                        for (var i = 0; i < 17; i++)
+                                        {
+
+                                            var colliding = pred.CollisionObjects.OrderBy(o => o.Distance(Player))
+                                                .ToList();
+                                            var test = target.ServerPosition.Extend(Player.ServerPosition,
+                                                target.Distance(Player) - 60 * i);
+
+                                            if (colliding.Count > 0)
+                                            {
+
+                                                if (target.Distance(Player) > 700 && target.Distance(Player) < 1000)
+                                                {
+
+
+
+                                                    foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                                    {
+                                                        if (m != null)
+                                                        {
+
+                                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                                m.Distance(target) < 310 &&
+                                                                colliding[0].Distance(target) < 310)
+                                                            {
+                                                                Q.Cast(pred.CastPosition);
+                                                            }
+                                                        }
+                                                    }
+
+                                                    foreach (var m in GameObjects.Jungle.Where(x =>
+                                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                                    {
+                                                        if (m != null)
+                                                        {
+
+                                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                                m.Distance(target) < 310 &&
+                                                                colliding[0].Distance(target) < 310)
+                                                            {
+                                                                Q.Cast(pred.CastPosition);
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+
+                                                if (target.Distance(Player) < 700 && target.Distance(Player) < 1000)
+                                                {
+                                                    foreach (var m in GameObjects.EnemyMinions.Where(x =>
+                                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                                    {
+                                                        if (m != null)
+                                                        {
+
+                                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                                m.Distance(target) < 350 &&
+                                                                colliding[0].Distance(target) < 350)
+                                                            {
+                                                                Q.Cast(pred.CastPosition);
+                                                            }
+                                                        }
+
+                                                    }
+
+                                                    foreach (var m in GameObjects.Jungle.Where(x =>
+                                                        x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
+                                                    {
+                                                        if (m != null)
+                                                        {
+
+                                                            if (test.Distance(m) <= 100 + target.BoundingRadius &&
+                                                                m.Distance(target) < 350 &&
+                                                                colliding[0].Distance(target) < 350)
+                                                            {
+                                                                Q.Cast(pred.CastPosition);
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+
+                                            }
+                                        }
 
                                     }
                                 }
@@ -1453,12 +1690,14 @@ namespace Gnar_By_Kornis
                                         {
                                             if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                             {
-                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >=
+                                                    target.CountEnemyHeroesInRange(800))
                                                 {
                                                     E.Cast(target.ServerPosition);
 
                                                 }
                                             }
+
                                             if (Menu["combo"]["mini"]["usegap"].Enabled)
                                             {
                                                 if (target.Health <=
@@ -1468,21 +1707,25 @@ namespace Gnar_By_Kornis
                                                 {
                                                     if (target.Distance(Player) > 500)
                                                     {
-                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                                .Value >= target.CountEnemyHeroesInRange(800))
                                                         {
                                                             E.Cast(target.ServerPosition);
 
                                                         }
                                                     }
                                                 }
+
                                                 if (target.Health <=
                                                     Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                    Player.GetSpellDamage(target, SpellSlot.W,
+                                                        DamageStage.SecondForm) ||
                                                     target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
                                                     Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
                                                 {
 
-                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                    if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                            .Value >= target.CountEnemyHeroesInRange(800))
                                                     {
                                                         E.Cast(target.ServerPosition);
 
@@ -1491,16 +1734,19 @@ namespace Gnar_By_Kornis
                                                 }
                                             }
                                         }
+
                                         if (!Menu["misc"]["toggle"].Enabled)
                                         {
                                             if (!Menu["combo"]["mini"]["usegap"].Enabled)
                                             {
-                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >=
+                                                    target.CountEnemyHeroesInRange(800))
                                                 {
                                                     E.Cast(target.ServerPosition);
 
                                                 }
                                             }
+
                                             if (Menu["combo"]["mini"]["usegap"].Enabled)
                                             {
                                                 if (target.Health <=
@@ -1512,7 +1758,8 @@ namespace Gnar_By_Kornis
                                                     {
                                                         if (!target.IsUnderEnemyTurret())
                                                         {
-                                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                            if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                                    .Value >= target.CountEnemyHeroesInRange(800))
                                                             {
                                                                 E.Cast(target.ServerPosition);
 
@@ -1520,16 +1767,19 @@ namespace Gnar_By_Kornis
                                                         }
                                                     }
                                                 }
+
                                                 if (target.Health <=
                                                     Player.GetSpellDamage(target, SpellSlot.Q, DamageStage.SecondForm) +
-                                                    Player.GetSpellDamage(target, SpellSlot.W, DamageStage.SecondForm) ||
+                                                    Player.GetSpellDamage(target, SpellSlot.W,
+                                                        DamageStage.SecondForm) ||
                                                     target.BuffManager.GetBuffCount("gnarwproc", false) == 2 &&
                                                     Player.GetSpellDamage(target, SpellSlot.E) * 3 > target.Health)
                                                 {
 
                                                     if (!target.IsUnderEnemyTurret())
                                                     {
-                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>().Value >= target.CountEnemyHeroesInRange(800))
+                                                        if (Menu["combo"]["mini"]["suicidallikeme"].As<MenuSlider>()
+                                                                .Value >= target.CountEnemyHeroesInRange(800))
                                                         {
                                                             E.Cast(target.ServerPosition);
 
@@ -1565,15 +1815,19 @@ namespace Gnar_By_Kornis
                     {
                         if (target != null)
                         {
-                            W.Cast(target);
+                            if (W.GetPrediction(target).CastPosition.Distance(Player) < W.Range + 30)
+                            {
+                                W.Cast(target);
+                            }
                         }
                     }
+
                     if (Q2.Ready && Menu["harass"]["mega"]["useq"].Enabled && target.IsValidTarget(Q2.Range))
                     {
                         if (target != null)
                         {
                             var collisions =
-                                (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
+                                (IList<Obj_AI_Base>) E.GetPrediction(target).CollisionObjects;
                             if (collisions.Any())
                             {
                                 if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
@@ -1581,7 +1835,12 @@ namespace Gnar_By_Kornis
                                     return;
                                 }
                             }
-                            Q2.Cast(target);
+
+                            if (Q2.GetPrediction(target).CastPosition.Distance(Player) < Q2.Range + 250)
+                            {
+                                Q2.Cast(target);
+
+                            }
 
                         }
                     }
@@ -1594,6 +1853,7 @@ namespace Gnar_By_Kornis
                             {
                                 E2.Cast(target);
                             }
+
                             if (!Menu["misc"]["toggle"].Enabled)
                             {
                                 if (!target.IsUnderEnemyTurret())
@@ -1604,6 +1864,7 @@ namespace Gnar_By_Kornis
                         }
                     }
                 }
+
                 if (!Player.HasBuff("gnartransform"))
                 {
                     var target = GetBestEnemyHeroTargetInRange(Q.Range);
@@ -1612,9 +1873,14 @@ namespace Gnar_By_Kornis
                     {
                         if (target != null)
                         {
-                            Q.Cast(target);
+                            if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range + 30)
+                            {
+
+                                Q.Cast(target);
+                            }
                         }
-                         var pred = Q.GetPrediction(target);
+
+                        var pred = Q.GetPrediction(target);
 
 
                         for (var i = 0; i < 17; i++)
@@ -1645,6 +1911,7 @@ namespace Gnar_By_Kornis
                                             }
                                         }
                                     }
+
                                     foreach (var m in GameObjects.Jungle.Where(x =>
                                         x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                     {
@@ -1660,6 +1927,7 @@ namespace Gnar_By_Kornis
                                     }
 
                                 }
+
                                 if (target.Distance(Player) < 700 && target.Distance(Player) < 1000)
                                 {
                                     foreach (var m in GameObjects.EnemyMinions.Where(x =>
@@ -1676,6 +1944,7 @@ namespace Gnar_By_Kornis
                                         }
 
                                     }
+
                                     foreach (var m in GameObjects.Jungle.Where(x =>
                                         x.Distance(Player) < Q.Range && x != null && x.IsValidTarget()))
                                     {
@@ -1695,6 +1964,7 @@ namespace Gnar_By_Kornis
                             }
                         }
                     }
+
                     if (E.Ready && Menu["harass"]["mini"]["usee"].Enabled && target.IsValidTarget(Q.Range))
                     {
                         if (target != null)
@@ -1711,6 +1981,7 @@ namespace Gnar_By_Kornis
                                     }
                                 }
                             }
+
                             if (!Menu["misc"]["toggle"].Enabled)
                             {
                                 if (!target.IsUnderEnemyTurret())
@@ -1731,9 +2002,10 @@ namespace Gnar_By_Kornis
                     }
                 }
             }
+
             if (Menu["combo"]["block"].Enabled)
             {
-                
+
                 if (Player.Mana < 100)
                 {
                     if (Player.HasBuff("gnartransform"))
@@ -1744,15 +2016,19 @@ namespace Gnar_By_Kornis
                         {
                             if (target != null)
                             {
-                                W.Cast(target);
+                                if (W.GetPrediction(target).CastPosition.Distance(Player) < W.Range + 30)
+                                {
+                                    W.Cast(target);
+                                }
                             }
                         }
+
                         if (Q2.Ready && Menu["harass"]["mega"]["useq"].Enabled && target.IsValidTarget(Q2.Range))
                         {
                             if (target != null)
                             {
                                 var collisions =
-                                    (IList<Obj_AI_Base>)E.GetPrediction(target).CollisionObjects;
+                                    (IList<Obj_AI_Base>) E.GetPrediction(target).CollisionObjects;
                                 if (collisions.Any())
                                 {
                                     if (collisions.All(c => GetAllGenericUnitTargets().Contains(c)))
@@ -1760,7 +2036,12 @@ namespace Gnar_By_Kornis
                                         return;
                                     }
                                 }
-                                Q2.Cast(target);
+
+                                if (Q2.GetPrediction(target).CastPosition.Distance(Player) < Q2.Range + 250)
+                                {
+                                    Q2.Cast(target);
+
+                                }
 
                             }
                         }
@@ -1773,6 +2054,7 @@ namespace Gnar_By_Kornis
                                 {
                                     E2.Cast(target);
                                 }
+
                                 if (!Menu["misc"]["toggle"].Enabled)
                                 {
                                     if (!target.IsUnderEnemyTurret())
@@ -1783,6 +2065,7 @@ namespace Gnar_By_Kornis
                             }
                         }
                     }
+
                     if (!Player.HasBuff("gnartransform"))
                     {
                         var target = GetBestEnemyHeroTargetInRange(Q.Range);
@@ -1791,9 +2074,14 @@ namespace Gnar_By_Kornis
                         {
                             if (target != null)
                             {
-                                Q.Cast(target);
+                                if (Q.GetPrediction(target).CastPosition.Distance(Player) < Q.Range + 30)
+                                {
+
+                                    Q.Cast(target);
+                                }
                             }
                         }
+
                         if (E.Ready && Menu["harass"]["mini"]["usee"].Enabled && target.IsValidTarget(Q.Range))
                         {
                             if (target != null)
@@ -1811,6 +2099,7 @@ namespace Gnar_By_Kornis
                                         }
                                     }
                                 }
+
                                 if (!Menu["misc"]["toggle"].Enabled)
                                 {
                                     if (!target.IsUnderEnemyTurret())
